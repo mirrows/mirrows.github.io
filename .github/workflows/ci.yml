@@ -4,10 +4,11 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
+    - name: Checkout
     - uses: actions/checkout@v3
       with:
         path: dev
-    - name: Checkout
+    - name: buid
       uses: JamesIves/github-pages-deploy-action@v4
       with:
           folder: out
