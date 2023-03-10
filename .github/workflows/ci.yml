@@ -9,6 +9,7 @@ jobs:
       uses: JamesIves/github-pages-deploy-action@v4
       with:
           folder: out
-          access_token: ${{ secrets.ACCESS_TOKEN }}
-          branch: main
+          token: ${{ secrets.ACCESS_TOKEN }}
+          branch: dev
+          repository-name: mirrows.github.io
           run: npm install && npm run build
