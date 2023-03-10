@@ -100,6 +100,7 @@ export default function Home() {
         <img src="/github.svg" style={{ width: '32px' }} alt='github' onClick={login} />
         <div>
           <Link href="/about">关于我们</Link>
+          <div>现在已经可以在dev提交分支，通过github actions自动部署了</div>
         </div>
       </main>
     </>
