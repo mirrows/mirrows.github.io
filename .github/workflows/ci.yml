@@ -1,16 +1,13 @@
 name: GitHub Actions Build and Deploy Demo
 on:
   push:
-    branches:
-      - dev
+    branches: [ "dev" ]
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     steps:
+    - uses: actions/checkout@master
     - name: Checkout
-      uses: actions/checkout@master
-
-    - name: Build and Deploy
       uses: JamesIves/github-pages-deploy-action@master
       env:
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
