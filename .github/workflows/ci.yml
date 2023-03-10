@@ -10,6 +10,5 @@ jobs:
       with:
           folder: out
           token: ${{ secrets.ACCESS_TOKEN }}
-          branch: dev
-          repository-name: mirrows.github.io
-          run: npm install && npm run build
+          branch: main
+          clean: true
