@@ -12,7 +12,10 @@ jobs:
       with:
         ref: dev
     - run: npm i
-    - run: npm run build --mode production
+    - run: npm run build
+        env: 
+          NEXT_PUBLIC_CLIENT_ID: $NEXT_PUBLIC_CLIENT_ID
+          NEXT_PUBLIC_SECRET: $NEXT_PUBLIC_SECRET
     - name: deply
       uses: JamesIves/github-pages-deploy-action@v4
       with:
