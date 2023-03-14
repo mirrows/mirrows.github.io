@@ -11,7 +11,8 @@ jobs:
       with:
         ref: dev
     - run: npm i
-    - run: npm run build NEXT_PUBLIC_CLIENT_ID=${{ vars.NEXT_PUBLIC_CLIENT_ID }}
+    - env: github-pages
+    - run: npm run build
     - name: buid
       uses: JamesIves/github-pages-deploy-action@v4
       with:
