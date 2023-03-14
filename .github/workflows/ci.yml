@@ -14,9 +14,9 @@ jobs:
     - run: npm i
     - name: build
       run: npm run build
-        environment: 
-          NEXT_PUBLIC_CLIENT_ID: $NEXT_PUBLIC_CLIENT_ID
-          NEXT_PUBLIC_SECRET: $NEXT_PUBLIC_SECRET
+      env: 
+        NEXT_PUBLIC_CLIENT_ID: $NEXT_PUBLIC_CLIENT_ID
+        NEXT_PUBLIC_SECRET: $NEXT_PUBLIC_SECRET
     - name: deply
       uses: JamesIves/github-pages-deploy-action@v4
       with:
