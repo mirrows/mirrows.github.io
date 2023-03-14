@@ -76,6 +76,7 @@ export default function Home() {
   }
 
   useEffect(() => {
+    console.log(process.env.NEXT_PUBLIC_SECRET, process.env.NEXT_PUBLIC_CLIENT_ID, location.origin)
     const query = parsequeryStr2Obj(router.asPath)
     if (query.code) {
       console.log(query.code);
