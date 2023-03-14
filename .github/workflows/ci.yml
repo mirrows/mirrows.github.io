@@ -11,7 +11,7 @@ jobs:
       with:
         ref: dev
     - run: npm i
-    - run: npm run build --github-pages
+    - run: npm run build --mode github-pages
     - name: buid
       uses: JamesIves/github-pages-deploy-action@v4
       with:
