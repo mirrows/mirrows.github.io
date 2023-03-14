@@ -11,9 +11,10 @@ jobs:
       with:
         ref: dev
     - run: npm i
-    - env: github-pages
-    - run: npm run build
-    - name: buid
+    - name: build
+        env: github-pages
+        run: npm run build
+    - name: deply
       uses: JamesIves/github-pages-deploy-action@v4
       with:
         folder: out
