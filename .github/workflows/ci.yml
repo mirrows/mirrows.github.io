@@ -3,6 +3,7 @@ on:
   push: 
     branches: [dev]
 jobs:
+  environment: github-pages
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
@@ -11,9 +12,7 @@ jobs:
       with:
         ref: dev
     - run: npm i
-    - name: build
-        env: github-pages
-        run: npm run build
+    - run: npm run build
     - name: deply
       uses: JamesIves/github-pages-deploy-action@v4
       with:
