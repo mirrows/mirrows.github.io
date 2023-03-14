@@ -1,7 +1,10 @@
+import { queryUser } from '@/req/main';
+import { githubApi } from '@/utils/api';
+import { stone } from '@/utils/global';
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 
 
 export default function Home() {
@@ -46,7 +49,7 @@ export default function Home() {
         code,
       }
     }
-    fetch('https://mess.t-n.top/mess/', {
+    fetch(process.env.NEXT_PUBLIC_MESS_URL || '', {
       // fetch('/github/login/oauth/access_token', {
       method: 'POST',
       body: JSON.stringify(par),
@@ -58,24 +61,19 @@ export default function Home() {
     })
   }
   const queryCurUser = () => {
-    const par = {
-      url: 'https://api.github.com/user',
-      method: 'GET',
-      headers: {
-        Accept: 'application/vnd.github+json',
-        Authorization: `token ${sessionStorage.token}`,
-      },
-    }
-    fetch('https://mess.t-n.top/mess/', {
-      method: 'POST',
-      body: JSON.stringify(par),
-    }).then(res => res.json()).then(data => {
+    queryUser().then(data => {
       console.log(data)
       data.login && sessionStorage.setItem('userInfo', JSON.stringify(data));
     })
   }
 
   useEffect(() => {
+    // console.log(githubApi)
+    // console.log(stone)
+    setTimeout(() => {
+      stone.set({ number: 2 })
+      console.log(666, stone.data.number);
+    }, 2000)
     const query = parsequeryStr2Obj(router.asPath)
     if (query.code) {
       console.log(query.code);

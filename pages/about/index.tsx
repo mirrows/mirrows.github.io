@@ -1,8 +1,13 @@
+import { stone } from '@/utils/global'
 import Head from 'next/head'
 import Link from 'next/link'
+import { useEffect } from 'react'
 
 
 export default function About() {
+  useEffect(() => {
+    console.log(stone.data.number)
+  }, [])
   return (
     <>
       <Head>
