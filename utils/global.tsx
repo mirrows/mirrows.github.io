@@ -5,6 +5,8 @@ import { deepClone } from "./common";
 const gbData = {
   number: 0,
   str: '666',
+  token: '',
+  userInfo: {},
 }
 
 export const stone = {
@@ -13,7 +15,7 @@ export const stone = {
     return deepClone(this.data[key]);
   },
   set(newData: Partial<typeof gbData>) {
-    this.data = { ...gbData, ...newData };
+    this.data = { ...this.data, ...newData };
   }
 }
 
@@ -24,7 +26,7 @@ if (typeof window !== "undefined") {
   }
 
   window.onbeforeunload = () => {
-    console.log(localStorage, sessionStorage)
+    console.log(localStorage, sessionStorage, stone.data)
     sessionStorage.setItem('tmpData', JSON.stringify(stone.data))
   }
 }
