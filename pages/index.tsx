@@ -67,7 +67,9 @@ const Div = styled.div`
       max-width: 300px;
       width: 100%;
       padding: 10px 20px 20px;
+      line-height: 1.2;
       background-color: rgba(0,0,0,.65);
+      box-sizing: border-box;
       border-radius: 12px;
       color: #fff;
     }
@@ -113,6 +115,18 @@ const Div = styled.div`
             margin: 0 10px;
           }
         }
+      }
+    }
+  }
+  @media (max-width: 450px) {
+    .pic_wrap .bing_card{
+      bottom: 0;
+      right: 0;
+      max-width: 100%;
+      padding: 5px 10px;
+      border-radius: 0;
+      .copyright{
+        font-size: 12px;
       }
     }
   }
