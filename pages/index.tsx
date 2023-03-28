@@ -6,11 +6,9 @@ import Link from 'next/link'
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-// Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
 import SwiperCore, { Autoplay } from 'swiper';
 SwiperCore.use([Autoplay]);
-// Import Swiper styles
 import 'swiper/css';
 
 type BingPic = {
