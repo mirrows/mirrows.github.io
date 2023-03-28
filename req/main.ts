@@ -23,28 +23,36 @@ export const queryUser = () => {
   return githubApi({ path: '/user' })
 }
 
+// export const dictQuery = () => {
+//   return crosApi({
+//     path: 'http://dict-co.iciba.com/api/dictionary.php',
+//     params: {
+//       w: 'go',
+//       key: '1F9CA812CB18FFDFC95FC17E9C57A5E1',
+//       type: 'json',
+//     }
+//   })
+// }
+
 export const dictQuery = () => {
-  return crosApi({
-    path: 'http://dict-co.iciba.com/api/dictionary.php',
-    params: {
-      w: 'go',
-      key: '1F9CA812CB18FFDFC95FC17E9C57A5E1',
-      type: 'json',
-    }
-  })
+  return fetch('https://api.t-n.top/ciba/translation?w=go').then(res => res.json())
 }
+
+// export const bingQuery = () => {
+//   return crosApi({
+//     path: 'https://cn.bing.com/HPImageArchive.aspx',
+//     params: {
+//       format: 'js',
+//       n: '7',
+//       mkt: 'zh-CN',
+//     }
+//   })
+// }
+
 
 export const bingQuery = () => {
-  return crosApi({
-    path: 'https://cn.bing.com/HPImageArchive.aspx',
-    params: {
-      format: 'js',
-      n: '7',
-      mkt: 'zh-CN',
-    }
-  })
+  return fetch('https://api.t-n.top/bing?n=7').then(res => res.json())
 }
-
 // get请求
 // export const queryOther = (params: NormalObj) => {
 //   return githubApi({ path: '/user', params })

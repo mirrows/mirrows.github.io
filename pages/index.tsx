@@ -1,100 +1,143 @@
 import { bingQuery, dictQuery, queryToken2, queryUser } from '@/req/main';
-import { githubApi } from '@/utils/api';
+import { parseObj2queryStr, parsequeryStr2Obj } from '@/utils/common';
 import { stone } from '@/utils/global';
-import { AppstoreOutlined, MailOutlined } from '@ant-design/icons';
-import { Carousel, Image, Menu } from 'antd';
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
+// Import Swiper React components
+import { Swiper, SwiperSlide } from 'swiper/react';
+import SwiperCore, { Autoplay } from 'swiper';
+SwiperCore.use([Autoplay]);
+// Import Swiper styles
+import 'swiper/css';
+
+type BingPic = {
+  url: string,
+  title: string,
+  copyright: string,
+  copyrightlink: string,
+}
 
 const Div = styled.div`
+  min-height: 100vh;
   .nav{
-    position:sticky;
+    display: flex;
+    justify-content:space-between;
+    align-items: center;
+    position: fixed;
     top: 0;
+    width: 100%;
     z-index: 30;
-    .ant-menu-overflow-item-rest{
-      margin-left: auto;
+    box-shadow: inset 0 60px 20px -30px #fff;
+    .expand_icon{
+      display:none;
+    }
+    .nav_list{
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      width: 420px;
+      padding: 5px 20px;
+      font-weight: bold;
+      .nav_item{
+        display: block;
+        text-decoration: underline;
+        color: #000;
+        .nav_icon{
+          width: 32px;
+        }
+      }
+      .item_right{
+        justify-content: flex-end;
+        text-align: right;
+        span{
+          display: none;
+        }
+      }
+    }
+  }
+  .pic_wrap{
+    position: relative;
+    .bing_card{
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      max-width: 300px;
+      width: 100%;
+      padding: 10px 20px 20px;
+      background-color: rgba(0,0,0,.65);
+      border-radius: 12px;
+      color: #fff;
+    }
+    .copyright{
+      color:#fff;
+      text-decoration: underline;
     }
   }
   .pic_item{
     width: 100vw;
-    height: 90vh;
+    height: 100vh;
     object-fit: cover;
+    vertical-align: bottom;
+  }
+
+  @media (max-width: 769px) {
+    .nav{
+      .nav_list{
+        display: none;
+        .item_right span{
+          display: inline;
+        }
+      }
+      .expand_icon{
+        display: block;
+      }
+      .right_nav_wrap:hover .nav_list{
+        display: block;
+        position: absolute;
+        right: 0;
+        top: 50px;
+        width: 180px;
+        padding: 10px 0;
+        background-color: rgba(0,0,0,.5);
+        .nav_item{
+          display: flex;
+          align-items: center;
+          padding: 5px 10px;
+          color: #fff;
+          fill: #fff;
+          text-decoration: none;
+          .nav_icon{
+            margin: 0 10px;
+          }
+        }
+      }
+    }
   }
 `
 
 export default function Home() {
-  const [pics, setPics] = useState([]);
-  const navList = useRef([
-    {
-      label: 'Navigation One',
-      key: 'mail',
-      icon: <MailOutlined />,
-    },
-    {
-      label: 'Navigation One',
-      key: 'ee',
-      icon: <MailOutlined />,
-    },
-    {
-      label: 'Navigation One',
-      key: 'ww',
-      icon: <MailOutlined />,
-    },
-  ])
+  const [pics, setPics] = useState<BingPic[]>([]);
   const router = useRouter();
-  const parseObj2queryStr = (obj: { [key: string]: any }) => {
-    const data = Object.keys(obj).map(key => `${key}=${String(obj[key])}`).join('&')
-    return data ? `?${data}` : ''
-  }
-  const parsequeryStr2Obj = (str: string) => {
-    const obj: { [key: string]: string } = {}
-    const data = str.split('?')[1]?.split('&').forEach((item) => {
-      const [key, value] = item.split('=')
-      obj[key] = value
-    })
-    return obj
-  }
 
   const login = () => {
     console.log(process.env.NEXT_PUBLIC_SECRET, process.env.NEXT_PUBLIC_CLIENT_ID, location.origin)
     const par = {
       client_id: process.env.NEXT_PUBLIC_CLIENT_ID,
-      // redirect_uri: location.origin,
       scope: 'repo',
     }
-    // console.log(parseObj2queryStr(par));
     location.href = `https://github.com/login/oauth/authorize${parseObj2queryStr(par)}`
-    // setGithub(`https://github.com/login/oauth/authorize${parseObj2queryStr(par)}`)
   }
 
   const queryToken = (code: any) => {
-    // const par = {
-    //   url: 'https://github.com/login/oauth/access_token',
-    //   method: 'POST',
-    //   headers: {
-    //     Accept: 'application/vnd.github+json',
-    //   },
-    //   data: {
-    //     client_id: process.env.NEXT_PUBLIC_CLIENT_ID,
-    //     client_secret: process.env.NEXT_PUBLIC_SECRET,
-    //     code,
-    //   }
-    // }
-    // fetch(process.env.NEXT_PUBLIC_MESS_URL || '', {
-    //   // fetch('/github/login/oauth/access_token', {
-    //   method: 'POST',
-    //   body: JSON.stringify(par),
-    // }).then(res => res.json()).then(data => {
-    //   if (!data.access_token) return;
-    //   stone.set({ token: data.access_token })
-    //   queryCurUser();
-    //   router.push('/');
-    // })
     queryToken2({ code }).then(res => {
       console.log(res)
+      if (!res.access_token) return;
+      stone.set({ token: res.access_token })
+      queryCurUser();
+      router.push('/');
     })
   }
   const queryCurUser = () => {
@@ -108,14 +151,13 @@ export default function Home() {
       console.log(res)
     });
     bingQuery().then((res) => {
-      if (!res?.images) return;
-      setPics(res.images);
+      if (!res?.data) return;
+      setPics(res.data);
     })
     const query = parsequeryStr2Obj(router.asPath)
     if (query.code) {
       console.log(query.code);
       queryToken(query.code);
-      // router.push('/');
     } else {
       console.log(stone.data.token)
       if (!stone.data.token) return;
@@ -133,25 +175,44 @@ export default function Home() {
       </Head>
       <main>
         <Div>
-          <Menu
-            mode="horizontal"
-            items={navList.current}
-            theme="dark"
-            className="nav"
-            overflowedIndicator={(<AppstoreOutlined />)}
-          />
-          <Carousel draggable autoplay>
-            {pics.map((pic: { url: string }, i) => (
-              <div key={i}>
-                <Image className='pic_item' preview={false} src={`https://bing.com${pic.url}`} />
+          <div className='nav'>
+            <img style={{ height: '45px', padding: '5px 20px' }} src="/name.png" alt="" />
+            <div className="right_nav_wrap">
+              <img src="/list.svg" className='expand_icon' style={{ width: '32px', padding: '5px 10px' }} alt='list' />
+              <div className='nav_list'>
+                <Link className="nav_item" href="/">
+                  <svg viewBox="0 0 1024 1024" className="nav_icon" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M1024 590.432 512 193.024 0 590.432 0 428.416 512 30.976 1024 428.416ZM896 576 896 960 640 960 640 704 384 704 384 960 128 960 128 576 512 288Z"></path></svg>
+                  <span>Home</span>
+                </Link>
+                <Link className="nav_item" href="/demos">
+                  <svg viewBox="0 0 1024 1024" className="nav_icon" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M64 224h896v512H64V224z m532.496 640h309.35c65.38 0 118.154-54.164 118.154-121.264V217.264C1024 150.164 971.224 96 905.846 96H546V32h-68v64H118.154C52.774 96 0 150.164 0 217.264v525.472C0 809.836 52.776 864 118.154 864h311.6l-190.826 88.984 28.738 61.628L478 916.532V992h68v-76.516l210.704 98.252 28.738-61.63L596.496 864z"></path></svg>
+                  <span>Demos</span>
+                </Link>
+                <Link className="nav_item" href="/about">
+                  <svg viewBox="0 0 1024 1024" className="nav_icon" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M947.2 415.530667h-302.506667c-24.192-2.901333-42.624-24.192-42.624-49.28v-317.44A48.768 48.768 0 0 0 553.301333 0h-105.856c-27.093333 0-48.853333 21.973333-48.853333 48.853333v320.768c-1.322667 24.192-21.290667 43.690667-45.269333 45.909334H274.090667A49.450667 49.450667 0 0 1 231.253333 369.578667V48.853333C231.253333 21.76 209.28 0 182.442667 0H76.544C49.493333 0 27.733333 21.973333 27.733333 48.853333v926.293334C27.733333 1002.24 49.706667 1024 76.544 1024h870.869333c27.093333 0 48.810667-21.973333 48.810667-48.853333V464.384A48.981333 48.981333 0 0 0 947.2 415.530667z m-139.349333 350.293333c0 27.093333-21.973333 48.853333-48.810667 48.853333h-105.856a48.810667 48.810667 0 0 1-48.810667-48.853333v-99.882667c0-27.093333 21.973333-48.853333 48.810667-48.853333h105.856c27.093333 0 48.810667 21.973333 48.810667 48.853333v99.882667z"></path></svg>
+                  <span>About me</span>
+                </Link>
+                <div className="nav_item item_right">
+                  <span>Login</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="nav_icon" viewBox="0 0 16 16"><path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"></path></svg>
+                </div>
               </div>
-            ))}
-          </Carousel>
-          <img src="/github.svg" style={{ width: '32px' }} alt='github' onClick={login} />
-          <div>
-            <Link href="/about">关于我们</Link>
-            <div>现在已经可以在dev提交分支，通过github actions自动部署了</div>
+            </div>
+
           </div>
+          <Swiper
+            loop={true}
+            autoplay={{ delay: 2000, disableOnInteraction: false }}
+            effect="slide"
+          >
+            {pics.map((pic, ind) => (<SwiperSlide key={ind} className="pic_wrap">
+              <img src={pic.url} className="pic_item" alt="bing" />
+              <div className="bing_card">
+                <h3>{pic.title}</h3>
+                <a className="copyright" href={pic.copyrightlink} target="_blank">{pic.copyright}</a>
+              </div>
+            </SwiperSlide>))}
+          </Swiper>
         </Div>
       </main>
     </>
