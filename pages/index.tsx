@@ -135,6 +135,7 @@ const Div = styled.div`
 
 export default function Home() {
   const [pics, setPics] = useState<BingPic[]>([]);
+  const [userInfo, setUserInfo] = useState();
   const router = useRouter();
 
   const login = () => {
@@ -158,6 +159,7 @@ export default function Home() {
   const queryCurUser = () => {
     queryUser().then(data => {
       stone.set({ userInfo: data })
+      setUserInfo(data);
     })
   }
 
