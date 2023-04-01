@@ -1,47 +1,44 @@
+import { parseObj2queryStr } from "./common"
 import { stone } from "./global"
 
 type Options = {
   path: string,
+  query?: { [key: string]: any },
+  params?: { [key: string]: any },
   [key: string]: any
 }
 
+const baseUrl = process.env.NEXT_PUBLIC_MESS_URL;
+
 const githubApi = ({ path, ...options }: Options) => {
-  const par = {
-    url: 'https://api.github.com' + path,
-    method: 'GET',
+  return fetch('https://api.github.com' + path, {
+    method: options.method || 'GET',
+    body: JSON.stringify(options.data),
     ...(options || {}),
     headers: {
       Accept: 'application/vnd.github+json',
       Authorization: `token ${stone.data.token}`,
       ...(options?.headers || {})
-    },
-  }
-  return fetch(process.env.NEXT_PUBLIC_MESS_URL || '', {
-    method: 'POST',
-    body: JSON.stringify(par),
+    }
   }).then(res => res.json())
     .catch(err => {
       console.log(err)
     })
 }
 
-const crosApi = ({ path, ...options }: Options) => {
-  const par = {
-    url: path,
-    method: 'GET',
-    ...(options || {}),
-  }
-  return fetch(process.env.NEXT_PUBLIC_MESS_URL || '', {
-    // fetch('/github/login/oauth/access_token', {
-    method: 'POST',
-    body: JSON.stringify(par),
+const query = (options: Options) => {
+  return fetch(`${baseUrl}${options.path}${parseObj2queryStr(options.query)}`, {
+    method: options.method || 'GET',
+    headers: options.headers,
+    body: JSON.stringify(options.params),
   }).then(res => res.json())
     .catch(err => {
       console.log(err)
     })
 }
+
 
 export {
   githubApi,
-  crosApi,
+  query
 }
