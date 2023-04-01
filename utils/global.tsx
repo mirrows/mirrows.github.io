@@ -1,7 +1,6 @@
 import { useRef } from "react";
 import { deepClone } from "./common";
 
-
 const gbData = {
   number: 0,
   str: '666',
