@@ -19,6 +19,7 @@ const DIV = styled.div`
   left: 0;
   right:0;
   width: fit-content;
+  max-width:100%;
   margin: auto;
   padding: 10px 20px;
   z-index: 26;
