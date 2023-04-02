@@ -6,6 +6,8 @@ const gbData = {
   str: '666',
   token: '',
   userInfo: {},
+  preview: {},
+  stayTime: 0,
 }
 
 export const stone = {

@@ -26,3 +26,17 @@ export const bingQuery = (n = 7) => {
     query: { n }
   })
 }
+
+export const statisticVisitor = (time = 0) => {
+  return query({
+    path: '/visitor',
+    method: 'post',
+    params: { time }
+  })
+}
+
+export const visitorsData = () => {
+  return query({
+    path: '/visitor',
+  })
+}

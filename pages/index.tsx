@@ -8,6 +8,7 @@ import SwiperCore, { Autoplay } from 'swiper';
 SwiperCore.use([Autoplay]);
 // Import Swiper styles
 import 'swiper/css';
+import PreviewPannel from '@/components/PreviewPannel';
 
 type BingPic = {
   url: string,
@@ -93,6 +94,7 @@ export default function Home() {
               </div>
             </SwiperSlide>))}
           </Swiper>
+          <PreviewPannel />
         </Div>
       </main>
     </>

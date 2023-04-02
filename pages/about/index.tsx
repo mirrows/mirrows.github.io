@@ -6,7 +6,7 @@ import { useEffect } from 'react'
 
 export default function About() {
   useEffect(() => {
-    console.log(stone.data.number)
+    // console.log(stone.data.number)
   }, [])
   return (
     <>

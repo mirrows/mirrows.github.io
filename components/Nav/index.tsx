@@ -110,7 +110,6 @@ const NavHeader = () => {
   }
 
   useEffect(() => {
-    console.log(stone.data)
     const query = parsequeryStr2Obj(router.asPath)
     if (query.code) {
       queryToken(query.code);
