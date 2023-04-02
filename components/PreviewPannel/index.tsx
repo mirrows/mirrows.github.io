@@ -20,6 +20,8 @@ const DIV = styled.div`
   right:0;
   width: fit-content;
   max-width:100%;
+  word-break: break-all;
+  white-space: pre-wrap;
   margin: auto;
   padding: 10px 20px;
   z-index: 26;
