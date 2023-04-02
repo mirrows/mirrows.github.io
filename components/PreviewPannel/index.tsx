@@ -73,13 +73,14 @@ export default function PreviewPannel() {
       new Date().getFullYear() - StartTime.getFullYear(), // 年
       new Date().getMonth() - StartTime.getMonth() + (new Date().getFullYear() - StartTime.getFullYear() > 0 ? 12 : 0) + new Date().getMonth() - StartTime.getMonth() ? 0 : -1, // 月
       new Date().getDate() - StartTime.getDate() + (new Date().getDate() - StartTime.getDate() > 0 ? 0 : lastMonthTotal), // 日
-      Math.round((new Date().getTime() - StartTime.getTime()) % (24 * 60 * 60 * 1000) / (60 * 60 * 1000)), // 时
-      Math.round(((new Date().getTime() - StartTime.getTime()) % (24 * 60 * 60 * 1000)) / 1000 / 60 % 60), // 分
-      Math.round((new Date().getTime() - StartTime.getTime()) / 1000) % 60, // 秒
+      Math.floor((new Date().getTime() - StartTime.getTime()) % (24 * 60 * 60 * 1000) / (60 * 60 * 1000)), // 时
+      Math.floor(((new Date().getTime() - StartTime.getTime()) % (24 * 60 * 60 * 1000)) / 1000 / 60) % 60, // 分
+      Math.floor((new Date().getTime() - StartTime.getTime()) / 1000) % 60, // 秒
     ]
   }
   useEffect(() => {
     queryPreviewData()
+    setTotalStayTime(intervalUntilNow())
     const timer = setInterval(() => {
       const { stayTime } = stone.data
       setStayTime(stayTime)
@@ -94,23 +95,23 @@ export default function PreviewPannel() {
       <div>
         {preview && <span className="tag_item">IP地址：<span className="tag_value">{preview?.ip}</span></span>}
         {!!preview?.data.today && <span className="tag_item">今日访问数：<span className="tag_value">{preview?.data.today}</span></span>}
-        {!!stayTime && <span className="tag_item">当次访问时长：<span className="tag_value">{
-          String(Math.round(stayTime / (60 * 60))).padStart(2, '0')
+        {!!stayTime && <span className="tag_item">当前访问时长：<span className="tag_value">{
+          String(Math.floor(stayTime / (60 * 60))).padStart(2, '0')
         }: {
-            String(Math.round(stayTime / 60 % 60)).padStart(2, '0')
+            String(Math.floor(stayTime / 60) % 60).padStart(2, '0')
           }: {
-            String(Math.round(stayTime % 60)).padStart(2, '0')
+            String(Math.floor(stayTime % 60)).padStart(2, '0')
           }</span></span>}
       </div>
       <div>
         {!!preview?.data.total && <span className="tag_item">总访问数：<span className="tag_value">{preview?.data.total}</span></span>}
-        <span className="tag_item">网站运行时间：<span className="tag_value">{
-          totalStayTime[0]
-        }年{
-            totalStayTime[1]
-          }月{
-            totalStayTime[2]
-          }天{
+        <span className="tag_item">网站已运行：<span className="tag_value">{
+          totalStayTime[0] ? `${totalStayTime[0]}年` : ''
+        }{
+            totalStayTime[1] || totalStayTime[0] ? `${totalStayTime[1]}月` : ''
+          }{
+            totalStayTime[2] || totalStayTime[1] || totalStayTime[0] ? `${totalStayTime[2]}天` : ''
+          }{
             totalStayTime[3]
           }小时{
             totalStayTime[4]
