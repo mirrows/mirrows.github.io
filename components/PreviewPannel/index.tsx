@@ -30,6 +30,7 @@ const DIV = styled.div`
   .items_wrap{
     max-width: 100%;
     padding: 0 20px;
+    white-space: pre-wrap;
   }
   &:before{
     content: '';
