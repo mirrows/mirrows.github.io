@@ -19,7 +19,7 @@ const DIV = styled.div`
   left: 0;
   right:0;
   width: fit-content;
-  max-width:100%;
+  max-width:100vw;
   word-break: break-all;
   white-space: pre-wrap;
   margin: auto;
