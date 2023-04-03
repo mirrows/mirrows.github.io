@@ -26,6 +26,7 @@ const DIV = styled.div`
   padding: 10px 20px;
   z-index: 26;
   text-align:center;
+  box-sizing: border-box;
   font-size: 12px;
   color: #fff;
   &:before{
