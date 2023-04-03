@@ -21,7 +21,7 @@ const DIV = styled.div`
   width: fit-content;
   max-width:100vw;
   margin: auto;
-  padding: 10px 20px;
+  padding: 10px 0;
   z-index: 26;
   text-align:center;
   box-sizing: border-box;
@@ -29,7 +29,7 @@ const DIV = styled.div`
   color: #fff;
   .items_wrap{
     max-width: 100%;
-    overflow: hidden;
+    padding: 0 20px;
   }
   &:before{
     content: '';
