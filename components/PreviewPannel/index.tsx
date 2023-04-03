@@ -29,6 +29,7 @@ const DIV = styled.div`
   color: #fff;
   .items_wrap{
     max-width: 100%;
+    overflow: hidden;
   }
   &:before{
     content: '';
