@@ -20,8 +20,6 @@ const DIV = styled.div`
   right:0;
   width: fit-content;
   max-width:100vw;
-  word-break: break-all;
-  white-space: pre-wrap;
   margin: auto;
   padding: 10px 20px;
   z-index: 26;
@@ -29,6 +27,9 @@ const DIV = styled.div`
   box-sizing: border-box;
   font-size: 12px;
   color: #fff;
+  .items_wrap{
+    max-width: 100%;
+  }
   &:before{
     content: '';
     position: absolute;
@@ -96,7 +97,7 @@ export default function PreviewPannel() {
   }, [])
   return (
     <DIV>
-      <div>
+      <div className="items_wrap">
         {preview && <span className="tag_item">IP地址：<span className="tag_value">{preview?.ip}</span></span>}
         {!!preview?.data.today && <span className="tag_item">今日访问数：<span className="tag_value">{preview?.data.today}</span></span>}
         {!!stayTime && <span className="tag_item">当前访问时长：<span className="tag_value">{
@@ -107,7 +108,7 @@ export default function PreviewPannel() {
             String(Math.floor(stayTime % 60)).padStart(2, '0')
           }</span></span>}
       </div>
-      <div>
+      <div className="items_wrap">
         {!!preview?.data.total && <span className="tag_item">总访问数：<span className="tag_value">{preview?.data.total}</span></span>}
         <span className="tag_item">网站已运行：<span className="tag_value">{
           totalStayTime[0] ? `${totalStayTime[0]}年` : ''
