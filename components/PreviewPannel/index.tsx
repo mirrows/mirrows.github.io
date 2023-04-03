@@ -28,7 +28,6 @@ const DIV = styled.div`
   font-size: 12px;
   color: #fff;
   .items_wrap{
-    max-width: 100%;
     padding: 0 20px;
   }
   &:before{
