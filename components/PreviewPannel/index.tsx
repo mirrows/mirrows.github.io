@@ -12,6 +12,15 @@ type Preview = {
   }
 }
 
+type Time = {
+  year: number,
+  month: number,
+  date: number,
+  hour: number,
+  minute: number,
+  secend: number
+}
+
 
 const DIV = styled.div`
   position: absolute;
@@ -67,26 +76,41 @@ export default function PreviewPannel() {
       })
     })
   }
+  const setDate = (dateObj: Date, options: Partial<Time>) => {
+    const { year, month, date, hour, minute, secend } = options;
+    return new Date(
+      year || dateObj.getFullYear(),
+      month || dateObj.getMonth(),
+      date || dateObj.getDate(),
+      hour || dateObj.getHours(),
+      minute || dateObj.getMinutes(),
+      secend || dateObj.getSeconds(),
+    )
+  }
   const intervalUntilNow = () => {
-    const StartTime = new Date(2022, 3, 5, 15, 55)
+    const startTime = new Date(2023, 1, 2, 17, 58)
+    const now = new Date(2023, 3, 1, 17, 58)
     const lastMonthTotal = Math.round((new Date(
-      new Date().getFullYear(),
-      new Date().getMonth(),
+      startTime.getFullYear(),
+      startTime.getMonth() + 1,
       1
     ).getTime() - new Date(
-      new Date().getFullYear(),
-      new Date().getMonth() - 1,
+      startTime.getFullYear(),
+      startTime.getMonth(),
       1
     ).getTime()) / (24 * 60 * 60 * 1000))
-    console.log(new Date().getDate(), StartTime.getDate(), new Date().getMonth() - StartTime.getMonth())
-    return [
-      new Date().getFullYear() - StartTime.getFullYear() + (new Date().getMonth() >= StartTime.getMonth() ? 0 : -1), // 年
-      new Date().getMonth() === StartTime.getMonth() ? 0 : new Date().getMonth() - StartTime.getMonth() + (new Date().getMonth() <= StartTime.getMonth() && new Date().getFullYear() > StartTime.getFullYear() ? 12 : 0) + (new Date().getDate() >= StartTime.getDate() ? 0 : -1), // 月
-      new Date().getDate() === StartTime.getDate() ? 0 : new Date().getDate() - StartTime.getDate() + (new Date().getDate() > StartTime.getDate() ? 0 : lastMonthTotal) + (new Date(`1970/1/1 ${new Date().toLocaleTimeString()}`).getTime() >= new Date(`1970/1/1 ${StartTime.toLocaleTimeString()}`).getTime() ? 0 : -1), // 日
-      Math.floor((new Date().getTime() - StartTime.getTime()) % (24 * 60 * 60 * 1000) / (60 * 60 * 1000)), // 时
-      Math.floor(((new Date().getTime() - StartTime.getTime()) % (24 * 60 * 60 * 1000)) / 1000 / 60) % 60, // 分
-      Math.floor((new Date().getTime() - StartTime.getTime()) / 1000) % 60, // 秒
-    ]
+    const sameYear = setDate(startTime, { year: now.getFullYear() })
+    const year = now.getFullYear() - startTime.getFullYear() + (now.getTime() >= sameYear.getTime() ? 0 : -1) // 年
+    // console.log('ggg1', newDate.toLocaleDateString())
+    const sameMonth = setDate(startTime, { month: now.getMonth() })
+    const month = now.getMonth() - startTime.getMonth() + (now.getTime() >= sameYear.getTime() ? 0 : 12) + (now.getTime() >= sameMonth.getTime() ? 0 : -1) // 月
+    const sameDate = setDate(startTime, { month: now.getMonth(), date: now.getDate() })
+    const date = now.getDate() - startTime.getDate() + (now.getTime() >= sameMonth.getTime() ? 0 : lastMonthTotal) + (now.getTime() >= sameDate.getTime() ? 0 : -1) // 日
+    // console.log('ggg3', newDate.toLocaleDateString())
+    const hour = Math.floor((now.getTime() - startTime.getTime()) % (24 * 60 * 60 * 1000) / (60 * 60 * 1000)) // 时
+    const minute = Math.floor(((now.getTime() - startTime.getTime()) % (24 * 60 * 60 * 1000)) / 1000 / 60) % 60 // 分
+    const secend = Math.floor((now.getTime() - startTime.getTime()) / 1000) % 60 // 秒
+    return [year, month, date, hour, minute, secend]
   }
   useEffect(() => {
     queryPreviewData()
