@@ -11,17 +11,20 @@ export default function App({ Component, pageProps }: AppProps) {
     visitorsData()
   }
   const stayTime = useRef(0)
+  const visitorStatistic = () => {
+    statisticVisitor(stayTime.current)
+    stayTime.current = 0
+  }
   useEffect(() => {
     statistics()
     const timer = setInterval(() => {
       stayTime.current = stayTime.current + 1
       stone.set({ stayTime: stayTime.current })
     }, 1000)
-    window.onbeforeunload = () => {
-      statisticVisitor(stayTime.current)
-    }
+    document.addEventListener('visibilitychange', visitorStatistic)
     return () => {
       clearInterval(timer)
+      document.removeEventListener('visibilitychange', visitorStatistic)
     }
   }, [])
   return (

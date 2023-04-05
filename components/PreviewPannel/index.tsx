@@ -28,7 +28,9 @@ const DIV = styled.div`
   font-size: 12px;
   color: #fff;
   .items_wrap{
-    max-width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     padding: 0 20px;
     white-space: pre-wrap;
   }
@@ -66,7 +68,7 @@ export default function PreviewPannel() {
     })
   }
   const intervalUntilNow = () => {
-    const StartTime = new Date(2023, 2, 9, 17)
+    const StartTime = new Date(2022, 3, 5, 15, 55)
     const lastMonthTotal = Math.round((new Date(
       new Date().getFullYear(),
       new Date().getMonth(),
@@ -76,10 +78,11 @@ export default function PreviewPannel() {
       new Date().getMonth() - 1,
       1
     ).getTime()) / (24 * 60 * 60 * 1000))
+    console.log(new Date().getDate(), StartTime.getDate(), new Date().getMonth() - StartTime.getMonth())
     return [
-      new Date().getFullYear() - StartTime.getFullYear(), // 年
-      new Date().getMonth() - StartTime.getMonth() + (new Date().getFullYear() - StartTime.getFullYear() > 0 ? 12 : 0) + new Date().getMonth() - StartTime.getMonth() ? 0 : -1, // 月
-      new Date().getDate() - StartTime.getDate() + (new Date().getDate() - StartTime.getDate() > 0 ? 0 : lastMonthTotal), // 日
+      new Date().getFullYear() - StartTime.getFullYear() + (new Date().getMonth() >= StartTime.getMonth() ? 0 : -1), // 年
+      new Date().getMonth() === StartTime.getMonth() ? 0 : new Date().getMonth() - StartTime.getMonth() + (new Date().getMonth() <= StartTime.getMonth() && new Date().getFullYear() > StartTime.getFullYear() ? 12 : 0) + (new Date().getDate() >= StartTime.getDate() ? 0 : -1), // 月
+      new Date().getDate() === StartTime.getDate() ? 0 : new Date().getDate() - StartTime.getDate() + (new Date().getDate() > StartTime.getDate() ? 0 : lastMonthTotal) + (new Date(`1970/1/1 ${new Date().toLocaleTimeString()}`).getTime() >= new Date(`1970/1/1 ${StartTime.toLocaleTimeString()}`).getTime() ? 0 : -1), // 日
       Math.floor((new Date().getTime() - StartTime.getTime()) % (24 * 60 * 60 * 1000) / (60 * 60 * 1000)), // 时
       Math.floor(((new Date().getTime() - StartTime.getTime()) % (24 * 60 * 60 * 1000)) / 1000 / 60) % 60, // 分
       Math.floor((new Date().getTime() - StartTime.getTime()) / 1000) % 60, // 秒
