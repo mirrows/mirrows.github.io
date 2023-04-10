@@ -27,10 +27,12 @@ const githubApi = ({ path, ...options }: Options) => {
 }
 
 const query = (options: Options) => {
-  return fetch(`${baseUrl}${options.path}${parseObj2queryStr(options.query)}`, {
-    method: options.method || 'GET',
-    headers: options.headers,
-    body: JSON.stringify(options.params),
+  const { method, path, query, headers, params, ...others } = options
+  return fetch(`${baseUrl}${path}${parseObj2queryStr(query)}`, {
+    method: method || 'GET',
+    headers: headers,
+    body: params && JSON.stringify(params),
+    ...others,
   }).then(res => res.json())
     .catch(err => {
       console.log(err)

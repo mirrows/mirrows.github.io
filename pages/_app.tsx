@@ -21,10 +21,10 @@ export default function App({ Component, pageProps }: AppProps) {
       stayTime.current = stayTime.current + 1
       stone.set({ stayTime: stayTime.current })
     }, 1000)
-    document.addEventListener('visibilitychange', visitorStatistic)
+    window.onbeforeunload = visitorStatistic
     return () => {
       clearInterval(timer)
-      document.removeEventListener('visibilitychange', visitorStatistic)
+      // document.removeEventListener('beforeunload', visitorStatistic)
     }
   }, [])
   return (

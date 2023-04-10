@@ -31,7 +31,8 @@ export const statisticVisitor = (time = 0) => {
   return query({
     path: '/visitor',
     method: 'post',
-    params: { time }
+    params: { time },
+    keepalive: true,
   })
 }
 
