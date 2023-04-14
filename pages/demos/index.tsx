@@ -1,12 +1,29 @@
+import createEffect from '@/utils/fire_canvas'
 import { stone } from '@/utils/global'
 import Head from 'next/head'
 import Link from 'next/link'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
+import styled from 'styled-components'
 
+
+const DIV = styled.div`
+  overflow: hidden;
+.fire_wrap{
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  vertical-align: bottom;
+  z-index: -1;
+}
+`
 
 export default function Demos() {
+  const fire = useRef<HTMLCanvasElement | null>(null)
   useEffect(() => {
-    console.log(stone.data.number)
+    const obj = fire.current && createEffect(fire.current)
+    return () => {
+      obj?.ruin()
+    }
   }, [])
   return (
     <>
@@ -17,8 +34,9 @@ export default function Demos() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        Demos
-        <Link href="/">回到首页</Link>
+        <DIV>
+          <canvas className='fire_wrap' ref={fire}></canvas>
+        </DIV>
       </main>
     </>
   )

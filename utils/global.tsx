@@ -26,9 +26,8 @@ if (typeof window !== "undefined") {
     sessionStorage.removeItem('tmpData')
   }
 
-  window.onbeforeunload = () => {
-    console.log(localStorage, sessionStorage, stone.data)
+  window.addEventListener('beforeunload', () => {
     sessionStorage.setItem('tmpData', JSON.stringify(stone.data))
-  }
+  })
 }
 
