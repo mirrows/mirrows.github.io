@@ -4,27 +4,14 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { useEffect, useRef } from 'react'
 import styled from 'styled-components'
+import FireCanvas from './components/fireCanvas'
 
 
 const DIV = styled.div`
   overflow: hidden;
-.fire_wrap{
-  position: fixed;
-  width: 100vw;
-  height: 100vh;
-  vertical-align: bottom;
-  z-index: -1;
-}
 `
 
 export default function Demos() {
-  const fire = useRef<HTMLCanvasElement | null>(null)
-  useEffect(() => {
-    const obj = fire.current && createEffect(fire.current)
-    return () => {
-      obj?.ruin()
-    }
-  }, [])
   return (
     <>
       <Head>
@@ -35,7 +22,7 @@ export default function Demos() {
       </Head>
       <main>
         <DIV>
-          <canvas className='fire_wrap' ref={fire}></canvas>
+          <FireCanvas />
         </DIV>
       </main>
     </>

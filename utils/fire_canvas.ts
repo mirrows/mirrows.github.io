@@ -42,6 +42,19 @@ type DBFbo = {
   swap(): void;
 }
 
+class PointerPrototype {
+  id = -1;
+  texcoordX = 0;
+  texcoordY = 0;
+  prevTexcoordX = 0;
+  prevTexcoordY = 0;
+  deltaX = 0;
+  deltaY = 0;
+  down = false;
+  moved = false;
+  color = { r: 30, g: 0, b: 300 };
+}
+
 function createEffect(canvas: HTMLCanvasElement) {
   // const canvas = document.getElementsByTagName('canvas')[0];
   resizeCanvas();
@@ -73,18 +86,7 @@ function createEffect(canvas: HTMLCanvasElement) {
     SUNRAYS_WEIGHT: 1.0,
   }
 
-  class PointerPrototype {
-    id = -1;
-    texcoordX = 0;
-    texcoordY = 0;
-    prevTexcoordX = 0;
-    prevTexcoordY = 0;
-    deltaX = 0;
-    deltaY = 0;
-    down = false;
-    moved = false;
-    color = { r: 30, g: 0, b: 300 };
-  }
+
 
   let pointers: Pointer[] = [];
   let splatStack: number[] = [];
