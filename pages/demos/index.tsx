@@ -1,4 +1,3 @@
-import createEffect from '@/utils/fire_canvas'
 import { stone } from '@/utils/global'
 import Head from 'next/head'
 import Link from 'next/link'
