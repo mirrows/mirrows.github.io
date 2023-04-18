@@ -1496,6 +1496,7 @@ function createEffect(canvas: HTMLCanvasElement) {
   }
 
   function onMousedown(e: MouseEvent) {
+    console.log(55555)
     let posX = scaleByPixelRatio(e.offsetX);
     let posY = scaleByPixelRatio(e.offsetY);
     let pointer = pointers.find(p => p.id == -1);

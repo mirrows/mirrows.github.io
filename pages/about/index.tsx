@@ -19,32 +19,32 @@ const DIV = styled.div`
 export default function About() {
   const pic = useRef<HTMLElement | null>()
   const dom = useRef<any>()
-  useEffect(() => {
-    if (dom.current) return
-    pic.current = document.getElementById('test')
-    dom.current = particlesCursor({
-      el: pic.current,
-      gpgpuSize: 512,
-      colors: [0x00ff00, 0x0000ff],
-      color: 0xff0000,
-      coordScale: 0.5,
-      noiseIntensity: 0.001,
-      noiseTimeCoef: 0.0001,
-      pointSize: 5,
-      pointDecay: 0.0025,
-      sleepRadiusX: 250,
-      sleepRadiusY: 250,
-      sleepTimeCoefX: 0.001,
-      sleepTimeCoefY: 0.002
-    })
-    document.body.addEventListener('click', () => {
-      if (!dom.current) return
-      dom.current.uniforms.uColor.value.set(Math.random() * 0xffffff)
-      dom.current.uniforms.uCoordScale.value = 0.001 + Math.random() * 2
-      dom.current.uniforms.uNoiseIntensity.value = 0.0001 + Math.random() * 0.001
-      dom.current.uniforms.uPointSize.value = 1 + Math.random() * 10
-    })
-  }, [])
+  // useEffect(() => {
+  //   if (dom.current) return
+  //   pic.current = document.getElementById('test')
+  //   dom.current = particlesCursor({
+  //     el: pic.current,
+  //     gpgpuSize: 512,
+  //     colors: [0x00ff00, 0x0000ff],
+  //     color: 0xff0000,
+  //     coordScale: 0.5,
+  //     noiseIntensity: 0.001,
+  //     noiseTimeCoef: 0.0001,
+  //     pointSize: 5,
+  //     pointDecay: 0.0025,
+  //     sleepRadiusX: 250,
+  //     sleepRadiusY: 250,
+  //     sleepTimeCoefX: 0.001,
+  //     sleepTimeCoefY: 0.002
+  //   })
+  //   document.body.addEventListener('click', () => {
+  //     if (!dom.current) return
+  //     dom.current.uniforms.uColor.value.set(Math.random() * 0xffffff)
+  //     dom.current.uniforms.uCoordScale.value = 0.001 + Math.random() * 2
+  //     dom.current.uniforms.uNoiseIntensity.value = 0.0001 + Math.random() * 0.001
+  //     dom.current.uniforms.uPointSize.value = 1 + Math.random() * 10
+  //   })
+  // }, [])
   return (
     <>
       <Head>
@@ -59,7 +59,7 @@ export default function About() {
           {/* <Link href="/">回到首页</Link> */}
           <div>
 
-            <div id="test"></div>
+            {/* <div id="test"></div> */}
           </div>
         </DIV>
       </main>

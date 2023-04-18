@@ -21,7 +21,7 @@ export default function Demos() {
       </Head>
       <main>
         <DIV>
-          <FireCanvas />
+          {/* <FireCanvas /> */}
         </DIV>
       </main>
     </>
