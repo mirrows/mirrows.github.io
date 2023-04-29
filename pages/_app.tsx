@@ -38,7 +38,6 @@ export default function App({ Component, pageProps }: AppProps) {
   }
   useEffect(() => {
     if (canvas.current) {
-      console.log(canvas.current)
       // createFire(canvas.current)
       canvasObj.current = createEffect(canvas.current)
     }
