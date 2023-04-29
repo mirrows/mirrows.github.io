@@ -3,7 +3,7 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { useEffect, useRef } from 'react'
 import styled from 'styled-components'
-import FireCanvas from './components/fireCanvas'
+// import FireCanvas from './components/fireCanvas'
 
 
 const DIV = styled.div`

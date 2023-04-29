@@ -1,8 +1,8 @@
 import { hashCode } from "@/utils/common";
 import { useEffect, useRef, useState } from "react"
 import styled from "styled-components"
-import img from "./img";
-import { compileShader, createProgram, getUniforms } from "./tool";
+import img from "../../../../utils/img";
+import { compileShader, createProgram, getUniforms } from "../../../../utils/tool";
 
 const DIV = styled.div`
   overflow: hidden;
