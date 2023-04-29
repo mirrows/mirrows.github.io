@@ -279,6 +279,7 @@ function createEffect(canvas: HTMLCanvasElement) {
   }
 
   function captureScreenshot() {
+    console.log(7771)
     let res = getResolution(config.CAPTURE_RESOLUTION);
     let target: Target = createFBO(res.width, res.height, ext.formatRGBA?.internalFormat, ext.formatRGBA?.format, ext.halfFloatTexType, gl.NEAREST);
     render(target);
@@ -987,6 +988,7 @@ function createEffect(canvas: HTMLCanvasElement) {
   const displayMaterial = baseVertexShader && displayShaderSource && new Material(baseVertexShader, displayShaderSource);
 
   function initFramebuffers() {
+    console.log(7772, 7773)
     let simRes = getResolution(config.SIM_RESOLUTION);
     let dyeRes = getResolution(config.DYE_RESOLUTION);
 
@@ -1017,6 +1019,7 @@ function createEffect(canvas: HTMLCanvasElement) {
   }
 
   function initBloomFramebuffers() {
+    console.log(7774)
     let res = getResolution(config.BLOOM_RESOLUTION);
 
     const texType = ext.halfFloatTexType;
@@ -1038,6 +1041,7 @@ function createEffect(canvas: HTMLCanvasElement) {
   }
 
   function initSunraysFramebuffers() {
+    console.log(7775)
     let res = getResolution(config.SUNRAYS_RESOLUTION);
 
     const texType = ext.halfFloatTexType;
@@ -1653,6 +1657,7 @@ function createEffect(canvas: HTMLCanvasElement) {
 
   function getResolution(resolution: number) {
     let aspectRatio = gl.drawingBufferWidth / gl.drawingBufferHeight;
+    console.log(aspectRatio)
     if (aspectRatio < 1)
       aspectRatio = 1.0 / aspectRatio;
 

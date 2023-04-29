@@ -1,6 +1,7 @@
 import NavHeader from '@/components/Nav'
 import { statisticVisitor, visitorsData } from '@/req/main'
 import createEffect from '@/utils/fire_canvas'
+// import createEffect from '@/utils/fire_canvas'
 import { stone } from '@/utils/global'
 import type { AppProps } from 'next/app'
 import { useEffect, useRef } from 'react'
@@ -11,8 +12,8 @@ const DIV = styled.div`
   overflow: hidden;
   .fire_wrap{
     position: fixed;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     vertical-align: bottom;
     z-index: -1;
   }
@@ -30,9 +31,15 @@ export default function App({ Component, pageProps }: AppProps) {
     statisticVisitor(stayTime.current)
     stayTime.current = 0
   }
+  const reset = () => {
+    if (!canvas.current) return;
+    canvasObj.current?.ruin()
+    canvasObj.current = createEffect(canvas.current)
+  }
   useEffect(() => {
     if (canvas.current) {
       console.log(canvas.current)
+      // createFire(canvas.current)
       canvasObj.current = createEffect(canvas.current)
     }
     statistics()
@@ -41,9 +48,11 @@ export default function App({ Component, pageProps }: AppProps) {
       stone.set({ stayTime: stayTime.current })
     }, 1000)
     window.addEventListener('beforeunload', visitorStatistic)
+    // window.addEventListener('resize', reset)
     return () => {
       clearInterval(timer)
       window.removeEventListener('beforeunload', visitorStatistic)
+      // window.removeEventListener('resize', reset)
       canvasObj.current?.ruin()
     }
   }, [])

@@ -1,7 +1,8 @@
+import { GblData } from "@/types/global";
 import { useRef } from "react";
 import { deepClone } from "./common";
 
-const gbData = {
+const gbData: GblData = {
   number: 0,
   str: '666',
   token: '',

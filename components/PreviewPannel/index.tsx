@@ -1,16 +1,8 @@
 import { visitorsData } from "@/req/main"
+import { Preview } from "@/types/global"
 import { stone } from "@/utils/global"
 import { useEffect, useState } from "react"
 import styled from "styled-components"
-
-type Preview = {
-  ip: string,
-  data: {
-    total: number,
-    today: number,
-    visitorTime: number,
-  }
-}
 
 type Time = {
   year: number,
@@ -65,15 +57,17 @@ const DIV = styled.div`
 `
 
 export default function PreviewPannel() {
-  const [preview, setPreview] = useState<Preview>()
+  const [preview, setPreview] = useState<Partial<Preview>>()
   const [stayTime, setStayTime] = useState(0)
   const [totalStayTime, setTotalStayTime] = useState<number[]>([])
   const queryPreviewData = () => {
     visitorsData().then(res => {
-      setPreview({
+      const preview = {
         ip: res.ip,
         data: res.data
-      })
+      }
+      setPreview(preview)
+      stone.set({ preview })
     })
   }
   const setDate = (dateObj: Date, options: Partial<Time>) => {
@@ -113,6 +107,9 @@ export default function PreviewPannel() {
     return [year, month, date, hour, minute, secend]
   }
   useEffect(() => {
+    const { preview, stayTime } = stone.data
+    preview && setPreview(preview)
+    stayTime && setStayTime(stayTime)
     queryPreviewData()
     setTotalStayTime(intervalUntilNow())
     const timer = setInterval(() => {
@@ -128,7 +125,7 @@ export default function PreviewPannel() {
     <DIV>
       <div className="items_wrap">
         {preview && <span className="tag_item">IP地址：<span className="tag_value">{preview?.ip}</span></span>}
-        {!!preview?.data.today && <span className="tag_item">今日访问数：<span className="tag_value">{preview?.data.today}</span></span>}
+        {!!preview?.data?.today && <span className="tag_item">今日访问数：<span className="tag_value">{preview?.data.today}</span></span>}
         {!!stayTime && <span className="tag_item">当前访问时长：<span className="tag_value">{
           String(Math.floor(stayTime / (60 * 60))).padStart(2, '0')
         }: {
@@ -138,7 +135,7 @@ export default function PreviewPannel() {
           }</span></span>}
       </div>
       <div className="items_wrap">
-        {!!preview?.data.total && <span className="tag_item">总访问数：<span className="tag_value">{preview?.data.total}</span></span>}
+        {!!preview?.data?.total && <span className="tag_item">总访问数：<span className="tag_value">{preview?.data.total}</span></span>}
         <span className="tag_item">网站已运行：<span className="tag_value">{
           totalStayTime[0] ? `${totalStayTime[0]}年` : ''
         }{
