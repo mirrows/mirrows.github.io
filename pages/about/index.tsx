@@ -1,24 +1,169 @@
+import { about } from '@/req/about'
 import { stone } from '@/utils/global'
+import DOMPurify from 'dompurify'
+import { marked } from 'marked'
 import Head from 'next/head'
 import Link from 'next/link'
-import { useEffect, useRef } from 'react'
+import React, { MouseEventHandler, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { particlesCursor } from 'threejs-toys'
 
 const DIV = styled.div`
-  #test{
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: -1;
+  
+`
+
+const BlogContent = styled.div`
+  position: absolute;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  /* width: fit-content; */
+  margin: 60px auto;
+  color: #fff;
+  line-height: 1.2;
+  pointer-events: none;
+  vertical-align: bottom;
+  .blog_wrap{
+    padding: 10px;
+    margin: 5px;
+    background-color: rgba(200,200,200,.5);
+    box-sizing: border-box;
+    border-radius: 8px;
   }
+  .blog_left{
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 600px;
+    max-width: 600px;
+    overflow: hidden;
+  }
+  .add_comment{
+    pointer-events: all;
+  }
+  
+  .text_area{
+    width: 100%;
+    padding: 10px;
+    background-color: rgba(255,255,255,.8);
+    border: none;
+    box-sizing: border-box;
+    border-radius: 6px;
+    vertical-align: bottom;
+    resize: none;
+    outline: none;
+    font-size: 16px;
+  }
+  .operate_wrap{
+    display: flex;
+    justify-content: space-between;
+    .preview{
+      width: 24px;
+      height: 24px;
+      padding: 0 2px;
+      margin: 0 4px;
+      vertical-align: middle;
+      cursor: pointer;
+      &:hover{
+        background-color: rgba(200,200,200,.5);
+        border-radius: 4px;
+      }
+    }
+    
+    .submit{
+      padding: 4px 16px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      background-color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      color: #000;
+      cursor: pointer;
+    }
+  }
+  .blog_content{
+    padding: 10px 20px;
+    /* background-color: rgba(200,200,200,.5); */
+    box-sizing: border-box;
+    border-radius: 8px;
+    blockquote{
+      padding: 4px 0 4px 1em;
+      margin: 0;
+      border-left: 4px solid gray;
+      white-space: normal;
+      background-color: #5c5c5c;
+      border-radius: 0 6px 6px 0;
+      opacity: 0.8;
+      font-size: 14px;
+      p{
+        margin: 0;
+        line-height: 1.2;
+      }
+    }
+    p{
+      margin: 0;
+      white-space: pre-wrap;
+      line-height: 1.5;
+    }
+    a{
+      pointer-events: all;
+    }                              
+  }
+  .preview_detail_wrap{
+    max-height: 160px;
+    overflow: auto;
+  }
+  .preview_detail{
+    pointer-events: none;
+    padding: 10px;
+  }
+  .preview_detail_wrap,.text_area{
+    pointer-events: all;
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+    /* 滚动条滑块 */
+    &::-webkit-scrollbar-thumb {
+      border-radius: 10px;
+      background: #a5a5a5;
+    }
+  }
+  
 `
 
 
 export default function About() {
   const pic = useRef<HTMLElement | null>()
   const dom = useRef<any>()
+  const personal = useRef<HTMLDivElement | null>(null)
+  const content = useRef<HTMLDivElement | null>(null)
+  const input = useRef<HTMLTextAreaElement | null>(null)
+  const [isPreview, setIsPreview] = useState(false)
+
+  const mdify = () => {
+    if (!input.current?.value) return;
+    const body = DOMPurify.sanitize(marked.parse(input.current.value))
+    content?.current && (content.current.innerHTML = body)
+  }
+  const handlePreview = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsPreview((val) => {
+      !val && mdify()
+      return !val
+    })
+  }
+  const submit = (e: React.MouseEvent) => {
+    e.stopPropagation();
+  }
+
   useEffect(() => {
     if (dom.current) return
     pic.current = document.getElementById('test')
@@ -44,6 +189,14 @@ export default function About() {
       dom.current.uniforms.uNoiseIntensity.value = 0.0001 + Math.random() * 0.001
       dom.current.uniforms.uPointSize.value = 1 + Math.random() * 10
     })
+    about().then(res => {
+      if (res.code) return
+      const { body } = res.data
+      // const content = DOMPurify.sanitize(marked.parse(`${body}<img alt="666" onclick="alert(666)" /><script>alert(888)</script>`))
+      const content = DOMPurify.sanitize(marked.parse(body))
+      console.log(content)
+      personal?.current && (personal.current.innerHTML = content)
+    })
   }, [])
   return (
     <>
@@ -54,13 +207,28 @@ export default function About() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <DIV>
+        <DIV id="test">
           {/* 关于我页面 */}
           {/* <Link href="/">回到首页</Link> */}
-          <div>
-            <div id="test"></div>
-          </div>
         </DIV>
+        <BlogContent>
+          <div className='blog_left'>
+            <div ref={personal} className="blog_content blog_wrap" />
+            <div className='blog_wrap add_comment'>
+              <div className='operate_wrap'>
+                <img src="/code.svg" className='preview' alt='preview' onClick={handlePreview} />
+                <button className='submit' onClick={submit}>add comment</button>
+              </div>
+              <div className='preview_detail_wrap' style={{ display: isPreview ? 'block' : 'none' }}>
+                <div ref={content} className='blog_content preview_detail'></div>
+              </div>
+              <textarea ref={input} className='text_area' rows={8} style={{ display: isPreview ? 'none' : 'block' }}></textarea>
+            </div>
+          </div>
+          <div className='blog_wrap'>
+            666
+          </div>
+        </BlogContent>
       </main>
     </>
   )
