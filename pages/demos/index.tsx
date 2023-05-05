@@ -3,11 +3,16 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { useEffect, useRef } from 'react'
 import styled from 'styled-components'
-// import FireCanvas from './components/fireCanvas'
-
 
 const DIV = styled.div`
   overflow: hidden;
+  .fire_wrap{
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    vertical-align: bottom;
+    z-index: -1;
+  }
 `
 
 export default function Demos() {
@@ -21,7 +26,7 @@ export default function Demos() {
       </Head>
       <main>
         <DIV>
-          {/* <FireCanvas /> */}
+          <iframe className='fire_wrap' src="https://empty.t-n.top/html/WebGL%20Fluid%20Simulation.html"></iframe>
         </DIV>
       </main>
     </>
