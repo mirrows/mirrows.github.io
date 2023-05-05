@@ -9,13 +9,8 @@ SwiperCore.use([Autoplay]);
 // Import Swiper styles
 import 'swiper/css';
 import PreviewPannel from '@/components/PreviewPannel';
-
-type BingPic = {
-  url: string,
-  title: string,
-  copyright: string,
-  copyrightlink: string,
-}
+import { BingPic } from '@/types/global';
+import { stone } from '@/utils/global';
 
 
 const Div = styled.div`
@@ -68,10 +63,18 @@ export default function Home() {
   const [pics, setPics] = useState<BingPic[]>([]);
 
   useEffect(() => {
-    bingQuery().then((res) => {
-      if (!res?.data) return;
-      setPics(res.data);
-    })
+    const { bing } = stone.data
+    console.log(bing);
+    if (bing && bing.length) {
+      setPics(bing);
+    } else {
+      bingQuery().then((res) => {
+        if (!res?.data) return;
+        setPics(res.data);
+        stone.set({ bing: res.data })
+      })
+    }
+
   }, [])
   return (
     <>

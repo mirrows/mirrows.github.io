@@ -9,6 +9,7 @@ const gbData: GblData = {
   userInfo: {},
   preview: {},
   stayTime: 0,
+  bing: [],
 }
 
 export const stone = {

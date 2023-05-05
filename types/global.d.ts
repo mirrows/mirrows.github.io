@@ -9,6 +9,12 @@ export type Preview = {
   }
 }
 
+export type BingPic = {
+  url: string,
+  title: string,
+  copyright: string,
+  copyrightlink: string,
+}
 
 export type GblData = {
   number: number,
@@ -17,4 +23,5 @@ export type GblData = {
   userInfo?: Partial<UserInfo>,
   preview?: Partial<Preview>,
   stayTime: number,
+  bing: BingPic[]
 }
