@@ -17,8 +17,8 @@ const githubApi = ({ path, ...options }: Options) => {
     ...(options || {}),
     headers: {
       Accept: 'application/vnd.github+json',
-      Authorization: `token ${stone.data.token}`,
-      ...(options?.headers || {})
+      ...(stone.data.token ? { Authorization: `token ${stone.data.token}` } : {}),
+      ...(options?.headers || {}),
     }
   }).then(res => res.json())
     .catch(err => {

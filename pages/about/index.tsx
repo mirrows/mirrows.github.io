@@ -1,4 +1,4 @@
-import { about } from '@/req/about'
+import { about, addComment, queryComments } from '@/req/about'
 import { stone } from '@/utils/global'
 import DOMPurify from 'dompurify'
 import { marked } from 'marked'
@@ -41,8 +41,8 @@ const BlogContent = styled.div`
   .blog_left{
     display: flex;
     flex-direction: column;
-    flex: 1 1 600px;
-    max-width: 600px;
+    flex: 1 1 680px;
+    max-width: 680px;
     overflow: hidden;
   }
   .add_comment{
@@ -94,6 +94,7 @@ const BlogContent = styled.div`
     /* background-color: rgba(200,200,200,.5); */
     box-sizing: border-box;
     border-radius: 8px;
+    pointer-events: none;
     blockquote{
       padding: 4px 0 4px 1em;
       margin: 0;
@@ -125,10 +126,11 @@ const BlogContent = styled.div`
     pointer-events: none;
     padding: 10px;
   }
-  .preview_detail_wrap,.text_area{
+  .preview_detail_wrap,.text_area,.comment_content_wrap{
     pointer-events: all;
     &::-webkit-scrollbar {
       width: 8px;
+      height: 8px;
     }
     /* 滚动条滑块 */
     &::-webkit-scrollbar-thumb {
@@ -137,7 +139,57 @@ const BlogContent = styled.div`
     }
   }
   
+  .comments_wrap{
+    display: flex;
+    flex-direction: column;
+    min-width: 300px;
+    pointer-events: none;
+    .blog_wrap{
+      border-radius: 0 5px 5px 5px;
+      margin: 5px 10px;
+    }
+  }
+  .avator{
+    width: 36px;
+    height: 36px;
+    margin-right: 10px;
+  }
+  .author_msg{
+    display: flex;
+    width: fit-content;
+    padding: 5px 10px;
+    background-color: rgba(200,200,200,.5);
+    margin-bottom: -5px;
+    border-radius: 5px 5px 0 5px;
+    margin-top: 10px;
+    .blog_wrap{
+      border-radius: 0 5px 5px 5px;
+    }
+  }
+  .comment_content_wrap{
+    overflow: auto;
+    max-height: 400px;
+  }
+  .text_small{
+    font-size: 12px;
+    color: #c1c1c1;
+  }
+
+  @media (max-width: 680px) {
+    display: block;
+  }
 `
+
+type Comment = {
+  body: string,
+  id: string,
+  updatedAt: string,
+  author: {
+    avatarUrl: string,
+    login: string,
+    url: string,
+  }
+}
 
 
 export default function About() {
@@ -147,7 +199,9 @@ export default function About() {
   const content = useRef<HTMLDivElement | null>(null)
   const input = useRef<HTMLTextAreaElement | null>(null)
   const [isPreview, setIsPreview] = useState(false)
-
+  const page = useRef(1)
+  const total = useRef(0)
+  const [comments, setComments] = useState<Comment[]>([])
   const mdify = () => {
     if (!input.current?.value) return;
     const body = DOMPurify.sanitize(marked.parse(input.current.value))
@@ -162,6 +216,20 @@ export default function About() {
   }
   const submit = (e: React.MouseEvent) => {
     e.stopPropagation();
+    if (!input.current?.value) return
+    addComment(input.current.value).then(res => {
+      if (res.code) return
+      listComments()
+      input.current && (input.current.value = '')
+    })
+  }
+
+  const listComments = () => {
+    queryComments(page.current).then(res => {
+      console.log(res.data, res.total)
+      total.current = res.total
+      setComments(res.data)
+    })
   }
 
   useEffect(() => {
@@ -194,9 +262,9 @@ export default function About() {
       const { body } = res.data
       // const content = DOMPurify.sanitize(marked.parse(`${body}<img alt="666" onclick="alert(666)" /><script>alert(888)</script>`))
       const content = DOMPurify.sanitize(marked.parse(body))
-      console.log(content)
       personal?.current && (personal.current.innerHTML = content)
     })
+    listComments()
   }, [])
   return (
     <>
@@ -225,8 +293,21 @@ export default function About() {
               <textarea ref={input} className='text_area' rows={8} style={{ display: isPreview ? 'none' : 'block' }}></textarea>
             </div>
           </div>
-          <div className='blog_wrap'>
-            666
+          <div className='comments_wrap'>
+            {comments.map(comment => (
+              <div key={comment.id} className=''>
+                <div className='author_msg'>
+                  <img className='avator' src={comment.author.avatarUrl} alt="" />
+                  <div>
+                    <div>{comment.author.login}</div>
+                    <div className='text_small'>{new Date(comment.updatedAt).toLocaleString()}</div>
+                  </div>
+                </div>
+                <div className='comment_content_wrap blog_wrap'>
+                  <div className='blog_content' dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(marked.parse(comment.body)) }}></div>
+                </div>
+              </div>
+            ))}
           </div>
         </BlogContent>
       </main>
