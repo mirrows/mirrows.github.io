@@ -122,7 +122,9 @@ const NavHeader = () => {
   return (
     <Div>
       <div className='nav'>
-        <img style={{ height: '45px', padding: '5px 20px' }} src="/name.png" alt="" />
+        <Link href="/">
+          <img style={{ height: '45px', padding: '5px 20px' }} src="/name.png" alt="" />
+        </Link>
         <div className="right_nav_wrap">
           <img src="/list.svg" className='expand_icon' style={{ width: '32px', padding: '5px 10px' }} alt='list' />
           <div className='nav_list'>
