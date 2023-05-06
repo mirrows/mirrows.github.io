@@ -15,9 +15,6 @@ import { stone } from '@/utils/global';
 
 const Div = styled.div`
   min-height: 100vh;
-  .hidden{
-    display: none;
-  }
   .pic_wrap{
     position: relative;
     .bing_card{
@@ -87,11 +84,6 @@ export default function Home() {
       </Head>
       <main>
         <Div>
-          <div className="ps_mask hidden">
-            <div className="loading_wrap">
-              <img src="https://empty.t-n.top/pub_lic/2023_04_29/pic1682756884211870.gif" alt="loading img" />
-            </div>
-          </div>
           <Swiper
             loop={true}
             autoplay={{ delay: 2000, disableOnInteraction: false }}

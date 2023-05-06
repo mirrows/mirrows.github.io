@@ -3,7 +3,14 @@ import { statisticVisitor, visitorsData } from '@/req/main'
 import { stone } from '@/utils/global'
 import type { AppProps } from 'next/app'
 import { useEffect, useRef } from 'react'
+import styled from 'styled-components'
 import '../public/common.css'
+
+const Div = styled.div`
+  .hidden{
+    display: none;
+  }
+`
 
 export default function App({ Component, pageProps }: AppProps) {
   const statistics = () => {
@@ -31,6 +38,13 @@ export default function App({ Component, pageProps }: AppProps) {
     <>
       <NavHeader />
       <Component {...pageProps} />
+      <Div>
+        <div className="ps_mask hidden">
+          <div className="loading_wrap">
+            <img src="https://empty.t-n.top/pub_lic/2023_04_29/pic1682756884211870.gif" alt="loading img" />
+          </div>
+        </div>
+      </Div>
     </>
   )
 }
