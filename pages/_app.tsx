@@ -5,13 +5,10 @@ import type { AppProps } from 'next/app'
 import { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import '../public/common.css';
-import { marked } from 'marked'
-// import { mangle } from "marked-mangle";
 import LazyImage from '@/components/LazyImage'
 import { useRouter } from 'next/router'
 import { useLazyImgs } from '@/utils/imgTool'
 import { IPDetail } from '@/types/global'
-// marked.use(mangle())
 
 const Div = styled.div`
   .hidden{
