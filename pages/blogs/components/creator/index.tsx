@@ -2,6 +2,7 @@ import LazyImage from '@/components/LazyImage'
 import { ArticalParams } from '@/types/blogs'
 import { Artical } from '@/types/global'
 import { parseBody } from '@/utils/md'
+import MarkdownIt from 'markdown-it'
 import { marked } from 'marked'
 import { useRouter } from 'next/router'
 import { ChangeEvent, useEffect, useState } from 'react'
@@ -205,6 +206,7 @@ type Props = {
 }
 
 export default function BlogCreator({ artical, onSubmit: fn }: Props) {
+  const md = new MarkdownIt()
   const [title, setTitle] = useState(artical?.title || '')
   const [content, setContent] = useState(artical?.body || '')
   const [img, setImg] = useState<string>(artical?.img || '')
@@ -239,7 +241,7 @@ export default function BlogCreator({ artical, onSubmit: fn }: Props) {
           <span className='atl_base_msg'>创建时间：{artical?.created_at || ""}</span>
         </div>
         <LazyImage className='atl_bg' width="700" height="200" src={img} alt={title} />
-        <div className="blog_content" dangerouslySetInnerHTML={{ __html: parseBody(xss(marked.parse(content || '')), ['lazyImg']) }}></div>
+        <div className="blog_content" dangerouslySetInnerHTML={{ __html: parseBody(xss(md.render(content || '')), ['lazyImg']) }}></div>
       </div>
       <div className='input_area'>
         <div className='title_area'>

@@ -6,13 +6,14 @@ import { UserInfo } from '@/types/github'
 import { Artical, Comment } from '@/types/global'
 import { env, stone } from '@/utils/global'
 import { parseBody } from '@/utils/md'
-import { marked } from 'marked'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import xss from 'xss'
+import MarkdownIt from 'markdown-it';
+// marked在安卓默认浏览器兼容性不佳
 
 const DIV = styled.div`
   position: fixed;
@@ -288,6 +289,7 @@ type Props = {
 }
 
 export default function Blog({ artical: atl, comments: cmts }: Props) {
+  const md = new MarkdownIt()
   const { query } = useRouter()
   const [artical, setArtical] = useState(atl)
   const content = useRef<HTMLDivElement | null>(null)
@@ -299,7 +301,7 @@ export default function Blog({ artical: atl, comments: cmts }: Props) {
   const router = useRouter();
   const mdify = () => {
     if (!input.current?.value) return;
-    const body = xss(marked.parse(input.current.value))
+    const body = xss(md.render(input.current.value))
     content?.current && (content.current.innerHTML = body)
   }
   const handlePreview = (e: React.MouseEvent) => {
@@ -363,7 +365,7 @@ export default function Blog({ artical: atl, comments: cmts }: Props) {
                 <span className='atl_base_msg'>评论数：{artical?.comments || 0}</span>
               </div>
               <LazyImage className='atl_bg' width="700" height="200" src={artical?.img || ''} alt={artical?.title || ''} />
-              <div className="blog_content" dangerouslySetInnerHTML={{ __html: parseBody(xss(marked.parse(artical?.body || '')))}}></div>
+              <div className="blog_content" dangerouslySetInnerHTML={{ __html: parseBody(xss(md.render(artical?.body || '')))}}></div>
             </div>
             <div className='blog_wrap add_comment'>
               <div className='operate_wrap'>
@@ -390,7 +392,7 @@ export default function Blog({ artical: atl, comments: cmts }: Props) {
                     </div>
                   </div>
                   <div className='comment_detail_wrap'>
-                    <div className='blog_content comment_detail' dangerouslySetInnerHTML={{ __html: parseBody(xss(marked.parse(comment.body))) }}></div>
+                    <div className='blog_content comment_detail' dangerouslySetInnerHTML={{ __html: parseBody(xss(md.render(comment.body))) }}></div>
                   </div>
                 </div>
               )) : (
