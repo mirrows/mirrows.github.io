@@ -81,6 +81,11 @@ const DIV = styled.div`
             background-image: linear-gradient(45deg, black, transparent);
         }
     }
+    @media (min-width: 600px) {
+        .area_item{
+            transform-origin: 50% 190px;
+        }
+    }
     .rate_table{
         position: fixed;
         right: 0;
