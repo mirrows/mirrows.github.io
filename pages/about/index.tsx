@@ -342,11 +342,11 @@ export default function About({ artical: atl, comments: cmts }: Props) {
       <main>
         <DIV id="test"></DIV>
         <BlogContent>
-          {/* <span style={{color: '#000'}}>666</span> */}
+          <span style={{color: '#000'}}>{artical?.body || ''}</span>
           <div className='blog_left'>
-            <div ref={atlRef} className="blog_content blog_wrap">
+            {/* <div ref={atlRef} className="blog_content blog_wrap"> */}
             {/* dangerouslySetInnerHTML={{ __html: parseBody(xss(marked.parse(artical?.body || ''))) }}  */}
-            </div>
+            {/* </div> */}
             {/* <div className='blog_wrap add_comment'>
               <label htmlFor="comments_input">添加评论</label>
               <div className='operate_wrap'>
