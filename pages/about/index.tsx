@@ -251,6 +251,7 @@ type Props = {
 export default function About({ artical: atl, comments: cmts }: Props) {
   const pic = useRef<HTMLElement | null>()
   const dom = useRef<any>()
+  const atlRef = useRef<any>()
   const [artical, setArtical] = useState(atl)
   const content = useRef<HTMLDivElement | null>(null)
   const input = useRef<HTMLTextAreaElement | null>(null)
@@ -289,9 +290,15 @@ export default function About({ artical: atl, comments: cmts }: Props) {
     })
   }
   const queryMe = () => {
-    about().then(res => {
-      setArtical(res.data)
-    })
+    if (artical?.body) {
+      atlRef.current.innerHTML = parseBody(xss(marked.parse(artical?.body || '')))
+    } else {
+      about().then(res => {
+        setArtical(res.data)
+        atlRef.current.innerHTML = parseBody(xss(marked.parse(res.data?.body || '')))
+      })
+    }
+    
   }
 
   useEffect(() => {
@@ -337,7 +344,9 @@ export default function About({ artical: atl, comments: cmts }: Props) {
         <BlogContent>
           {/* <span style={{color: '#000'}}>666</span> */}
           <div className='blog_left'>
-            {/* <div className="blog_content blog_wrap" dangerouslySetInnerHTML={{ __html: parseBody(xss(marked.parse(artical?.body || ''))) }} /> */}
+            <div ref={atlRef} className="blog_content blog_wrap">
+            {/* dangerouslySetInnerHTML={{ __html: parseBody(xss(marked.parse(artical?.body || ''))) }}  */}
+            </div>
             <div className='blog_wrap add_comment'>
               <label htmlFor="comments_input">添加评论</label>
               <div className='operate_wrap'>
