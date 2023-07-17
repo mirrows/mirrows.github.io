@@ -75,7 +75,7 @@ const DIV = styled.div`
         border-radius: 30%;
         overflow: hidden;
         perspective: 1000;
-        transform-origin: 50% 190px;
+        transform-origin: 50% 32vw;
         cursor: pointer;
         &:hover{
             background-image: linear-gradient(45deg, black, transparent);
