@@ -1,4 +1,3 @@
-import { visitorsData } from "@/req/main"
 import { Preview } from "@/types/global"
 import { stone } from "@/utils/global"
 import { useEffect, useState } from "react"
@@ -61,14 +60,14 @@ export default function PreviewPannel() {
   const [stayTime, setStayTime] = useState(0)
   const [totalStayTime, setTotalStayTime] = useState<number[]>([])
   const queryPreviewData = () => {
-    visitorsData().then(res => {
-      const preview = {
-        ip: res.ip,
-        data: res.data
-      }
-      setPreview(preview)
-      stone.set({ preview })
-    })
+    // visitorsData().then(res => {
+    //   const preview = {
+    //     ip: res.ip,
+    //     data: res.data
+    //   }
+    //   setPreview(preview)
+    //   stone.set({ preview })
+    // })
   }
   const setDate = (dateObj: Date, options: Partial<Time>) => {
     const { year, month, date, hour, minute, secend } = options;
