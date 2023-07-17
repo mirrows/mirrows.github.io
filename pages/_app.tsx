@@ -75,7 +75,6 @@ export default function App({ Component, pageProps }: AppProps) {
       stayTime.current = stayTime.current + 1
       stone.set({ stayTime: stayTime.current })
     }, 1000)
-    // 安卓手机默认浏览器有兼容问题
     router.events.on('routeChangeStart', loadingStart)
     router.events.on('routeChangeComplete', loadingEnd)
     window.addEventListener('beforeunload', visitorStatistic)
@@ -88,17 +87,6 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <NavHeader />
-      {/* <Suspense fallback={
-        <Div>
-          <div className="ps_mask">
-            <div className="loading_wrap">
-              <img src="https://empty.t-n.top/pub_lic/2023_04_29/pic1682756884211870.gif" alt="loading img" />
-            </div>
-          </div>
-        </Div>
-      }>
-        <Component {...pageProps} />
-      </Suspense> */}
       <Component {...pageProps} />
       <Div>
         <div className={`ps_mask${loading ? '' : ' hidden'}`}>

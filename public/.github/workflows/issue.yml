@@ -1,0 +1,35 @@
+name: GitHub Actions Build and Deploy Demo
+on: 
+  issues:
+    types: [opened, edited, deleted]
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkLabel
+      id: check_labels
+      uses: actions/github-script@v5
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const labels = context.payload.issue.labels.map(label => label.name);
+          const containsMyLabel = labels.includes('blog');
+          console.log(`Issue中是否包含"blog": ${containsMyLabel}`);
+          return containsMyLabel
+    - name: checkWork
+      if: steps.check_labels.outputs.result == 'true'
+      runs-on: ubuntu-latest
+      steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: dev
+      - run: npm i
+      - run: npm run build
+      - name: buid
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: out
+          token: ${{ secrets.ACCESS_TOKEN }}
+          branch: main
+          clean: true
