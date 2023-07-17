@@ -251,7 +251,7 @@ type Props = {
 export default function About({ artical: atl, comments: cmts }: Props) {
   // const pic = useRef<HTMLElement | null>()
   // const dom = useRef<any>()
-  const atlRef = useRef<any>()
+  // const atlRef = useRef<any>()
   const [artical, setArtical] = useState(atl)
   // const content = useRef<HTMLDivElement | null>(null)
   // const input = useRef<HTMLTextAreaElement | null>(null)
@@ -289,20 +289,20 @@ export default function About({ artical: atl, comments: cmts }: Props) {
   //     // setComments(res.data)
   //   })
   // }
-  const queryMe = () => {
-    if (artical?.body) {
-      atlRef.current.innerHTML = parseBody(xss(marked.parse(artical?.body || '')))
-    } else {
-      about().then(res => {
-        setArtical(res.data)
-        atlRef.current.innerHTML = parseBody(xss(marked.parse(res.data?.body || '')))
-      })
-    }
+  // const queryMe = () => {
+  //   if (artical?.body) {
+  //     atlRef.current.innerHTML = parseBody(xss(marked.parse(artical?.body || '')))
+  //   } else {
+  //     about().then(res => {
+  //       setArtical(res.data)
+  //       atlRef.current.innerHTML = parseBody(xss(marked.parse(res.data?.body || '')))
+  //     })
+  //   }
     
-  }
+  // }
 
-  useEffect(() => {
-    stone.data.emit()
+  // useEffect(() => {
+  //   stone.data.emit()
     // md解析的图片会添加懒加载机制，此时必须手动检查一次是否在可视区内
     // if (dom.current) return
     // pic.current = document.getElementById('test')
@@ -328,9 +328,9 @@ export default function About({ artical: atl, comments: cmts }: Props) {
     //   dom.current.uniforms.uNoiseIntensity.value = 0.0001 + Math.random() * 0.001
     //   dom.current.uniforms.uPointSize.value = 1 + Math.random() * 10
     // })
-    queryMe();
+    // queryMe();
     // listComments(page.current);
-  }, [])
+  // }, [])
   return (
     <>
       <Head>
@@ -343,7 +343,7 @@ export default function About({ artical: atl, comments: cmts }: Props) {
         <DIV id="test"></DIV>
         <BlogContent>
           <span style={{color: '#000'}}>{artical?.body || ''}</span>
-          <div className='blog_left'>
+          {/* <div className='blog_left'> */}
             {/* <div ref={atlRef} className="blog_content blog_wrap"> */}
             {/* dangerouslySetInnerHTML={{ __html: parseBody(xss(marked.parse(artical?.body || ''))) }}  */}
             {/* </div> */}
@@ -358,7 +358,7 @@ export default function About({ artical: atl, comments: cmts }: Props) {
               </div>
               <textarea id="comments_input" ref={input} className='text_area' rows={8} style={{ display: isPreview ? 'none' : 'block' }} placeholder='此处添加评论' aria-label='edit some comments'></textarea>
             </div> */}
-          </div>
+          {/* </div> */}
           {/* <div className='comments_wrap'>
             {comments.length ? comments.map(comment => (
               <div key={comment.id} className='comment_content_wrap'>
