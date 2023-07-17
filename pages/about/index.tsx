@@ -257,7 +257,7 @@ export default function About({ artical: atl, comments: cmts }: Props) {
   // const [isPreview, setIsPreview] = useState(false)
   // const page = useRef(1)
   // const total = useRef(0)
-  // const [comments, setComments] = useState<Comment[]>([...(cmts || [])])
+  const [comments, setComments] = useState<Comment[]>([...(cmts || [])])
   // const mdify = () => {
   //   if (!input.current?.value) return;
   //   const body = xss(marked.parse(input.current.value))
@@ -335,8 +335,8 @@ export default function About({ artical: atl, comments: cmts }: Props) {
       <main>
         <DIV id="test"></DIV>
         <BlogContent>
-          <span style={{color: '#000'}}>666</span>
-          {/* <div className='blog_left'>
+          {/* <span style={{color: '#000'}}>666</span>
+          <div className='blog_left'>
             <div className="blog_content blog_wrap" dangerouslySetInnerHTML={{ __html: parseBody(xss(marked.parse(artical?.body || ''))) }} />
             <div className='blog_wrap add_comment'>
               <label htmlFor="comments_input">添加评论</label>
@@ -349,7 +349,7 @@ export default function About({ artical: atl, comments: cmts }: Props) {
               </div>
               <textarea id="comments_input" ref={input} className='text_area' rows={8} style={{ display: isPreview ? 'none' : 'block' }} placeholder='此处添加评论' aria-label='edit some comments'></textarea>
             </div>
-          </div>
+          </div> */}
           <div className='comments_wrap'>
             {comments.length ? comments.map(comment => (
               <div key={comment.id} className='comment_content_wrap'>
@@ -369,7 +369,7 @@ export default function About({ artical: atl, comments: cmts }: Props) {
               <div className='blog_content comment_detail text_center'>一个评论都没有呢。。。。。。</div>
             </div>
             )}
-          </div> */}
+          </div>
         </BlogContent>
       </main>
     </>
