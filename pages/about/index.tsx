@@ -337,7 +337,7 @@ export default function About({ artical: atl, comments: cmts }: Props) {
         <BlogContent>
           {/* <span style={{color: '#000'}}>666</span> */}
           <div className='blog_left'>
-            <div className="blog_content blog_wrap" dangerouslySetInnerHTML={{ __html: parseBody(xss(marked.parse(artical?.body || ''))) }} />
+            {/* <div className="blog_content blog_wrap" dangerouslySetInnerHTML={{ __html: parseBody(xss(marked.parse(artical?.body || ''))) }} /> */}
             <div className='blog_wrap add_comment'>
               <label htmlFor="comments_input">添加评论</label>
               <div className='operate_wrap'>
