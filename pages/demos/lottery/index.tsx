@@ -74,6 +74,7 @@ const DIV = styled.div`
         margin: auto;
         border-radius: 30%;
         overflow: hidden;
+        perspective: 1000;
         transform-origin: 50% min(32vw, 190px);
         cursor: pointer;
         &:hover{
@@ -354,17 +355,16 @@ export default function Lottery () {
                 ))}
             </div>
             <div className="line_wrap lottery_bg no-pointer">
-                {viewTotal.map((item, ind, total) => (<div key={ind}>
+                {viewTotal.map((item, ind, total) => (
                     <LazyImage
-                        
+                        key={ind}
                         className="area_item"
                         width="100"
                         height="100"
                         src={item.img}
                         style={{ width: `${18 - total.length}vw`, transform: `rotate(${360 / total.length * ind}deg)` }}
                     />
-                    <span>{`rotate(${360 / total.length * ind}deg`}</span>
-                </div>))}
+                ))}
             </div>
             <div className="line_wrap lottery_bg no-pointer">
                 {viewTotal.map((_, ind, total) => (
