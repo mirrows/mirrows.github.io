@@ -58,7 +58,7 @@ export default function App({ Component, pageProps }: AppProps) {
     stayTime.current = 0
   }
   const router = useRouter();
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const loadingStart = () => {
     setLoading(true)
   }
@@ -75,8 +75,9 @@ export default function App({ Component, pageProps }: AppProps) {
       stayTime.current = stayTime.current + 1
       stone.set({ stayTime: stayTime.current })
     }, 1000)
-    router.events.on('routeChangeStart', loadingStart)
-    router.events.on('routeChangeComplete', loadingEnd)
+    // 安卓手机默认浏览器有兼容问题
+    // router.events.on('routeChangeStart', loadingStart)
+    // router.events.on('routeChangeComplete', loadingEnd)
     window.addEventListener('beforeunload', visitorStatistic)
     stone.set({ emit })
     return () => {
@@ -100,11 +101,11 @@ export default function App({ Component, pageProps }: AppProps) {
       </Suspense> */}
       <Component {...pageProps} />
       <Div>
-        {loading && <div className="ps_mask">
+        <div className="ps_mask hidden">
           <div className="loading_wrap">
             <LazyImage width="120" height="167" src="https://empty.t-n.top/pub_lic/2023_04_29/pic1682756884211870.gif" alt="loading img" />
           </div>
-        </div>}
+        </div>
       </Div>
     </>
   )

@@ -12,7 +12,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-import xss from 'xss'
+// import xss from 'xss'
 
 const DIV = styled.div`
   position: fixed;
@@ -299,7 +299,8 @@ export default function Blog({ artical: atl, comments: cmts }: Props) {
   const router = useRouter();
   const mdify = () => {
     if (!input.current?.value) return;
-    const body = xss(marked.parse(input.current.value))
+    const body = marked.parse(input.current.value)
+    // const body = xss(marked.parse(input.current.value))
     content?.current && (content.current.innerHTML = body)
   }
   const handlePreview = (e: React.MouseEvent) => {
@@ -358,7 +359,8 @@ export default function Blog({ artical: atl, comments: cmts }: Props) {
                 <span className='atl_base_msg'>评论数：{artical?.comments || 0}</span>
               </div>
               <LazyImage className='atl_bg' width="700" height="200" src={artical?.img || ''} alt={artical?.title || ''} />
-              <div className="blog_content" dangerouslySetInnerHTML={{ __html: parseBody(xss(marked.parse(artical?.body || '')))}}></div>
+              <div className="blog_content" dangerouslySetInnerHTML={{ __html: parseBody(marked.parse(artical?.body || ''))}}></div>
+              {/* <div className="blog_content" dangerouslySetInnerHTML={{ __html: parseBody(xss(marked.parse(artical?.body || '')))}}></div> */}
             </div>
             <div className='blog_wrap add_comment'>
               <div className='operate_wrap'>
@@ -385,7 +387,8 @@ export default function Blog({ artical: atl, comments: cmts }: Props) {
                     </div>
                   </div>
                   <div className='comment_detail_wrap'>
-                    <div className='blog_content comment_detail' dangerouslySetInnerHTML={{ __html: parseBody(xss(marked.parse(comment.body))) }}></div>
+                    <div className='blog_content comment_detail' dangerouslySetInnerHTML={{ __html: parseBody(marked.parse(comment.body)) }}></div>
+                    {/* <div className='blog_content comment_detail' dangerouslySetInnerHTML={{ __html: parseBody(xss(marked.parse(comment.body))) }}></div> */}
                   </div>
                 </div>
               )) : (
