@@ -353,7 +353,7 @@ export default function About({ artical: atl, comments: cmts }: Props) {
             {comments.length ? comments.map(comment => (
               <div key={comment.id} className='comment_content_wrap'>
                 <div className='author_msg'>
-                  <Image className='avator' src={comment.author.avatarUrl} alt="" />
+                  <img className='avator' src={comment.author.avatarUrl} alt="" />
                   <div>
                     <div>{comment.author.login}</div>
                     <div className='text_small'>{comment.updatedAt}</div>
