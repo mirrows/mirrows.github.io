@@ -76,8 +76,8 @@ export default function App({ Component, pageProps }: AppProps) {
       stone.set({ stayTime: stayTime.current })
     }, 1000)
     // 安卓手机默认浏览器有兼容问题
-    // router.events.on('routeChangeStart', loadingStart)
-    // router.events.on('routeChangeComplete', loadingEnd)
+    router.events.on('routeChangeStart', loadingStart)
+    router.events.on('routeChangeComplete', loadingEnd)
     window.addEventListener('beforeunload', visitorStatistic)
     stone.set({ emit })
     return () => {
@@ -100,13 +100,13 @@ export default function App({ Component, pageProps }: AppProps) {
         <Component {...pageProps} />
       </Suspense> */}
       <Component {...pageProps} />
-      {/* <Div>
-        <div className="ps_mask hidden">
+      <Div>
+        <div className={`ps_mask${loading ? '' : ' hidden'}`}>
           <div className="loading_wrap">
             <LazyImage width="120" height="167" src="https://empty.t-n.top/pub_lic/2023_04_29/pic1682756884211870.gif" alt="loading img" />
           </div>
         </div>
-      </Div> */}
+      </Div>
     </>
   )
 }
