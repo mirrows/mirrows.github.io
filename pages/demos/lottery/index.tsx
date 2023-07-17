@@ -354,9 +354,9 @@ export default function Lottery () {
                 ))}
             </div>
             <div className="line_wrap lottery_bg no-pointer">
-                {viewTotal.map((item, ind, total) => (<>
+                {viewTotal.map((item, ind, total) => (<div key={ind}>
                     <LazyImage
-                        key={ind}
+                        
                         className="area_item"
                         width="100"
                         height="100"
@@ -364,7 +364,7 @@ export default function Lottery () {
                         style={{ width: `${18 - total.length}vw`, transform: `rotate(${360 / total.length * ind}deg)` }}
                     />
                     <span>{`rotate(${360 / total.length * ind}deg`}</span>
-                </>))}
+                </div>))}
             </div>
             <div className="line_wrap lottery_bg no-pointer">
                 {viewTotal.map((_, ind, total) => (
