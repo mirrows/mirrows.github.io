@@ -331,9 +331,9 @@ export default function About({ artical: atl, comments: cmts }: Props) {
     // queryMe();
     // listComments(page.current);
   // }, [])
-  useEffect(() => {
-    atlRef.current && (atlRef.current.innerHTML = marked.parse(artical?.body || ''))
-  }, [artical])
+  // useEffect(() => {
+  //   atlRef.current && (atlRef.current.innerHTML = marked.parse(artical?.body || ''))
+  // }, [artical])
   return (
     <>
       <Head>
@@ -347,7 +347,7 @@ export default function About({ artical: atl, comments: cmts }: Props) {
         <BlogContent>
           {/* <span style={{color: '#000'}}>{artical?.body || ''}</span> */}
           <div className='blog_left'>
-            <div ref={atlRef} className="blog_content blog_wrap"></div>
+            <div className="blog_content blog_wrap" dangerouslySetInnerHTML={{ __html: parseBody(xss(artical?.body || '')) }} />
             {/* dangerouslySetInnerHTML={{ __html: parseBody(xss(marked.parse(artical?.body || ''))) }}  */}
             
             {/* <div className='blog_wrap add_comment'>
