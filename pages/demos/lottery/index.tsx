@@ -433,7 +433,7 @@ export default function Lottery () {
             </div>
             {result !== -1 && modal && <div className="modal_mask" onClick={() => {setModal(false)}}>
                 <div className="modal_wrap">
-                    <img className="con_img" width="342" height="286" alt="hahaha" src={modal ? "https://empty.t-n.top/pub_lic/2023_06_26/pic1687747158480258.gif" : ''} />
+                    <img className="con_img" width="342" height="286" alt="hahaha" src="https://empty.t-n.top/pub_lic/2023_07_17/pic1689565249790850.gif" />
                     <div className="modal_content">{viewTotal[result]?.name}</div>
                 </div>
             </div>}
