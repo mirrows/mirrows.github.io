@@ -39,8 +39,23 @@ const query = (options: Options) => {
     })
 }
 
+const req = (options: Options) => {
+  const { method, path, query, headers, params, ...others } = options
+  return fetch(`${path}${parseObj2queryStr(query)}`, {
+    method: method || 'GET',
+    headers: headers,
+    body: params && JSON.stringify(params),
+    ...others,
+  }).then(res => res.json())
+    .catch(err => {
+      console.log(err)
+    })
+}
+
+
 
 export {
   githubApi,
-  query
+  query,
+  req
 }
