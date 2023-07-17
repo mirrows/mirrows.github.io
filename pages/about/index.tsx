@@ -249,81 +249,81 @@ type Props = {
 }
 
 export default function About({ artical: atl, comments: cmts }: Props) {
-  // const pic = useRef<HTMLElement | null>()
-  // const dom = useRef<any>()
-  // const [artical, setArtical] = useState(atl)
-  // const content = useRef<HTMLDivElement | null>(null)
-  // const input = useRef<HTMLTextAreaElement | null>(null)
-  // const [isPreview, setIsPreview] = useState(false)
-  // const page = useRef(1)
-  // const total = useRef(0)
-  const [comments, setComments] = useState<Comment[]>([...(cmts || [])])
-  // const mdify = () => {
-  //   if (!input.current?.value) return;
-  //   const body = xss(marked.parse(input.current.value))
-  //   content?.current && (content.current.innerHTML = body)
-  // }
-  // const handlePreview = (e: React.MouseEvent) => {
-  //   e.stopPropagation();
-  //   setIsPreview((val) => {
-  //     !val && mdify()
-  //     return !val
-  //   })
-  // }
-  // const submit = (e: React.MouseEvent) => {
-  //   e.stopPropagation();
-  //   if (!input.current?.value) return
-  //   addComment(input.current.value).then(res => {
-  //     if (res.code) return
-  //     listComments(1)
-  //     input.current && (input.current.value = '')
-  //     content.current && (content.current.innerHTML = '')
-  //     setIsPreview(false)
-  //   })
-  // }
+  const pic = useRef<HTMLElement | null>()
+  const dom = useRef<any>()
+  const [artical, setArtical] = useState(atl)
+  const content = useRef<HTMLDivElement | null>(null)
+  const input = useRef<HTMLTextAreaElement | null>(null)
+  const [isPreview, setIsPreview] = useState(false)
+  const page = useRef(1)
+  const total = useRef(0)
+  // const [comments, setComments] = useState<Comment[]>([...(cmts || [])])
+  const mdify = () => {
+    if (!input.current?.value) return;
+    const body = xss(marked.parse(input.current.value))
+    content?.current && (content.current.innerHTML = body)
+  }
+  const handlePreview = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsPreview((val) => {
+      !val && mdify()
+      return !val
+    })
+  }
+  const submit = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!input.current?.value) return
+    addComment(input.current.value).then(res => {
+      if (res.code) return
+      listComments(1)
+      input.current && (input.current.value = '')
+      content.current && (content.current.innerHTML = '')
+      setIsPreview(false)
+    })
+  }
 
-  // const listComments = (page: number) => {
-  //   queryComments(page).then(res => {
-  //     total.current = res.total
-  //     setComments(res.data)
-  //   })
-  // }
-  // const queryMe = () => {
-  //   about().then(res => {
-  //     setArtical(res.data)
-  //   })
-  // }
+  const listComments = (page: number) => {
+    queryComments(page).then(res => {
+      total.current = res.total
+      // setComments(res.data)
+    })
+  }
+  const queryMe = () => {
+    about().then(res => {
+      setArtical(res.data)
+    })
+  }
 
-  // useEffect(() => {
-  //   stone.data.emit()
-  //   // md解析的图片会添加懒加载机制，此时必须手动检查一次是否在可视区内
-  //   if (dom.current) return
-  //   pic.current = document.getElementById('test')
-  //   dom.current = particlesCursor({
-  //     el: pic.current,
-  //     gpgpuSize: 512,
-  //     colors: [0x00ff00, 0x0000ff],
-  //     color: 0xff0000,
-  //     coordScale: 0.5,
-  //     noiseIntensity: 0.001,
-  //     noiseTimeCoef: 0.0001,
-  //     pointSize: 5,
-  //     pointDecay: 0.0025,
-  //     sleepRadiusX: 250,
-  //     sleepRadiusY: 250,
-  //     sleepTimeCoefX: 0.001,
-  //     sleepTimeCoefY: 0.002
-  //   })
-  //   document.body.addEventListener('click', () => {
-  //     if (!dom.current) return
-  //     dom.current.uniforms.uColor.value.set(Math.random() * 0xffffff)
-  //     dom.current.uniforms.uCoordScale.value = 0.001 + Math.random() * 2
-  //     dom.current.uniforms.uNoiseIntensity.value = 0.0001 + Math.random() * 0.001
-  //     dom.current.uniforms.uPointSize.value = 1 + Math.random() * 10
-  //   })
-  //   queryMe();
-  //   listComments(page.current);
-  // }, [])
+  useEffect(() => {
+    stone.data.emit()
+    // md解析的图片会添加懒加载机制，此时必须手动检查一次是否在可视区内
+    if (dom.current) return
+    pic.current = document.getElementById('test')
+    dom.current = particlesCursor({
+      el: pic.current,
+      gpgpuSize: 512,
+      colors: [0x00ff00, 0x0000ff],
+      color: 0xff0000,
+      coordScale: 0.5,
+      noiseIntensity: 0.001,
+      noiseTimeCoef: 0.0001,
+      pointSize: 5,
+      pointDecay: 0.0025,
+      sleepRadiusX: 250,
+      sleepRadiusY: 250,
+      sleepTimeCoefX: 0.001,
+      sleepTimeCoefY: 0.002
+    })
+    document.body.addEventListener('click', () => {
+      if (!dom.current) return
+      dom.current.uniforms.uColor.value.set(Math.random() * 0xffffff)
+      dom.current.uniforms.uCoordScale.value = 0.001 + Math.random() * 2
+      dom.current.uniforms.uNoiseIntensity.value = 0.0001 + Math.random() * 0.001
+      dom.current.uniforms.uPointSize.value = 1 + Math.random() * 10
+    })
+    queryMe();
+    listComments(page.current);
+  }, [])
   return (
     <>
       <Head>
@@ -335,7 +335,7 @@ export default function About({ artical: atl, comments: cmts }: Props) {
       <main>
         <DIV id="test"></DIV>
         <BlogContent>
-          {/* <span style={{color: '#000'}}>666</span>
+          {/* <span style={{color: '#000'}}>666</span> */}
           <div className='blog_left'>
             <div className="blog_content blog_wrap" dangerouslySetInnerHTML={{ __html: parseBody(xss(marked.parse(artical?.body || ''))) }} />
             <div className='blog_wrap add_comment'>
@@ -349,8 +349,8 @@ export default function About({ artical: atl, comments: cmts }: Props) {
               </div>
               <textarea id="comments_input" ref={input} className='text_area' rows={8} style={{ display: isPreview ? 'none' : 'block' }} placeholder='此处添加评论' aria-label='edit some comments'></textarea>
             </div>
-          </div> */}
-          <div className='comments_wrap'>
+          </div>
+          {/* <div className='comments_wrap'>
             {comments.length ? comments.map(comment => (
               <div key={comment.id} className='comment_content_wrap'>
                 <div className='author_msg'>
@@ -369,7 +369,7 @@ export default function About({ artical: atl, comments: cmts }: Props) {
               <div className='blog_content comment_detail text_center'>一个评论都没有呢。。。。。。</div>
             </div>
             )}
-          </div>
+          </div> */}
         </BlogContent>
       </main>
     </>
