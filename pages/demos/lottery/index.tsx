@@ -431,12 +431,12 @@ export default function Lottery () {
                     </div>
                 </TriggerBtn>
             </div>
-            {result !== -1 && modal && <div className="modal_mask" onClick={() => {setModal(false)}}>
+            <div className={`modal_mask${result !== -1 && modal ? '' : ' hide'}`} onClick={() => {setModal(false)}}>
                 <div className="modal_wrap">
                     <img className="con_img" width="342" height="286" src="https://empty.t-n.top/pub_lic/2023_06_26/pic1687747158480258.gif" />
                     <div className="modal_content">{viewTotal[result]?.name}</div>
                 </div>
-            </div>}
+            </div>
         </DIV>
     </>)
 }
