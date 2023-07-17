@@ -354,7 +354,7 @@ export default function Lottery () {
                 ))}
             </div>
             <div className="line_wrap lottery_bg no-pointer">
-                {viewTotal.map((item, ind, total) => (
+                {viewTotal.map((item, ind, total) => (<>
                     <LazyImage
                         key={ind}
                         className="area_item"
@@ -363,7 +363,8 @@ export default function Lottery () {
                         src={item.img}
                         style={{ width: `${18 - total.length}vw`, transform: `rotate(${360 / total.length * ind}deg)` }}
                     />
-                ))}
+                    <span>{`rotate(${360 / total.length * ind}deg`}</span>
+                </>))}
             </div>
             <div className="line_wrap lottery_bg no-pointer">
                 {viewTotal.map((_, ind, total) => (
@@ -427,7 +428,7 @@ export default function Lottery () {
             </div>
             {result !== -1 && modal && <div className="modal_mask" onClick={() => {setModal(false)}}>
                 <div className="modal_wrap">
-                    <LazyImage className="con_img" width="342" height="286" src="https://empty.t-n.top/pub_lic/2023_06_26/pic1687747158480258.gif" />
+                    <img className="con_img" width="342" height="286" src="https://empty.t-n.top/pub_lic/2023_06_26/pic1687747158480258.gif" />
                     <div className="modal_content">{viewTotal[result]?.name}</div>
                 </div>
             </div>}

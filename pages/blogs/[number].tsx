@@ -155,12 +155,14 @@ const BlogContent = styled.div`
     code {
       background-color: #f5f5f5;
       overflow: auto;
+      color: #000;
     }
     pre {
       padding: 10px;
       background-color: #f5f5f5;
       overflow: auto;
       border-radius: 8px;
+      color: #000;
     }
     pre {
       &::-webkit-scrollbar {
