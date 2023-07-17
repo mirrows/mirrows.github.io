@@ -251,7 +251,7 @@ type Props = {
 export default function About({ artical: atl, comments: cmts }: Props) {
   // const pic = useRef<HTMLElement | null>()
   // const dom = useRef<any>()
-  // const atlRef = useRef<any>()
+  const atlRef = useRef<any>()
   const [artical, setArtical] = useState(atl)
   // const content = useRef<HTMLDivElement | null>(null)
   // const input = useRef<HTMLTextAreaElement | null>(null)
@@ -331,6 +331,9 @@ export default function About({ artical: atl, comments: cmts }: Props) {
     // queryMe();
     // listComments(page.current);
   // }, [])
+  useEffect(() => {
+    atlRef.current && (atlRef.current.innerHTML = marked.parse(artical?.body || ''))
+  }, [artical])
   return (
     <>
       <Head>
@@ -342,11 +345,11 @@ export default function About({ artical: atl, comments: cmts }: Props) {
       <main>
         <DIV id="test"></DIV>
         <BlogContent>
-          <span style={{color: '#000'}}>{artical?.body || ''}</span>
-          {/* <div className='blog_left'> */}
-            {/* <div ref={atlRef} className="blog_content blog_wrap"> */}
+          {/* <span style={{color: '#000'}}>{artical?.body || ''}</span> */}
+          <div className='blog_left'>
+            <div ref={atlRef} className="blog_content blog_wrap"></div>
             {/* dangerouslySetInnerHTML={{ __html: parseBody(xss(marked.parse(artical?.body || ''))) }}  */}
-            {/* </div> */}
+            
             {/* <div className='blog_wrap add_comment'>
               <label htmlFor="comments_input">添加评论</label>
               <div className='operate_wrap'>
@@ -358,7 +361,7 @@ export default function About({ artical: atl, comments: cmts }: Props) {
               </div>
               <textarea id="comments_input" ref={input} className='text_area' rows={8} style={{ display: isPreview ? 'none' : 'block' }} placeholder='此处添加评论' aria-label='edit some comments'></textarea>
             </div> */}
-          {/* </div> */}
+          </div>
           {/* <div className='comments_wrap'>
             {comments.length ? comments.map(comment => (
               <div key={comment.id} className='comment_content_wrap'>
