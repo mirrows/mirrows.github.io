@@ -347,7 +347,7 @@ export default function About({ artical: atl, comments: cmts }: Props) {
         <BlogContent>
           {/* <span style={{color: '#000'}}>{artical?.body || ''}</span> */}
           <div className='blog_left'>
-            <div className="blog_content blog_wrap" dangerouslySetInnerHTML={{ __html: parseBody(xss(artical?.body || '')) }} />
+            <div className="blog_content blog_wrap" dangerouslySetInnerHTML={{ __html: parseBody(xss(marked.parse(artical?.body || ''))) }} />
             {/* dangerouslySetInnerHTML={{ __html: parseBody(xss(marked.parse(artical?.body || ''))) }}  */}
             
             {/* <div className='blog_wrap add_comment'>
