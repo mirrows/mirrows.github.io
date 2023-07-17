@@ -17,6 +17,7 @@
     "compressorjs": "^1.2.1",
     "eslint": "8.35.0",
     "eslint-config-next": "13.2.3",
+    "markdown-it": "^13.0.1",
     "marked": "^5.0.0",
     "marked-mangle": "^1.0.1",
     "next": "13.2.3",
@@ -30,6 +31,7 @@
     "xss": "^1.0.14"
   },
   "devDependencies": {
+    "@types/markdown-it": "^12.2.3",
     "@types/styled-components": "^5.1.26",
     "babel-plugin-styled-components": "^2.1.4"
   }

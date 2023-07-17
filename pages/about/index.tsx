@@ -9,6 +9,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { particlesCursor } from 'threejs-toys'
 import xss from 'xss'
+import MarkdownIt from 'markdown-it';
 
 const DIV = styled.div`
   position: fixed;
@@ -251,7 +252,7 @@ type Props = {
 export default function About({ artical: atl, comments: cmts }: Props) {
   // const pic = useRef<HTMLElement | null>()
   // const dom = useRef<any>()
-  const atlRef = useRef<any>()
+  const md = new MarkdownIt()
   const [artical, setArtical] = useState(atl)
   // const content = useRef<HTMLDivElement | null>(null)
   // const input = useRef<HTMLTextAreaElement | null>(null)
@@ -347,7 +348,7 @@ export default function About({ artical: atl, comments: cmts }: Props) {
         <BlogContent>
           {/* <span style={{color: '#000'}}>{artical?.body || ''}</span> */}
           <div className='blog_left'>
-            <div className="blog_content blog_wrap" dangerouslySetInnerHTML={{ __html: parseBody(xss(marked.parse(artical?.body || ''))) }} />
+            <div className="blog_content blog_wrap" dangerouslySetInnerHTML={{ __html: parseBody(xss(md.render(artical?.body || ''))) }} />
             {/* dangerouslySetInnerHTML={{ __html: parseBody(xss(marked.parse(artical?.body || ''))) }}  */}
             
             {/* <div className='blog_wrap add_comment'>
