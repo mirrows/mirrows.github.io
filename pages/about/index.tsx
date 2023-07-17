@@ -335,7 +335,7 @@ export default function About({ artical: atl, comments: cmts }: Props) {
       <main>
         <DIV id="test"></DIV>
         <BlogContent>
-          666
+          <span style={{color: '#000'}}>666</span>
           {/* <div className='blog_left'>
             <div className="blog_content blog_wrap" dangerouslySetInnerHTML={{ __html: parseBody(xss(marked.parse(artical?.body || ''))) }} />
             <div className='blog_wrap add_comment'>
