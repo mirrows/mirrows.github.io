@@ -15,7 +15,10 @@ import { IPDetail } from '@/types/global'
 
 const Div = styled.div`
   .hidden{
-    display: none;
+    opacity: 0;
+    z-index: -10;
+    transition: 2s;
+    // display: none;
   }
   .disappear{
     opacity: 0;
