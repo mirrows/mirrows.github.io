@@ -413,31 +413,31 @@ export default function Blog({ artical: atl, comments: cmts }: Props) {
 }
 
 export async function getStaticPaths() {
-  // const artical = await listArtical()
-  // const paths = artical?.data?.map((atl: Artical) => ({
-  //   params: { number: String(atl.number) }
-  // })) || []
+  const artical = await listArtical()
+  const paths = artical?.data?.map((atl: Artical) => ({
+    params: { number: String(atl.number) }
+  })) || []
   return {
-    paths: [{params: {number: '3'}},{params: {number: '4'}},{params: {number: '5'}}],
+    paths,
     fallback: false, // See the "fallback" section below
   };
 }
 
 export const getStaticProps = async (context: any) => {
-  // const { number } = context.params
-  // const props: Partial<Props> = {}
-  // if (+String(number) + 1) {
-  //   const reqs = [listArtical(+number), queryComments(1, number)]
-  //   const [artical, comments] = await Promise.allSettled(reqs);
-  //   if (artical.status === 'fulfilled' && artical.value?.data) {
+  const { number } = context.params
+  const props: Partial<Props> = {}
+  if (+String(number) + 1) {
+    const reqs = [listArtical(+number), queryComments(1, number)]
+    const [artical, comments] = await Promise.allSettled(reqs);
+    if (artical.status === 'fulfilled' && artical.value?.data) {
 
-  //     const data = artical.value.data
-  //     props.artical = data
-  //   }
-  //   if (comments.status === 'fulfilled' && comments.value?.data) {
-  //     const data = comments.value.data
-  //     props.comments = data
-  //   }
-  // }
-  return { props: {} }
+      const data = artical.value.data
+      props.artical = data
+    }
+    if (comments.status === 'fulfilled' && comments.value?.data) {
+      const data = comments.value.data
+      props.comments = data
+    }
+  }
+  return { props }
 }
