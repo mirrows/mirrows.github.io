@@ -267,7 +267,7 @@ const Div = styled.div`
 `
 
 export default function Home({ artical }: Props) {
-  const [pics, setPics] = useState<BingPic[]>([...Array(7)]);
+  const [pics, setPics] = useState<BingPic[]>([]);
   const [ind, setInd] = useState(0);
   const [total, setTotal] = useState(0);
   const swiperRef = useRef<Swiper | null>(null);
