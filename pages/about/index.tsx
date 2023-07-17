@@ -5,8 +5,6 @@ import { stone } from '@/utils/global'
 import { parseBody } from '@/utils/md'
 import { marked } from 'marked'
 import Head from 'next/head'
-import Image from 'next/image'
-import Link from 'next/link'
 import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { particlesCursor } from 'threejs-toys'
@@ -379,17 +377,17 @@ export default function About({ artical: atl, comments: cmts }: Props) {
 
 
 
-// export const getStaticProps = async (context: any) => {
-//   const props: Partial<Props> = {}
-//   // const reqs = [about(), queryComments(1)]
-//   // const [artical, comments] = await Promise.allSettled(reqs);
-//   // if (artical.status === 'fulfilled' && artical.value?.data) {
-//   //   const data = artical.value.data
-//   //   props.artical = data
-//   // }
-//   // if (comments.status === 'fulfilled' && comments.value?.data) {
-//   //   const data = comments.value.data
-//   //   props.comments = data
-//   // }
-//   return { props }
-// }
+export const getStaticProps = async (context: any) => {
+  const props: Partial<Props> = {}
+  const reqs = [about(), queryComments(1)]
+  const [artical, comments] = await Promise.allSettled(reqs);
+  if (artical.status === 'fulfilled' && artical.value?.data) {
+    const data = artical.value.data
+    props.artical = data
+  }
+  if (comments.status === 'fulfilled' && comments.value?.data) {
+    const data = comments.value.data
+    props.comments = data
+  }
+  return { props }
+}
