@@ -33,6 +33,7 @@ svg {
 }
 
 button{
+  outline: none;
   cursor: pointer;
   transition: .3s;
 }

@@ -421,17 +421,17 @@ export async function getStaticPaths() {
 export const getStaticProps = async (context: any) => {
   const { number } = context.params
   const props: Partial<Props> = {}
-  if (+String(number) + 1) {
-    const reqs = [listArtical(+number), queryComments(1, number)]
-    const [artical, comments] = await Promise.allSettled(reqs);
-    if (artical.status === 'fulfilled' && artical.value?.data) {
-      const data = artical.value.data
-      props.artical = data
-    }
-    if (comments.status === 'fulfilled' && comments.value?.data) {
-      const data = comments.value.data
-      props.comments = data
-    }
-  }
+  // if (+String(number) + 1) {
+  //   const reqs = [listArtical(+number), queryComments(1, number)]
+  //   const [artical, comments] = await Promise.allSettled(reqs);
+  //   if (artical.status === 'fulfilled' && artical.value?.data) {
+  //     const data = artical.value.data
+  //     props.artical = data
+  //   }
+  //   if (comments.status === 'fulfilled' && comments.value?.data) {
+  //     const data = comments.value.data
+  //     props.comments = data
+  //   }
+  // }
   return { props }
 }
