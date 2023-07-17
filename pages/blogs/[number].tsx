@@ -425,8 +425,6 @@ export const getStaticProps = async (context: any) => {
     const reqs = [listArtical(+number), queryComments(1, number)]
     const [artical, comments] = await Promise.allSettled(reqs);
     if (artical.status === 'fulfilled' && artical.value?.data) {
-
-      console.log(artical.value.data)
       const data = artical.value.data
       props.artical = data
     }
