@@ -58,7 +58,7 @@ export default function App({ Component, pageProps }: AppProps) {
     stayTime.current = 0
   }
   const router = useRouter();
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const loadingStart = () => {
     setLoading(true)
   }
