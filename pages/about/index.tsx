@@ -378,15 +378,15 @@ export default function About({ artical: atl, comments: cmts }: Props) {
 }
 export const getStaticProps = async (context: any) => {
   const props: Partial<Props> = {}
-  const reqs = [about(), queryComments(1)]
-  const [artical, comments] = await Promise.allSettled(reqs);
-  if (artical.status === 'fulfilled' && artical.value?.data) {
-    const data = artical.value.data
-    props.artical = data
-  }
-  if (comments.status === 'fulfilled' && comments.value?.data) {
-    const data = comments.value.data
-    props.comments = data
-  }
+  // const reqs = [about(), queryComments(1)]
+  // const [artical, comments] = await Promise.allSettled(reqs);
+  // if (artical.status === 'fulfilled' && artical.value?.data) {
+  //   const data = artical.value.data
+  //   props.artical = data
+  // }
+  // if (comments.status === 'fulfilled' && comments.value?.data) {
+  //   const data = comments.value.data
+  //   props.comments = data
+  // }
   return { props }
 }
