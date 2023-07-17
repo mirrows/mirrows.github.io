@@ -420,7 +420,7 @@ export default function Lottery () {
                                     />
                                 </div>
                                 <div className="item_opera">
-                                    <LazyImage src={item.img} width="50" height="50" />
+                                    <img src={item.img} width="50" height="50" />
                                 </div>
                             </li>))}
                         </ul>
