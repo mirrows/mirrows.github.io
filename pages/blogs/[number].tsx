@@ -349,17 +349,6 @@ export default function Blog({ artical: atl, comments: cmts }: Props) {
     stone.isGithubOwner((isowner) => setOwner(isowner))
   }, [router, artical, query, listComments])
 
-  if(router.isFallback){
-    console.log('fallback来了')
-    return (
-      <div style={{
-        fontSize: '32px',
-        color: 'gray',
-        textAlign: 'center',
-        margin: '80px auto'
-      }}>loading...</div>
-    )
-  }
   return (
     <>
       <Head>
@@ -370,70 +359,61 @@ export default function Blog({ artical: atl, comments: cmts }: Props) {
       </Head>
       <main>
         <DIV id="test"></DIV>
-        {router.isFallback ? (
-          <div style={{
-            fontSize: '32px',
-            color: 'gray',
-            textAlign: 'center',
-            margin: '80px auto'
-          }}>loading...</div>
-        ) : (
-          <BlogContent>
-            <div className='blog_left'>
-              <div className='blog_wrap'>
-                <h1>{artical?.title || ''}</h1>
-                <div className='text_small'>
-                  <span className='atl_base_msg'>创建时间：
-                    <span>{artical?.created_at || ''}</span>
-                  </span>
-                  <span className='atl_base_msg'>评论数：{artical?.comments || 0}</span>
-                </div>
-                <LazyImage className='atl_bg' width="700" height="200" src={artical?.img || ''} alt={artical?.title || ''} />
-                <div className="blog_content" dangerouslySetInnerHTML={{ __html: parseBody(xss(md.render(artical?.body || '')))}}></div>
+        <BlogContent>
+          <div className='blog_left'>
+            <div className='blog_wrap'>
+              <h1>{artical?.title || ''}</h1>
+              <div className='text_small'>
+                <span className='atl_base_msg'>创建时间：
+                  <span>{artical?.created_at || ''}</span>
+                </span>
+                <span className='atl_base_msg'>评论数：{artical?.comments || 0}</span>
               </div>
-              <div className='blog_wrap add_comment'>
-                <div className='operate_wrap'>
-                  {/* <img src="/code.svg" className='preview' alt='preview' onClick={handlePreview} /> */}
-                  <SVGIcon type="code" className='preview' alt='preview' onClick={handlePreview} />
-                  <button className='submit' aria-label='submit comment' onClick={submit}>add comment</button>
-                </div>
-                <div className='preview_detail_wrap' style={{ display: isPreview ? 'block' : 'none' }}>
-                  <div ref={content} className='blog_content preview_detail'></div>
-                </div>
-                <label htmlFor="commentInput"></label>
-                <textarea id='commentInput' ref={input} className='text_area' rows={8} style={{ display: isPreview ? 'none' : 'block' }} placeholder='这里添加评论......'></textarea>
-              </div>
+              <LazyImage className='atl_bg' width="700" height="200" src={artical?.img || ''} alt={artical?.title || ''} />
+              <div className="blog_content" dangerouslySetInnerHTML={{ __html: parseBody(xss(md.render(artical?.body || '')))}}></div>
             </div>
-            <div className='comments_wrap'>
-              {
-                comments.length ? comments.map(comment => (
-                  <div key={comment.id} className='comment_content_wrap'>
-                    <div className='author_msg'>
-                      <LazyImage className='avator' width="36" height="36" src={comment.author.avatarUrl} alt="" />
-                      <div>
-                        <div>{comment.author.login}</div>
-                        <div className='text_small'>{comment.updatedAt}</div>
-                      </div>
-                    </div>
-                    <div className='comment_detail_wrap'>
-                      <div className='blog_content comment_detail' dangerouslySetInnerHTML={{ __html: parseBody(xss(md.render(comment.body))) }}></div>
+            <div className='blog_wrap add_comment'>
+              <div className='operate_wrap'>
+                {/* <img src="/code.svg" className='preview' alt='preview' onClick={handlePreview} /> */}
+                <SVGIcon type="code" className='preview' alt='preview' onClick={handlePreview} />
+                <button className='submit' aria-label='submit comment' onClick={submit}>add comment</button>
+              </div>
+              <div className='preview_detail_wrap' style={{ display: isPreview ? 'block' : 'none' }}>
+                <div ref={content} className='blog_content preview_detail'></div>
+              </div>
+              <label htmlFor="commentInput"></label>
+              <textarea id='commentInput' ref={input} className='text_area' rows={8} style={{ display: isPreview ? 'none' : 'block' }} placeholder='这里添加评论......'></textarea>
+            </div>
+          </div>
+          <div className='comments_wrap'>
+            {
+              comments.length ? comments.map(comment => (
+                <div key={comment.id} className='comment_content_wrap'>
+                  <div className='author_msg'>
+                    <LazyImage className='avator' width="36" height="36" src={comment.author.avatarUrl} alt="" />
+                    <div>
+                      <div>{comment.author.login}</div>
+                      <div className='text_small'>{comment.updatedAt}</div>
                     </div>
                   </div>
-                )) : (
-                <div className='comment_content_wrap'>
-                  <div className='blog_content comment_detail text_center'>一个评论都没有呢。。。。。。</div>
+                  <div className='comment_detail_wrap'>
+                    <div className='blog_content comment_detail' dangerouslySetInnerHTML={{ __html: parseBody(xss(md.render(comment.body))) }}></div>
+                  </div>
                 </div>
-              )}
-            </div>
-            <div className='fixed_operate_wrap'>
-              {isOwner && (
-                <Link className='artical_btn' aria-label='create a new artical' href={`/blogs/edit/${artical.number}`}>
-                  <SVGIcon type='edit' className="atl_icon" />
-                </Link>
-              )}
-            </div>
-          </BlogContent>
-        )}
+              )) : (
+              <div className='comment_content_wrap'>
+                <div className='blog_content comment_detail text_center'>一个评论都没有呢。。。。。。</div>
+              </div>
+            )}
+          </div>
+          <div className='fixed_operate_wrap'>
+            {isOwner && (
+              <Link className='artical_btn' aria-label='create a new artical' href={`/blogs/edit/${artical.number}`}>
+                <SVGIcon type='edit' className="atl_icon" />
+              </Link>
+            )}
+          </div>
+        </BlogContent>
       </main>
     </>
   )

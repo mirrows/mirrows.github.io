@@ -27,6 +27,7 @@ const DIV = styled.div`
 `
 
 export default function Error() {
+  const router = useRouter()
   return (
     <>
       <Head>
@@ -36,10 +37,15 @@ export default function Error() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <DIV className='wrap'>
+        {router.isFallback ? (<div style={{
+          fontSize: '32px',
+          color: 'gray',
+          textAlign: 'center',
+          margin: '80px auto'
+        }}>loading...</div>) : (<DIV className='wrap'>
           <img className='img' width="800" height="600" src='https://empty.t-n.top/pub_lic/2023_07_06/pic1688608901221777.gif' alt="404" />
           <Link href="/" className='back' aria-label="back to homepage">BACK</Link>
-        </DIV>
+        </DIV>)}
       </main>
     </>
   )
