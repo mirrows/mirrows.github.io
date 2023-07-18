@@ -110,9 +110,19 @@ table{
 }
 
 .loading_wrap{
-  width: fit-content;
-  margin: 20% auto 0;
+  /* width: fit-content; */
+  /* margin: 20% auto 0; */
   /* background-color: #000; */
+  animation: appear 1s;
+}
+
+@keyframes appear {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 ul{

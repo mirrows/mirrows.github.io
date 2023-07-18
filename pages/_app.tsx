@@ -88,7 +88,7 @@ export default function App({ Component, pageProps }: AppProps) {
     <>
       <NavHeader />
       <Component {...pageProps} />
-      <Div>
+      <Div style={{ width: '100vw' }}>
         <div className={`ps_mask${loading ? '' : ' hidden'}`}>
           <div className="loading_wrap" style={{ width: 'fit-content', margin: '20% auto 0' }}>
             <img width="120" height="167" src="https://empty.t-n.top/pub_lic/2023_04_29/pic1682756884211870.gif" alt="loading img" />
