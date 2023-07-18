@@ -419,7 +419,8 @@ export const getStaticProps = async (context: any) => {
   const [articals] = await Promise.allSettled(reqs);
   if (articals.status === 'fulfilled' && articals.value?.data) {
     const data = articals.value.data
-    props.artical = data
+    const curAtl = data.filter((e: Artical) => Date.now() - new Date(e.created_at).getTime() > 1000*60*10)
+    props.artical = curAtl
     props.total = articals.value.total
   }
   return {
