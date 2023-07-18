@@ -341,7 +341,7 @@ export default function Blog({ artical: atl, comments: cmts }: Props) {
         setArtical(res.data)
         listComments()
       })
-    }else if(!artical.labels?.some(e => e.name === 'blog')) {
+    }else if(!artical?.labels?.some(e => e.name === 'blog')) {
       router.replace('/404')
     }
     stone.data.emit()
