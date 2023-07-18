@@ -27,24 +27,6 @@ const DIV = styled.div`
 `
 
 export default function Error() {
-  const cur = useRef(true)
-  const router = useRouter()
-  useLayoutEffect(() => {
-    // if(cur.current) {
-      // cur.current = false
-    const timer = setTimeout(() => {
-      if(router.asPath !== '/404'){
-        router.replace(`${router.asPath}?flash=true`)
-      }
-    }, 500)
-    if(router.query.flash) {
-      clearTimeout(timer)
-    }
-    return () => {
-      clearTimeout(timer)
-    }
-    
-  }, [router])
   return (
     <>
       <Head>

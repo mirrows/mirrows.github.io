@@ -417,6 +417,7 @@ export default function Blog({ artical: atl, comments: cmts }: Props) {
     </>
   )
   if (router.isFallback) {
+    console.log(454545)
     return dom
   }
   return dom
