@@ -303,8 +303,9 @@ export default function Home({ artical }: Props) {
   }
   const queryArticalList = () => {
     listArtical().then(({ data, total }) => {
-      setArtical(data);
-      setTotal(total)
+      const curAtl = data.filter((e: Artical) => Date.now() - new Date(e.created_at).getTime() > 1000*60*10)
+      setArtical(curAtl);
+      setTotal(total - (data.length - curAtl.length))
     })
   }
   useEffect(() => {

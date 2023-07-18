@@ -226,7 +226,10 @@ export default function BlogCreator({ artical, onSubmit: fn }: Props) {
       if (res.code) return;
       setTitle('');
       setContent('');
-      router.replace(`/blogs/${res.data.number}`)
+      if(!number) {
+        alert('文章已送入审核，稍后发布')
+      }
+      router.replace(number ? `/blogs/${res.data.number}` : '/')
     })
   }
   useEffect(() => {
