@@ -110,7 +110,7 @@ table{
 }
 
 .loading_wrap{
-  width: 120px;
+  width: fit-content;
   margin: 20% auto 0;
   /* background-color: #000; */
 }

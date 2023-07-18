@@ -90,8 +90,8 @@ export default function App({ Component, pageProps }: AppProps) {
       <Component {...pageProps} />
       <Div>
         <div className={`ps_mask${loading ? '' : ' hidden'}`}>
-          <div className="loading_wrap" style={{ width: '120px', margin: '20% auto 0' }}>
-            <LazyImage width="120" height="167" src="https://empty.t-n.top/pub_lic/2023_04_29/pic1682756884211870.gif" alt="loading img" />
+          <div className="loading_wrap" style={{ width: 'fit-content', margin: '20% auto 0' }}>
+            <img width="120" height="167" src="https://empty.t-n.top/pub_lic/2023_04_29/pic1682756884211870.gif" alt="loading img" />
           </div>
         </div>
       </Div>
