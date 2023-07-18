@@ -1,6 +1,8 @@
 import LazyImage from '@/components/LazyImage'
 import Head from 'next/head'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
+import { useEffect, useRef } from 'react'
 import styled from 'styled-components'
 
 const DIV = styled.div`
@@ -25,6 +27,18 @@ const DIV = styled.div`
 `
 
 export default function Error() {
+  const cur = useRef(true)
+  const router = useRouter()
+  useEffect(() => {
+    if(cur.current) {
+      cur.current = false
+      router.replace('/')
+      const timer = setTimeout(() => {
+        cur.current = true
+        clearTimeout(timer)
+      }, 1000)
+    }
+  }, [router])
   return (
     <>
       <Head>
