@@ -425,7 +425,7 @@ export async function getStaticPaths() {
   })) || []
   return {
     paths,
-    fallback: true, // See the "fallback" section below
+    fallback: 'blocking', // See the "fallback" section below
   };
 }
 
