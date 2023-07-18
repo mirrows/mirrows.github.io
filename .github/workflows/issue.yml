@@ -21,12 +21,13 @@ jobs:
       with:
         ref: dev
       if: steps.check_labels.outputs.result == 'true'
-    - run: npm i && npm run build
+    - run: npm i
+    - run: npm run build
       env: 
         NEXT_PUBLIC_CLIENT_ID: ${{ vars.NEXT_PUBLIC_CLIENT_ID }}
         NEXT_PUBLIC_SECRET: ${{ vars.NEXT_PUBLIC_SECRET }}
         NEXT_PUBLIC_MESS_URL: ${{ vars.NEXT_PUBLIC_MESS_URL }}
-    - name: buid
+    - name: deploy
       uses: JamesIves/github-pages-deploy-action@v4
       with:
         folder: out
