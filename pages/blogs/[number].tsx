@@ -466,5 +466,5 @@ export const getStaticProps = async (context: any) => {
       props.comments = data
     }
   }
-  return { props, revalidate: 3 }
+  return { props }
 }
