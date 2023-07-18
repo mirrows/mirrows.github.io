@@ -434,7 +434,7 @@ export async function getStaticPaths() {
   })) || []
   return {
     paths,
-    fallback: 'blocking', // See the "fallback" section below
+    fallback: true, // See the "fallback" section below
   };
 }
 
@@ -454,5 +454,5 @@ export const getStaticProps = async (context: any) => {
       props.comments = data
     }
   }
-  return { props, revalidate: 10, }
+  return { props, revalidate: 3 }
 }
