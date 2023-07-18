@@ -334,15 +334,15 @@ export default function Blog({ artical: atl, comments: cmts }: Props) {
   useEffect(() => {
     if(!artical && query.number) {
       listArtical(+query.number).then(res => {
-        if(!res.data?.labels?.some((e: any) => e.name === 'blog')) {
-          router.replace('/404')
-          return
-        }
+        // if(!res.data?.labels?.some((e: any) => e.name === 'blog')) {
+        //   router.replace('/404')
+        //   return
+        // }
         setArtical(res.data)
         listComments()
       })
-    }else if(!artical?.labels?.some(e => e.name === 'blog')) {
-      router.replace('/404')
+    // }else if(!artical?.labels?.some(e => e.name === 'blog')) {
+    //   router.replace('/404')
     }
     stone.data.emit()
     // md解析的图片会添加懒加载机制，此时必须手动检查一次是否在可视区内
