@@ -5,6 +5,7 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    environment: production
     steps:
     - name: checkLabel
       id: check_labels
@@ -20,9 +21,17 @@ jobs:
       uses: actions/checkout@v3
       with:
         ref: dev
+        environment: production
       if: steps.check_labels.outputs.result == 'true'
-    - run: npm i && npm run build
-    - name: buid
+    - run: npm i
+    - run: npm run build
+      env: 
+        NEXT_PUBLIC_CLIENT_ID: ${{ vars.NEXT_PUBLIC_CLIENT_ID }}
+        NEXT_PUBLIC_GITHUB_USER: ${{ vars.NEXT_PUBLIC_GITHUB_USER }}
+        NEXT_PUBLIC_SECRET: ${{ vars.NEXT_PUBLIC_SECRET }}
+        NEXT_PUBLIC_MESS_URL: ${{ vars.NEXT_PUBLIC_MESS_URL }}
+        NEXT_PUBLIC_LOADING_GIF: ${{ vars.NEXT_PUBLIC_LOADING_GIF }}
+    - name: deploy
       uses: JamesIves/github-pages-deploy-action@v4
       with:
         folder: out
