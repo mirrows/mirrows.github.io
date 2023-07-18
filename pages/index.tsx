@@ -267,7 +267,7 @@ const Div = styled.div`
   }
   .uploading{
     padding: 0 10px;
-    margin: 0 10px;
+    margin-right: 10px;
     border-radius: 6px;
     border: 2px solid red;
     line-height: 1.5;
