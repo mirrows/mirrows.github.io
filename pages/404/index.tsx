@@ -29,16 +29,16 @@ const DIV = styled.div`
 export default function Error() {
   const cur = useRef(true)
   const router = useRouter()
-  useEffect(() => {
-    if(cur.current) {
-      cur.current = false
-      router.replace('/')
-      const timer = setTimeout(() => {
-        cur.current = true
-        clearTimeout(timer)
-      }, 1000)
-    }
-  }, [router])
+  // useEffect(() => {
+  //   if(cur.current) {
+  //     cur.current = false
+  //     router.replace('/')
+  //     const timer = setTimeout(() => {
+  //       cur.current = true
+  //       clearTimeout(timer)
+  //     }, 1000)
+  //   }
+  // }, [router])
   return (
     <>
       <Head>
