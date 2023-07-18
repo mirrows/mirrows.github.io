@@ -5,6 +5,7 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    environment: production
     steps:
     - name: checkLabel
       id: check_labels

@@ -287,10 +287,8 @@ export default function Lottery () {
         } else {
             data[ind][attr] = val
             const percents = data.filter((e: typeof areas[number]) => e.checked).reduce((pre: number, cur: typeof areas[number]) => pre + +cur.percent, 0)
-            console.log(data[ind].percent, percents, attr)
             if(data[ind].checked && percents > 1 && attr !== 'percent') {
                 const rest = data[ind].percent - (percents - 1)
-                console.log(rest)
                 data[ind].percent = +(rest > 0 ? rest : 0).toFixed(4)
             }
             setArea(data);
