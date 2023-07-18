@@ -348,7 +348,7 @@ export default function Blog({ artical: atl, comments: cmts }: Props) {
     // md解析的图片会添加懒加载机制，此时必须手动检查一次是否在可视区内
     stone.isGithubOwner((isowner) => setOwner(isowner))
   }, [router, artical, query, listComments])
-  const dom = (
+  return (
     <>
       <Head>
         <title>{artical?.title}</title>
@@ -416,11 +416,6 @@ export default function Blog({ artical: atl, comments: cmts }: Props) {
       </main>
     </>
   )
-  if (router.isFallback) {
-    console.log(454545)
-    return dom
-  }
-  return dom
 }
 
 export async function getStaticPaths() {
