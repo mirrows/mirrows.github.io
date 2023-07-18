@@ -94,6 +94,7 @@ function UploadPicList({ list = [], path = 'mini/', show = true, onPreview, ...p
   const [pics, setPics] = useState<PicsMap>({})
   const page = useRef(0)
   const size = useRef(1)
+  const random = useRef(Math.random())
   const once = useRef(false)
   const [end, setEnd] = useState(false)
   const [curPath, setPath] = useState<number | string>('')
@@ -191,6 +192,9 @@ function UploadPicList({ list = [], path = 'mini/', show = true, onPreview, ...p
       io.current?.disconnect();
     }
   }, [show])
+  const randomColor = useCallback((num: number) => {
+    return `#${String(random.current * (num + 4)).slice(4,7)}`
+  }, [])
   useEffect(() => {
     stone.isGithubOwner((isowner) => setOwner(isowner))
   }, [])
@@ -202,7 +206,7 @@ function UploadPicList({ list = [], path = 'mini/', show = true, onPreview, ...p
             <div className="timestone">{fold.name}</div>
             <div className="pics_item_wrap">
               {pics[fold.path]?.map((pic, i) => (
-                <div key={pic.name} className="pic_item_wrap" style={{ backgroundColor: `#${String(Math.random()).slice(4,7)}` }}>
+                <div key={pic.name} className="pic_item_wrap" style={{ backgroundColor: randomColor(i) }}>
                   {isOwner && <SVGIcon className="img_del_btn" type="close" onClick={() => delPic(fold.path, pic)} />}
                   <LazyImage className="img_item" src={pic.cdn_url} width="130" height="320" onClick={() => previewPic(pics[fold.path], i)} />
                 </div>
