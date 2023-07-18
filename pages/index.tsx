@@ -197,6 +197,7 @@ const Div = styled.div`
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       word-break: break-all;
+      line-height: 1.5;
     }
     .artical_btn{
       margin-right: 10px;
@@ -263,6 +264,16 @@ const Div = styled.div`
     width: 25px;
     height: 25px;
     fill: #fff;
+  }
+  .uploading{
+    padding: 0 10px;
+    margin: 0 10px;
+    border-radius: 6px;
+    border: 2px solid red;
+    line-height: 1.5;
+    font-size: 0.8em;
+    color: red;
+    opacity: 0.5;
   }
 `
 
@@ -360,6 +371,7 @@ export default function Home({ artical }: Props) {
                           <SVGIcon type='edit' className="atl_icon" />
                         </span>
                       )}
+                      {Date.now() - new Date(artical.updated_at).getTime() < 1000*60*5 && <span className='uploading'>审核中</span>}
                       <span>{artical.title}</span>
                     </h3>
                     <div className='artical_detail hide_450'>{artical.body}</div>
@@ -369,7 +381,7 @@ export default function Home({ artical }: Props) {
                         render={(formattedDate) => <span>{formattedDate}</span>}
                         value={artical.updated_at}
                       /> */}
-                      <span>{artical.updated_at}</span>
+                      <span>{new Date(artical.updated_at).toLocaleDateString()}</span>
                     </span>
                   </div>
                   <LazyImage className='artical_img' width="400" height="200" src={artical.img} alt={artical.title} />

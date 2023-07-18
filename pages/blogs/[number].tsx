@@ -365,7 +365,7 @@ export default function Blog({ artical: atl, comments: cmts }: Props) {
               <h1>{artical?.title || ''}</h1>
               <div className='text_small'>
                 <span className='atl_base_msg'>创建时间：
-                  <span>{artical?.created_at || ''}</span>
+                  <span>{new Date(artical?.created_at).toLocaleDateString() || ''}</span>
                 </span>
                 <span className='atl_base_msg'>评论数：{artical?.comments || 0}</span>
               </div>
@@ -393,7 +393,7 @@ export default function Blog({ artical: atl, comments: cmts }: Props) {
                     <LazyImage className='avator' width="36" height="36" src={comment.author.avatarUrl} alt="" />
                     <div>
                       <div>{comment.author.login}</div>
-                      <div className='text_small'>{comment.updatedAt}</div>
+                      <div className='text_small'>{new Date(comment.updatedAt).toLocaleDateString()}</div>
                     </div>
                   </div>
                   <div className='comment_detail_wrap'>
