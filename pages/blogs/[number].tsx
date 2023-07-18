@@ -334,7 +334,7 @@ export default function Blog({ artical: atl, comments: cmts }: Props) {
   useEffect(() => {
     if(!artical && query.number) {
       listArtical(+query.number).then(res => {
-        if(res.data?.labels?.some((e: any) => e.name === 'blog')) {
+        if(!res.data?.labels?.some((e: any) => e.name === 'blog')) {
           router.replace('/404')
           return
         }
