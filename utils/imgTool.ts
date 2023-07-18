@@ -116,8 +116,10 @@ export const useLazyImgs = (path?: string, parent?: string, cd?: Function) => {
     const scroller = debounce(imgListener)
     if (!path) {
       window.addEventListener('scroll', scroller, true)
+      window.addEventListener('resize', scroller)
       return () => {
         window.removeEventListener('scroll', scroller, true)
+        window.removeEventListener('resize', scroller)
       }
     }
   }, [imgListener])
