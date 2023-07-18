@@ -34,3 +34,10 @@ export default function BlogEdit() {
     </>
   )
 }
+
+
+export const getStaticProps = async (context: any) => {
+  return {
+    props: {}
+  }
+}
