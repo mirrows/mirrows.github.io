@@ -15,6 +15,7 @@ import Link from 'next/link';
 import { useLazyImgs } from '@/utils/imgTool';
 import { env, stone } from '@/utils/global';
 import { useRouter } from 'next/router';
+import Pagination from '@/components/Pagination';
 
 const Div = styled.div`
   min-height: 100vh;
@@ -275,11 +276,17 @@ const Div = styled.div`
     color: red;
     opacity: 0.5;
   }
+  .pagination_wrap{
+    margin: 10px 0;
+    text-align: right;
+  }
 `
 
 export default function Home({ artical }: Props) {
   const [pics, setPics] = useState<BingPic[]>([]);
   const [ind, setInd] = useState(0);
+  const [page, setPage] = useState(1);
+  const [size, setSize] = useState(30);
   const [total, setTotal] = useState(0);
   const swiperRef = useRef<Swiper | null>(null);
   const [articals, setArtical] = useState<Artical[]>(artical || []);
@@ -314,10 +321,13 @@ export default function Home({ artical }: Props) {
   }
   const queryArticalList = () => {
     listArtical().then(({ data, total }) => {
-      const curAtl = data.filter((e: Artical) => Date.now() - new Date(e.created_at).getTime() > 1000*60*10)
+      console.log(total)
       setArtical(data);
-      setTotal(total - (data.length - curAtl.length))
+      setTotal(total)
     })
+  }
+  const handlePagination = () => {
+
   }
   useEffect(() => {
     stone.isGithubOwner((isowner) => setOwner(isowner))
@@ -356,6 +366,9 @@ export default function Home({ artical }: Props) {
           </MySwiper>
           <div className='main_content'>
             <div className='content_left'>
+              <div className='pagination_wrap'>
+                <Pagination total={total} onChange={handlePagination} />
+              </div>
               {articals.map((artical) => (
                 <Link key={artical.id} aria-label={`artical detail about ${artical.title}`} className="artical_wrap" href={`/blogs/${artical.number}`}>
                   <div className='artical_content'>

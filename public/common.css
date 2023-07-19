@@ -56,10 +56,11 @@ button.normal_btn{
   border-radius: 6px;
   font-size: 1rem;
   color:#fff;
+  pointer-events: all;
 }
 
 button:hover{
-  box-shadow: 3px 3px 5px -1px #666;
+  box-shadow: 0 0 5px -1px #666;
 }
 
 .scroll_er{
