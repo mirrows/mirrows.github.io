@@ -4,7 +4,7 @@ const nextConfig = {
   exportPathMap() {
       return {
         "/blogs/create": { page: '/blogs/create' },
-        "/blogs/edit": { page: '/blogs/edit' },
+        "/blogs/edit/[number]": { page: '/blogs/edit/[number]' },
       }
   },
   images: {
