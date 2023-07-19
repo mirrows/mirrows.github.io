@@ -217,7 +217,7 @@ export default function ImgSource() {
                     onWheel={(e) => { e.stopPropagation() }}
                 >
                     <div className="swiper_header">
-                        <div>{pics[ind]?.name || ''}</div>
+                        <span>{pics[ind]?.name || ''}</span>
                         <SVGIcon type="close" width="30" fill="#fff" className="close_swiper" onClick={() => setOpenSwiper(false)} />
                     </div>
                     <MySwiper
