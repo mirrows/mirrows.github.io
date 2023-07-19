@@ -35,28 +35,28 @@ export default function BlogEdit() {
   )
 }
 
-export async function getStaticPaths() {
-  const artical = await listArtical()
-  const paths = artical?.data?.map((atl: Artical) => ({
-    params: { number: String(atl.number) }
-  })) || []
-  return {
-    paths,
-    fallback: true, // See the "fallback" section below
-  };
-}
+// export async function getStaticPaths() {
+//   const artical = await listArtical()
+//   const paths = artical?.data?.map((atl: Artical) => ({
+//     params: { number: String(atl.number) }
+//   })) || []
+//   return {
+//     paths,
+//     fallback: true, // See the "fallback" section below
+//   };
+// }
 
-export const getStaticProps = async (context: any) => {
-  const { number } = context.params
-  const props: Partial<Props> = {}
-  if (+String(number) + 1) {
-    const reqs = [listArtical(+number)]
-    const [artical] = await Promise.allSettled(reqs);
-    if (artical.status === 'fulfilled' && artical.value?.data) {
+// export const getStaticProps = async (context: any) => {
+//   const { number } = context.params
+//   const props: Partial<Props> = {}
+//   if (+String(number) + 1) {
+//     const reqs = [listArtical(+number)]
+//     const [artical] = await Promise.allSettled(reqs);
+//     if (artical.status === 'fulfilled' && artical.value?.data) {
 
-      const data = artical.value.data
-      props.artical = data
-    }
-  }
-  return { props }
-}
+//       const data = artical.value.data
+//       props.artical = data
+//     }
+//   }
+//   return { props }
+// }
