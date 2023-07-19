@@ -108,9 +108,8 @@ export default function PreviewPannel() {
   useEffect(() => {
     const { preview, stayTime } = stone.data
     preview && setPreview(preview)
-    stayTime && setStayTime(stayTime)
+    setStayTime(stayTime)
     queryPreviewData()
-    setTotalStayTime(intervalUntilNow())
     const timer = setInterval(() => {
       const { stayTime } = stone.data
       setStayTime(stayTime)
@@ -125,7 +124,7 @@ export default function PreviewPannel() {
       <div className="items_wrap">
         {preview && <span className="tag_item">IP地址：<span className="tag_value">{preview?.ip}</span></span>}
         {!!preview?.data?.today && <span className="tag_item">今日访问数：<span className="tag_value">{preview?.data.today}</span></span>}
-        {!!stayTime && <span className="tag_item">当前访问时长：<span className="tag_value">{
+        {<span className="tag_item">当前访问时长：<span className="tag_value">{
           String(Math.floor(stayTime / (60 * 60))).padStart(2, '0')
         }: {
             String(Math.floor(stayTime / 60) % 60).padStart(2, '0')

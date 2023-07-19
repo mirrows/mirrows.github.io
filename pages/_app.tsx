@@ -56,6 +56,8 @@ export default function App({ Component, pageProps }: AppProps) {
     const ip = stone.data.preview?.ip
     ip && statisticVisitor(ip, stayTime.current)
     stayTime.current = 0
+    stone.set({ stayTime: stayTime.current })
+    console.log('eesds', stone.data.stayTime)
   }
   const router = useRouter();
   const [loading, setLoading] = useState(false)
@@ -69,14 +71,18 @@ export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
     if (!stayTime.current) {
       statistics()
-      stayTime.current = stayTime.current + 1
     }
     const timer = setInterval(() => {
       stayTime.current = stayTime.current + 1
       stone.set({ stayTime: stayTime.current })
     }, 1000)
-    router.events.on('routeChangeStart', loadingStart)
-    router.events.on('routeChangeComplete', loadingEnd)
+    router.events.on('routeChangeStart', () => {
+      stone.set({ stayTime: stayTime.current })
+      loadingStart()
+    })
+    router.events.on('routeChangeComplete', () => {
+      loadingEnd()
+    })
     window.addEventListener('beforeunload', visitorStatistic)
     stone.set({ emit })
     return () => {

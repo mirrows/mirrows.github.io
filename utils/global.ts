@@ -61,13 +61,16 @@ if (typeof window !== "undefined") {
     if (Date.now() - (data.lastTime || 0) > 3 * 24 * 60 * 60 * 1000) {
       data.token = ''
       data.userInfo = {}
+      data.stayTime = 0
     }
     stone.set(data)
     // localStorage.removeItem('tmpData')
   }
 
   window.addEventListener('beforeunload', (e) => {
-    localStorage.setItem('tmpData', JSON.stringify(stone.data))
+    setTimeout(() => {
+      localStorage.setItem('tmpData', JSON.stringify(stone.data))
+    })
   })
 }
 
