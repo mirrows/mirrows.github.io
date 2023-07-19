@@ -92,6 +92,7 @@ const DIV = styled.div`
         display: flex;
         flex-wrap: nowrap;
         justify-content: space-between;
+        align-items: center;
         position: absolute;
         top: 0;
         left: 0;
@@ -102,6 +103,9 @@ const DIV = styled.div`
         box-sizing: border-box;
         color: #fff;
         z-index: 80;
+        .name{
+            line-height: 1;
+        }
     }
     .modal_wrap{
 
@@ -219,8 +223,8 @@ export default function ImgSource() {
                     onWheel={(e) => { e.stopPropagation() }}
                 >
                     <div className="swiper_header">
-                        <span>{pics[ind]?.name || ''}</span>
-                        <SVGIcon type="close" width="30" fill="#fff" className="close_swiper" onClick={() => setOpenSwiper(false)} />
+                        <span className="name">{pics[ind]?.name || ''}</span>
+                        <SVGIcon type="close" width="30" height="30" fill="#fff" className="close_swiper" onClick={() => setOpenSwiper(false)} />
                     </div>
                     <MySwiper
                         loop={true}
