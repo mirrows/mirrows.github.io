@@ -64,7 +64,7 @@ export default function Pagination({page=1, size=30, total, onChange}: Props) {
             return newVal
         })
     }
-    return total < size ? (
+    return total < size ? <></> : (
         <DIV>
             <button className="arrow arrow_left" disabled={pPage === 1} onClick={lastPage}>
                 <SVGIcon type='arrow_left' fill="gray" width="20" />
@@ -77,7 +77,7 @@ export default function Pagination({page=1, size=30, total, onChange}: Props) {
                 <SVGIcon type='arrow_right' fill="gray" width="20" />
             </button>
         </DIV>
-    ) : <></>
+    )
     
   }
   
