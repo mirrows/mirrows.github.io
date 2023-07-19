@@ -171,8 +171,10 @@ export default function ImgUpload({ clickable = true, children, onStartUpload, p
         for (let i = 0; i < urls.length; i++) {
             let status: UploadType['uploadStatus'] = 'LOADING';
             newMap[total[i + files.length].id] = status
-            const mini = await uploadUrl({ url: urls[i], path: `${tmpPersonal.current ? 'personal/' : ''}mini/${Format(new Date(), 'YYYY_MM_DD')}` })
-            const normal = await uploadUrl({ url: urls[i], path: `${tmpPersonal.current ? 'personal/' : ''}normal/${Format(new Date(), 'YYYY_MM_DD')}` })
+            const name = 'pic' + Date.now() + String(Math.random()).slice(4, 7)
+            const path = `${Format(new Date(), 'YYYY_MM_DD')}/${name}`
+            const mini = await uploadUrl({ url: urls[i], path: `${tmpPersonal.current ? 'personal/' : ''}mini/${path}` })
+            const normal = await uploadUrl({ url: urls[i], path: `${tmpPersonal.current ? 'personal/' : ''}normal/${path}` })
             if (normal.code || mini.code) {
                 status = 'ERROR'
             }
@@ -186,7 +188,7 @@ export default function ImgUpload({ clickable = true, children, onStartUpload, p
         setLoading(false)
     }
     const inputUrl = () => {
-        setUrls(urls => Array.from(new Set([...urls, urlInput])))
+        setUrls(urls => Array.from(new Set([...urls, ...urlInput.split(',')])))
         setUrlInput('')
     }
     const handlekeyUp = (e: KeyboardEvent<HTMLInputElement>) => {
