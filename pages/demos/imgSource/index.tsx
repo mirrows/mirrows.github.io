@@ -96,6 +96,7 @@ const DIV = styled.div`
         top: 0;
         left: 0;
         width: 100%;
+        height: fit-content;
         padding: 10px;
         background-image: linear-gradient(black 0%, black 30%, transparent 100%);
         box-sizing: border-box;
