@@ -35,13 +35,18 @@ export const ipQuery = () => {
 //   })
 // }
 
+export type ListArticalParams = {
+  number?: number,
+  type?: 'before' | 'after',
+  cursor?: string
+}
 
-export const listArtical = (number?: number) => {
+export const listArtical = (params?: ListArticalParams) => {
   return query({
     path: '/github/listArticals',
     method: 'get',
     headers: stone.data.token ? { Authorization: `token ${stone.data.token}` } : {},
-    ...(+String(number) + 1 ? { query: {number} } : {})
+    ...(params ? { query: params } : {})
   })
 }
 

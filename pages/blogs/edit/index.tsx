@@ -16,7 +16,7 @@ export default function BlogEdit() {
   useEffect(() => {
     const query = parsequeryStr2Obj(router.asPath)
     if(query?.number) {
-      listArtical(+query.number).then(res => {
+      listArtical({number: +query.number}).then(res => {
         res?.data && setArtical(res.data)
       })
     }

@@ -1,4 +1,4 @@
-import { bingQuery, listArtical } from '@/req/main';
+import { ListArticalParams, bingQuery, listArtical } from '@/req/main';
 import Head from 'next/head'
 import { useCallback, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
@@ -17,6 +17,7 @@ import { env, stone } from '@/utils/global';
 import { useRouter } from 'next/router';
 import Pagination from '@/components/Pagination';
 import DateText from '@/components/SsrRender/Timer';
+import { PageInfo } from '@/types/github';
 
 const Div = styled.div`
   min-height: 100vh;
@@ -286,9 +287,8 @@ const Div = styled.div`
 export default function Home({ artical }: Props) {
   const [pics, setPics] = useState<BingPic[]>([]);
   const [ind, setInd] = useState(0);
-  const [page, setPage] = useState(1);
-  const [size, setSize] = useState(30);
   const [total, setTotal] = useState(0);
+  const [curPageInfo, setPageInfo] = useState<Partial<PageInfo>>({});
   const swiperRef = useRef<Swiper | null>(null);
   const [articals, setArtical] = useState<Artical[]>(artical || []);
   const { emit } = useLazyImgs('.imgs_wrap .lazy');
@@ -320,15 +320,15 @@ export default function Home({ artical }: Props) {
       setPics(pics);
     })
   }
-  const queryArticalList = () => {
-    listArtical().then(({ data, total }) => {
-      console.log(total)
+  const queryArticalList = (params?: ListArticalParams) => {
+    listArtical(params).then(({ data, total, pageInfo }) => {
       setArtical(data);
-      setTotal(total)
+      setTotal(total);
+      setPageInfo(pageInfo);
     })
   }
-  const handlePagination = () => {
-
+  const handlePagination = ({type}: {type: 'before' | 'after'}) => {
+    queryArticalList({type, cursor: { before: curPageInfo.startCursor, after: curPageInfo.endCursor }[type]});
   }
   const ifJudge = useCallback((timeStr: string) => {
     return Date.now() - new Date(timeStr).getTime() < 1000*60*5

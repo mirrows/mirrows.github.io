@@ -44,7 +44,7 @@ type Props = {
     page?: number,
     size?: number,
     total: number,
-    onChange: ({page,size, total}: Omit<Props, 'onChange'>) => void
+    onChange: ({page,size, total, type}: Omit<Props, 'onChange'> & {type: 'before' | 'after'}) => void
 }
 
 export default function Pagination({page=1, size=30, total, onChange}: Props) {
@@ -53,14 +53,14 @@ export default function Pagination({page=1, size=30, total, onChange}: Props) {
     const lastPage = () => {
         setPage((val: number) => {
             const newVal = val - 1
-            onChange({ page: newVal, size: pSize, total })
+            onChange({ page: newVal, size: pSize, total, type: 'before' })
             return newVal
         })
     }
     const nextPage = () => {
         setPage((val: number) => {
             const newVal = val + 1
-            onChange({ page: newVal, size: pSize, total })
+            onChange({ page: newVal, size: pSize, total, type: 'after' })
             return newVal
         })
     }

@@ -334,7 +334,7 @@ export default function Blog({ artical: atl, comments: cmts }: Props) {
   }, [query])
   useEffect(() => {
     if(!artical && query.number) {
-      listArtical(+query.number).then(res => {
+      listArtical({number: +query.number}).then(res => {
         if(!res.data?.labels?.some((e: any) => e.name === 'blog')) {
           router.replace('/404')
           return
@@ -443,7 +443,7 @@ export const getStaticProps = async (context: any) => {
   const { number } = context.params
   const props: Partial<Props> = {}
   if (+String(number) + 1) {
-    const reqs = [listArtical(+number), queryComments(1, number)]
+    const reqs = [listArtical({number: +number}), queryComments(1, number)]
     const [artical, comments] = await Promise.allSettled(reqs);
     if (artical.status === 'fulfilled' && artical.value?.data) {
 
