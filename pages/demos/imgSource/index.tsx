@@ -90,6 +90,7 @@ const DIV = styled.div`
     }
     .swiper_header{
         display: flex;
+        flex-wrap: nowrap;
         justify-content: space-between;
         position: absolute;
         top: 0;
