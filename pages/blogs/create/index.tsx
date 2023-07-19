@@ -28,8 +28,8 @@ export default function BlogCreate() {
   )
 }
 
-export const getStaticProps = async (context: any) => {
-  return {
-    props: {}
-  }
-}
+// export const getStaticProps = async (context: any) => {
+//   return {
+//     props: {}
+//   }
+// }
