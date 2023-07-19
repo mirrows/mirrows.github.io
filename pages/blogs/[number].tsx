@@ -417,7 +417,7 @@ export default function Blog({ artical: atl, comments: cmts }: Props) {
           </div>
           <div className='fixed_operate_wrap'>
             {isOwner && (
-              <Link className='artical_btn' aria-label='create a new artical' href={`/blogs/edit/${artical.number}`}>
+              <Link className='artical_btn' aria-label='create a new artical' href={`/blogs/edit?number=${artical.number}`}>
                 <SVGIcon type='edit' className="atl_icon" />
               </Link>
             )}

@@ -373,8 +373,13 @@ export default function Home({ artical }: Props) {
               <div className='pagination_wrap'>
                 <Pagination total={total} onChange={handlePagination} />
               </div>
-              {articals.map((artical) => (
-                <Link key={artical.id} aria-label={`artical detail about ${artical.title}`} className="artical_wrap" href={`/blogs/${artical.number}`}>
+              {articals.filter(artical => isOwner || !ifJudge(artical.created_at)).map((artical) => (
+                <Link
+                  key={artical.id}
+                  aria-label={`artical detail about ${artical.title}`}
+                  className="artical_wrap"
+                  href={ifJudge(artical.created_at) ? `/blogs/edit?number=${artical.number}` : `/blogs/${artical.number}`}
+                >
                   <div className='artical_content'>
                     <h3 className='artical_title'>
                       {isOwner && (
@@ -382,7 +387,7 @@ export default function Home({ artical }: Props) {
                           className='artical_btn'
                           onClick={(e) => {
                             e.preventDefault();
-                            router.push(`/blogs/edit/${artical.number}`)
+                            router.push(`/blogs/edit?number=${artical.number}`)
                           }}
                         >
                           <SVGIcon type='edit' className="atl_icon" />
@@ -402,8 +407,8 @@ export default function Home({ artical }: Props) {
                     </span>
                   </div>
                   <LazyImage className='artical_img' width="400" height="200" src={artical.img} alt={artical.title} />
-                </Link>
-              ))}
+                </Link>)
+              )}
             </div>
             <div className='content_right'>
               <PreviewPannel />
