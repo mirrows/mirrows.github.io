@@ -2,7 +2,9 @@
 const nextConfig = {
   reactStrictMode: true,
   exportPathMap() {
-      return {}
+      return {
+        "/blogs/create": { page: '/blogs/create' },
+      }
   },
   images: {
     remotePatterns: [
