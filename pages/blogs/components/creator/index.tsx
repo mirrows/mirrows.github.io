@@ -1,4 +1,5 @@
 import LazyImage from '@/components/LazyImage'
+import DateText from '@/components/SsrRender/Timer'
 import { ArticalParams } from '@/types/blogs'
 import { Artical } from '@/types/global'
 import { parseBody } from '@/utils/md'
@@ -240,7 +241,11 @@ export default function BlogCreator({ artical, onSubmit: fn }: Props) {
       <div className='real_content_area'>
         <h1>{title}</h1>
         <div className='text_small'>
-          <span className='atl_base_msg'>创建时间：{artical?.created_at || new Date().toLocaleDateString()}</span>
+        <DateText
+          render={(formattedDate) => <span className='atl_base_msg'>创建时间：{formattedDate}</span>}
+          value={artical?.created_at}
+        />
+          {/* <span className='atl_base_msg'>创建时间：{artical?.created_at || new Date().toLocaleDateString()}</span> */}
         </div>
         <LazyImage className='atl_bg' width="700" height="200" src={img} alt={title} />
         <div className="blog_content" dangerouslySetInnerHTML={{ __html: parseBody(xss(md.render(content || '')), ['lazyImg']) }}></div>

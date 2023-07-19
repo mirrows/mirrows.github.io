@@ -1,6 +1,6 @@
 import { bingQuery, listArtical } from '@/req/main';
 import Head from 'next/head'
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 // import Swiper core and required modules
 import { Swiper as MySwiper, SwiperSlide } from 'swiper/react';
@@ -16,6 +16,7 @@ import { useLazyImgs } from '@/utils/imgTool';
 import { env, stone } from '@/utils/global';
 import { useRouter } from 'next/router';
 import Pagination from '@/components/Pagination';
+import DateText from '@/components/SsrRender/Timer';
 
 const Div = styled.div`
   min-height: 100vh;
@@ -329,6 +330,9 @@ export default function Home({ artical }: Props) {
   const handlePagination = () => {
 
   }
+  const ifJudge = useCallback((timeStr: string) => {
+    return Date.now() - new Date(timeStr).getTime() < 1000*60*5
+  }, [])
   useEffect(() => {
     stone.isGithubOwner((isowner) => setOwner(isowner))
     queryBing();
@@ -384,17 +388,17 @@ export default function Home({ artical }: Props) {
                           <SVGIcon type='edit' className="atl_icon" />
                         </span>
                       )}
-                      {Date.now() - new Date(artical.updated_at).getTime() < 1000*60*5 && <span className='uploading'>审核中</span>}
+                      {ifJudge(artical.created_at) && <span className='uploading'>审核中</span>}
                       <span>{artical.title}</span>
                     </h3>
                     <div className='artical_detail hide_450'>{artical.body}</div>
                     <span className='artical_update_time'>
                       <span>—— updated at </span>
-                      {/* <DateText
+                      <DateText
                         render={(formattedDate) => <span>{formattedDate}</span>}
                         value={artical.updated_at}
-                      /> */}
-                      <span>{new Date(artical.updated_at).toLocaleDateString()}</span>
+                      />
+                      {/* <span>{new Date(artical.updated_at).toLocaleDateString()}</span> */}
                     </span>
                   </div>
                   <LazyImage className='artical_img' width="400" height="200" src={artical.img} alt={artical.title} />

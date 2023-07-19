@@ -13,6 +13,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import xss from 'xss'
 import MarkdownIt from 'markdown-it';
+import DateText from '@/components/SsrRender/Timer'
 // marked在安卓默认浏览器兼容性不佳
 
 const DIV = styled.div`
@@ -365,7 +366,11 @@ export default function Blog({ artical: atl, comments: cmts }: Props) {
               <h1>{artical?.title || ''}</h1>
               <div className='text_small'>
                 <span className='atl_base_msg'>创建时间：
-                  <span>{new Date(artical?.created_at).toLocaleDateString() || ''}</span>
+                  <DateText
+                    render={(formattedDate) => <span>{formattedDate}</span>}
+                    value={artical?.created_at}
+                  />
+                  {/* <span>{new Date(artical?.created_at).toLocaleDateString() || ''}</span> */}
                 </span>
                 <span className='atl_base_msg'>评论数：{artical?.comments || 0}</span>
               </div>
@@ -393,7 +398,11 @@ export default function Blog({ artical: atl, comments: cmts }: Props) {
                     <LazyImage className='avator' width="36" height="36" src={comment.author.avatarUrl} alt="" />
                     <div>
                       <div>{comment.author.login}</div>
-                      <div className='text_small'>{new Date(comment.updatedAt).toLocaleDateString()}</div>
+                      <DateText
+                        render={(formattedDate) => <div className='text_small'>{formattedDate}</div>}
+                        value={comment.updatedAt}
+                      />
+                      {/* <div className='text_small'>{new Date(comment.updatedAt).toLocaleDateString()}</div> */}
                     </div>
                   </div>
                   <div className='comment_detail_wrap'>
