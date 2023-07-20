@@ -19,7 +19,7 @@ const DIV = styled.div`
     display: grid;
     justify-content: center;
     grid-template-columns: repeat(auto-fill, 8rem);
-    grid-template-rows: repeat(auto-fill, 10rem);
+    grid-gap: 10px;
     min-width: 200px;
     max-width: 1200px;
     width: 100%;
@@ -29,24 +29,29 @@ const DIV = styled.div`
   }
   .item_wrap{
     position: relative;
-    padding: 0.6rem;
     pointer-events: all;
   }
   .item{
+    position: relative;
     width: 100%;
-    aspect-ratio: 1/1;
-    height: unset;
-    padding: 10px;
-    border: 3px dashed #f5f5f5;
-    border-radius: 12px;
-    box-sizing: border-box;
+    padding-bottom: 100%;
     overflow: hidden;
     cursor: pointer;
+    
+  }
+  .item_middle{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 3px dashed #f5f5f5;
+    border-radius: 12px;
   }
   .item_img{
     width: 100%;
-    height: unset;
-    aspect-ratio: 1;
+    height: 100%;
+    border-radius: 6px;
   }
   .demo_name{
     margin: 10px 0;
@@ -99,7 +104,9 @@ export default function Demos() {
           <div className="items_wrap">
             {list.map((item, i) => (<Link key={i} className='item_wrap' aria-label={item.name} href={item.link}>
               <div className='item'>
-                <LazyImage className='item_img' width="100" height="100" src={item.icon} />
+                <div className='item_middle'>
+                  <LazyImage className='item_img' width="100" height="100" src={item.icon} />
+                </div>
               </div>
               <div className='demo_name two_line'>{item.name}</div>
             </Link>))}
