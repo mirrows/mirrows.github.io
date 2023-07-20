@@ -5,7 +5,6 @@ import type { AppProps } from 'next/app'
 import { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import '../public/common.css';
-import LazyImage from '@/components/LazyImage'
 import { useRouter } from 'next/router'
 import { useLazyImgs } from '@/utils/imgTool'
 import { IPDetail } from '@/types/global'
@@ -96,8 +95,8 @@ export default function App({ Component, pageProps }: AppProps) {
       <Component {...pageProps} />
       <Div style={{ width: '100vw' }}>
         <div className={`ps_mask${loading ? '' : ' hidden'}`}>
-          <div className="loading_wrap" style={{ width: 'fit-content', margin: '20% auto 0' }}>
-            <img width="120" height="167" src="https://empty.t-n.top/pub_lic/2023_04_29/pic1682756884211870.gif" alt="loading img" />
+          <div className="loading_wrap" style={{ width: '120px', margin: '20% auto 0' }}>
+            <img style={{width: '100%'}} width="120" height="167" src="https://empty.t-n.top/pub_lic/2023_04_29/pic1682756884211870.gif" alt="loading img" />
           </div>
         </div>
       </Div>
