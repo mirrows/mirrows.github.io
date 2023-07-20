@@ -43,6 +43,11 @@ const DIV = styled.div`
     overflow: hidden;
     cursor: pointer;
   }
+  .item_img{
+    width: 100%;
+    height: unset;
+    aspect-ratio: 1;
+  }
   .demo_name{
     margin: 10px 0;
     text-align: center;
@@ -93,7 +98,9 @@ export default function Demos() {
           {show && <iframe className='fire_wrap' src="https://empty.t-n.top/html/WebGL%20Fluid%20Simulation.html"></iframe>}
           <div className="items_wrap">
             {list.map((item, i) => (<Link key={i} className='item_wrap' aria-label={item.name} href={item.link}>
-              <LazyImage className='item' width="100" height="100" src={item.icon} />
+              <div className='item'>
+                <LazyImage className='item_img' width="100" height="100" src={item.icon} />
+              </div>
               <div className='demo_name two_line'>{item.name}</div>
             </Link>))}
           </div>
