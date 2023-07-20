@@ -1,8 +1,8 @@
 import LazyImage from '@/components/LazyImage'
 import SVGIcon from '@/components/SVGIcon'
 import { addComment, queryComments } from '@/req/about'
-import { listArtical } from '@/req/main'
-import { UserInfo } from '@/types/github'
+import { ListArticalParams, listArtical } from '@/req/main'
+import { PageInfo, UserInfo } from '@/types/github'
 import { Artical, Comment } from '@/types/global'
 import { env, stone } from '@/utils/global'
 import { parseBody } from '@/utils/md'
@@ -14,6 +14,7 @@ import styled from 'styled-components'
 import xss from 'xss'
 import MarkdownIt from 'markdown-it';
 import DateText from '@/components/SsrRender/Timer'
+import Pagination from '@/components/Pagination'
 // marked在安卓默认浏览器兼容性不佳
 
 const DIV = styled.div`
@@ -282,23 +283,28 @@ const BlogContent = styled.div`
     height: 25px;
     fill: #888;
   }
+  .pagination_wrap{
+    text-align: right;
+  }
 `
 
 type Props = {
   artical: Artical,
-  comments: Comment[]
+  comments: Comment[],
+  pageInfo: PageInfo
 }
 
-export default function Blog({ artical: atl, comments: cmts }: Props) {
+export default function Blog({ artical: atl, comments: cmts, pageInfo }: Props) {
   const md = new MarkdownIt()
   const { query } = useRouter()
   const [artical, setArtical] = useState(atl)
   const content = useRef<HTMLDivElement | null>(null)
   const input = useRef<HTMLTextAreaElement | null>(null)
   const [isPreview, setIsPreview] = useState(false)
-  const page = useRef(1)
   const [comments, setComments] = useState<Comment[]>(cmts || [])
+  const [curCommentsInfo, setInfo] = useState<Partial<PageInfo>>(pageInfo || {})
   const [isOwner, setOwner] = useState(false)
+  const [page, setPage] = useState(1)
   const router = useRouter();
   const mdify = () => {
     if (!input.current?.value) return;
@@ -325,11 +331,20 @@ export default function Blog({ artical: atl, comments: cmts }: Props) {
       }
     })
   }
-  const listComments = useCallback(() => {
+  const handlePagination = ({type, page }: {type: 'before' | 'after', page?: number}) => {
+      setPage(page || 1)
+      listComments({ number: +(query.number || ''), type, cursor: { before: curCommentsInfo.startCursor, after: curCommentsInfo.endCursor }[type]});
+  }
+  const listComments = useCallback((params?: ListArticalParams) => {
     if(!query.number) return
-    queryComments(page.current, +query.number).then(res => {
-      setArtical((atl) => ({ ...atl, comments: res.total }))
-      setComments(res.data)
+    
+    queryComments(params || { number: +query.number }).then(({ data, total, pageInfo }) => {
+      setComments(data)
+      setArtical(atl => ({...atl, comments: total}))
+      setInfo(pageInfo);
+      if(!params) {
+        setPage(1)
+      }
     })
   }, [query])
   useEffect(() => {
@@ -391,6 +406,7 @@ export default function Blog({ artical: atl, comments: cmts }: Props) {
             </div>
           </div>
           <div className='comments_wrap'>
+            <Pagination page={page} total={artical?.comments || 0} onChange={handlePagination} />
             {
               comments.length ? comments.map(comment => (
                 <div key={comment.id} className='comment_content_wrap'>
@@ -429,8 +445,20 @@ export default function Blog({ artical: atl, comments: cmts }: Props) {
 }
 
 export async function getStaticPaths() {
+  let atls = []
   const artical = await listArtical()
-  const paths = artical?.data?.map((atl: Artical) => ({
+  atls.push(...(artical?.data || []))
+  if (artical?.total > 30) {
+    let info = artical?.pageInfo || {}
+    for(let i = 1; i < Math.ceil(artical?.total/30);i++) {
+      const type = 'after'
+      const cursor = { before: info.startCursor, after: info.endCursor }[type]
+      const artical = await listArtical({type, cursor})
+      atls.push(...(artical?.data || []))
+      info = artical?.pageInfo || {}
+    }
+  }
+  const paths = atls.map((atl: Artical) => ({
     params: { number: String(atl.number) }
   })) || []
   return {
@@ -443,7 +471,7 @@ export const getStaticProps = async (context: any) => {
   const { number } = context.params
   const props: Partial<Props> = {}
   if (+String(number) + 1) {
-    const reqs = [listArtical({number: +number}), queryComments(1, number)]
+    const reqs = [listArtical({number: +number}), queryComments({ number })]
     const [artical, comments] = await Promise.allSettled(reqs);
     if (artical.status === 'fulfilled' && artical.value?.data) {
 
@@ -453,6 +481,7 @@ export const getStaticProps = async (context: any) => {
     if (comments.status === 'fulfilled' && comments.value?.data) {
       const data = comments.value.data
       props.comments = data
+      props.pageInfo = comments.value.pageInfo
     }
   }
   return { props }

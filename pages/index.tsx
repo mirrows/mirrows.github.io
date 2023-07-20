@@ -278,10 +278,6 @@ const Div = styled.div`
     color: red;
     opacity: 0.5;
   }
-  .pagination_wrap{
-    margin: 10px 0;
-    text-align: right;
-  }
 `
 
 export default function Home({ artical, total: initTotal }: Props) {
@@ -370,9 +366,7 @@ export default function Home({ artical, total: initTotal }: Props) {
           </MySwiper>
           <div className='main_content'>
             <div className='content_left'>
-              <div className='pagination_wrap'>
-                <Pagination total={total} onChange={handlePagination} />
-              </div>
+              <Pagination total={total} onChange={handlePagination} />
               {articals.filter(artical => isOwner || !ifJudge(artical.created_at)).map((artical) => (
                 <Link
                   key={artical.id}

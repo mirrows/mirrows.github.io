@@ -1,8 +1,12 @@
 import styled from "styled-components"
 import SVGIcon from "../SVGIcon"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 const DIV = styled.div`
+    &.pagination_wrap{
+        margin-bottom: 10px;
+        text-align: right;
+    }
     .arrow{
         padding: 4px 16px;
         border: none;
@@ -47,8 +51,8 @@ type Props = {
     onChange: ({page,size, total, type}: Omit<Props, 'onChange'> & {type: 'before' | 'after'}) => void
 }
 
-export default function Pagination({page=1, size=30, total, onChange}: Props) {
-    const [pPage, setPage] = useState(page)
+export default function Pagination({page, size=30, total, onChange}: Props) {
+    const [pPage, setPage] = useState(1)
     const [pSize] = useState(size)
     const lastPage = () => {
         setPage((val: number) => {
@@ -64,8 +68,11 @@ export default function Pagination({page=1, size=30, total, onChange}: Props) {
             return newVal
         })
     }
+    useEffect(() => {
+        setPage(page || 1)
+    }, [page])
     return total < size ? <></> : (
-        <DIV>
+        <DIV className="pagination_wrap">
             <button className="arrow arrow_left" disabled={pPage === 1} onClick={lastPage}>
                 <SVGIcon type='arrow_left' fill="gray" width="20" />
             </button>

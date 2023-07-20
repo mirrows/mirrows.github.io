@@ -11,6 +11,9 @@ import styled from 'styled-components'
 import { particlesCursor } from 'threejs-toys'
 import xss from 'xss'
 import MarkdownIt from 'markdown-it';
+import Pagination from '@/components/Pagination'
+import { ListArticalParams } from '@/req/main'
+import { PageInfo } from '@/types/github'
 // marked在安卓默认浏览器兼容性不佳
 
 const DIV = styled.div`
@@ -248,10 +251,11 @@ const BlogContent = styled.div`
 
 type Props = {
   artical: Artical,
-  comments: Comment[]
+  comments: Comment[],
+  pageInfo: Partial<PageInfo>
 }
 
-export default function About({ artical: atl, comments: cmts }: Props) {
+export default function About({ artical: atl, comments: cmts, pageInfo }: Props) {
   const md = new MarkdownIt()
   const pic = useRef<HTMLElement | null>()
   const dom = useRef<any>()
@@ -259,9 +263,9 @@ export default function About({ artical: atl, comments: cmts }: Props) {
   const content = useRef<HTMLDivElement | null>(null)
   const input = useRef<HTMLTextAreaElement | null>(null)
   const [isPreview, setIsPreview] = useState(false)
-  const page = useRef(1)
-  const total = useRef(0)
   const [comments, setComments] = useState<Comment[]>([...(cmts || [])])
+  const [page, setPage] = useState(1)
+  const [curCommentsInfo, setInfo] = useState<Partial<PageInfo>>(pageInfo || {})
   const mdify = () => {
     if (!input.current?.value) return;
     const body = xss(md.render(input.current.value))
@@ -279,19 +283,26 @@ export default function About({ artical: atl, comments: cmts }: Props) {
     if (!input.current?.value) return
     addComment(input.current.value).then(res => {
       if (res.code) return
-      listComments(1)
+      listComments()
       input.current && (input.current.value = '')
       content.current && (content.current.innerHTML = '')
       setIsPreview(false)
     })
   }
-
-  const listComments = (page: number) => {
-    queryComments(page).then(res => {
-      total.current = res.total
-      setComments(res.data)
-    })
-  }
+  const handlePagination = ({type, page }: {type: 'before' | 'after', page?: number}) => {
+    setPage(page || 1)
+    listComments({ number: 33, type, cursor: { before: curCommentsInfo.startCursor, after: curCommentsInfo.endCursor }[type]});
+}
+const listComments = (params?: ListArticalParams) => {
+  queryComments(params || { number: 2 }).then(({ data, total, pageInfo }) => {
+    setComments(data)
+    setArtical(atl => ({...atl, comments: total}))
+    setInfo(pageInfo);
+    if(!params) {
+      setPage(1)
+    }
+  })
+}
   const queryMe = () => {
     about().then(res => {
       setArtical(res.data)
@@ -326,7 +337,7 @@ export default function About({ artical: atl, comments: cmts }: Props) {
       dom.current.uniforms.uPointSize.value = 1 + Math.random() * 10
     })
     queryMe();
-    listComments(page.current);
+    listComments();
   }, [])
   return (
     <>
@@ -354,6 +365,7 @@ export default function About({ artical: atl, comments: cmts }: Props) {
             </div>
           </div>
           <div className='comments_wrap'>
+            <Pagination page={page} total={artical?.comments || 0} onChange={handlePagination} />
             {comments.length ? comments.map(comment => (
               <div key={comment.id} className='comment_content_wrap'>
                 <div className='author_msg'>
@@ -383,7 +395,7 @@ export default function About({ artical: atl, comments: cmts }: Props) {
 }
 export const getStaticProps = async (context: any) => {
   const props: Partial<Props> = {}
-  const reqs = [about(), queryComments(1)]
+  const reqs = [about(), queryComments({number: 2})]
   const [artical, comments] = await Promise.allSettled(reqs);
   if (artical.status === 'fulfilled' && artical.value?.data) {
     const data = artical.value.data
@@ -392,6 +404,7 @@ export const getStaticProps = async (context: any) => {
   if (comments.status === 'fulfilled' && comments.value?.data) {
     const data = comments.value.data
     props.comments = data
+    props.pageInfo = comments.value.pageInfo
   }
   return { props }
 }

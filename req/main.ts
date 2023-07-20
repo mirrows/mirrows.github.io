@@ -38,7 +38,8 @@ export const ipQuery = () => {
 export type ListArticalParams = {
   number?: number,
   type?: 'before' | 'after',
-  cursor?: string
+  cursor?: string,
+  first?: number
 }
 
 export const listArtical = (params?: ListArticalParams) => {
