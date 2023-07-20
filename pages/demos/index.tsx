@@ -30,6 +30,7 @@ const DIV = styled.div`
   .item_wrap{
     position: relative;
     pointer-events: all;
+    padding: 0.5rem;
   }
   .item{
     position: relative;
@@ -102,7 +103,7 @@ export default function Demos() {
         <DIV>
           {show && <iframe className='fire_wrap' src="https://empty.t-n.top/html/WebGL%20Fluid%20Simulation.html"></iframe>}
           <div className="items_wrap">
-            {list.map((item, i) => (<Link key={i} className='item_wrap' aria-label={item.name} href={item.link}>
+            {[...list, ...list, ...list, ...list, ...list, ...list].map((item, i) => (<Link key={i} className='item_wrap' aria-label={item.name} href={item.link}>
               <div className='item'>
                 <div className='item_middle'>
                   <LazyImage className='item_img' width="100" height="100" src={item.icon} />
