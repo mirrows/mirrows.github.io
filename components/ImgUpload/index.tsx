@@ -4,6 +4,8 @@ import { file2Base64, fileCompressor } from "@/utils/imgTool"
 import { ChangeEvent, DragEvent, KeyboardEvent, MouseEvent, useEffect, useMemo, useRef, useState } from "react"
 import styled from "styled-components"
 import SVGIcon from "../SVGIcon"
+import { Pic } from "@/types/demos"
+import PicModal, { ModalRefType } from "../PicModal"
 
 type Props = {
     clickable?: boolean,
@@ -111,6 +113,7 @@ export default function ImgUpload({ clickable = true, children, onStartUpload, p
     const [urlInput, setUrlInput] = useState('')
     const [loading, setLoading] = useState(false)
     const tmpPersonal = useRef(personal)
+    const picRef = useRef<ModalRefType | null>(null)
     const win = useRef(typeof window !== "undefined" ? window?.URL || window?.webkitURL : undefined)
     const total = useMemo(() => {
         return [
@@ -216,6 +219,12 @@ export default function ImgUpload({ clickable = true, children, onStartUpload, p
             })
         }
     }
+    const handlePreview = (ind: number) => {
+        picRef.current?.open(total.map(p => ({
+            cdn_url: p.src,
+            sha: Date.now().toString() + ind,
+        })), ind)
+    }
     useEffect(() => {
         // 释放缓存
         const url = win.current
@@ -240,7 +249,7 @@ export default function ImgUpload({ clickable = true, children, onStartUpload, p
             return map
         })
     }, [total])
-    return (
+    return (<>
         <DIV ref={wrapRef} {...props} onClick={clickHandle} onDrop={dropFile} onDragOver={(e) => e.preventDefault()}>
             {!!total.length || children}
             <input
@@ -253,10 +262,10 @@ export default function ImgUpload({ clickable = true, children, onStartUpload, p
                 style={{ display: 'none' }}
                 onChange={handlefile}
             />
-            <div className="scroll_er tmp_wrap" onClick={e => e.stopPropagation()}>
+            <div className="scroll_er tmp_wrap">
                 {total.map((e, i) => (
-                    <div key={e.id} className={`tmp_item_wrap upload_${uploadStatusMap[e.id]}`}>
-                        <img className="tmp_item" width="40" height="96" src={e.src} alt="" />
+                    <div key={e.id} className={`tmp_item_wrap upload_${uploadStatusMap[e.id]}`} onClick={e => e.stopPropagation()}>
+                        <img className="tmp_item" width="40" height="96" src={e.src} alt="" onClick={() => handlePreview(i)} />
                         {loading || <SVGIcon className="tmp_del_btn" type="close" onClick={() => deleteTmpPic(e, i)} />}
                         {{
                             SUCCESS: <SVGIcon className="tmp_status_btn" type="yes" fill="green" />,
@@ -282,5 +291,6 @@ export default function ImgUpload({ clickable = true, children, onStartUpload, p
                 {!!total.length && <button className="normal_btn submit_btn" onClick={handleSubmit}>submit</button>}
             </div>
         </DIV>
-    )
+        <PicModal ref={picRef} />
+    </>)
 }

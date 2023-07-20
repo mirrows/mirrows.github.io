@@ -1,7 +1,7 @@
 import LazyImage from "@/components/LazyImage"
 import SVGIcon from "@/components/SVGIcon"
 import { deletePic, queryPicList } from "@/req/demos"
-import { Pic, RefType } from "@/types/demos"
+import { Pic } from "@/types/demos"
 import { stone } from "@/utils/global"
 import { forwardRef, Ref, useCallback, useEffect, useImperativeHandle, useRef, useState } from "react"
 import styled from "styled-components"
@@ -85,6 +85,10 @@ type Props = {
 
 type PicsMap = {
   [key in Folder['path']]: Pic[]
+}
+
+export type RefType = {
+  afterUpload: () => Promise<void>
 }
 
 

@@ -1,6 +1,3 @@
-export type RefType = {
-  afterUpload: () => Promise<void>
-}
 
 export type Pic = {
   download_url: string,
