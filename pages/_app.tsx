@@ -96,7 +96,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <Div style={{ width: '100vw' }}>
         <div className={`ps_mask${loading ? '' : ' hidden'}`}>
           <div className="loading_wrap" style={{ width: '120px', margin: '20% auto 0' }}>
-            <img style={{width: '100%'}} width="120" height="167" src="https://empty.t-n.top/pub_lic/2023_04_29/pic1682756884211870.gif" alt="loading img" />
+            <img style={{width: '100%'}} src="https://empty.t-n.top/pub_lic/2023_04_29/pic1682756884211870.gif" alt="loading img" />
           </div>
         </div>
       </Div>
