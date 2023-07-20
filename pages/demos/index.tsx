@@ -34,6 +34,7 @@ const DIV = styled.div`
   }
   .item{
     width: 100%;
+    aspect-ratio: 1/1;
     height: unset;
     padding: 10px;
     border: 3px dashed #f5f5f5;

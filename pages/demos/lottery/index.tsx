@@ -248,12 +248,12 @@ export default function Lottery () {
     // const [table, handle] = useTriggerBtn(true)
     const demo = useRef(7)
     const [areas, setArea] = useState([
-        { name: 't1', checked: true, img: 'https://empty.t-n.top/pub_lic/2023_06_19/pic1687162882486612.png', target: '', percent: 0.1 },
-        { name: 't2', checked: true, img: 'https://empty.t-n.top/pub_lic/2023_05_31/pic1685527384699939.png', target: '', percent: 0.05 },
-        { name: 't3', checked: true, img: 'https://empty.t-n.top/pub_lic/2023_05_31/pic1685527386794892.png', target: '', percent: 0.4 },
-        { name: 't4', checked: true, img: 'https://empty.t-n.top/pub_lic/2023_06_19/pic1687162735145513.png', target: '', percent: 0.1 },
-        { name: 't5', checked: true, img: 'https://empty.t-n.top/pub_lic/2023_06_19/pic1687162737072848.png', target: '', percent: 0.2 },
-        { name: 't6', checked: true, img: 'https://empty.t-n.top/pub_lic/2023_05_31/pic1685527382597218.png', target: '', percent: 0.15 },
+        { name: 't1', checked: true, img: 'https://p.t-n.top/mini/2023_07_20/pic1689815874534864.png', target: '', percent: 0.1 },
+        { name: 't2', checked: true, img: 'https://p.t-n.top/mini/2023_07_20/pic1689815877667843.png', target: '', percent: 0.05 },
+        { name: 't3', checked: true, img: 'https://p.t-n.top/mini/2023_07_20/pic1689815880200733.png', target: '', percent: 0.4 },
+        { name: 't4', checked: true, img: 'https://p.t-n.top/mini/2023_07_20/pic1689815882497991.png', target: '', percent: 0.1 },
+        { name: 't5', checked: true, img: 'https://p.t-n.top/mini/2023_07_20/pic1689815884157426.png', target: '', percent: 0.2 },
+        { name: 't6', checked: true, img: 'https://p.t-n.top/mini/2023_07_19/pic1689773986803838.png', target: '', percent: 0.15 },
     ])
     const [emptyName, setEmptyName] = useState('empty')
     const empty = useMemo(() => {

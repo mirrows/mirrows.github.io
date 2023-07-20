@@ -171,8 +171,14 @@ export default function ImgUpload({ clickable = true, children, onStartUpload, p
         for (let i = 0; i < urls.length; i++) {
             let status: UploadType['uploadStatus'] = 'LOADING';
             newMap[total[i + files.length].id] = status
+            setUploadStatusMap({ ...newMap })
             const name = 'pic' + Date.now() + String(Math.random()).slice(4, 7)
             const path = `${Format(new Date(), 'YYYY_MM_DD')}/${name}`
+            // await new Promise(resolve => {
+            //     setTimeout(() => {
+            //         resolve(0)
+            //     }, 5000)
+            // })
             const mini = await uploadUrl({ url: urls[i], path: `${tmpPersonal.current ? 'personal/' : ''}mini/${path}` })
             const normal = await uploadUrl({ url: urls[i], path: `${tmpPersonal.current ? 'personal/' : ''}normal/${path}` })
             if (normal.code || mini.code) {

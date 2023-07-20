@@ -185,6 +185,7 @@ export default function ImgSource() {
                 emit()
             }, 500)
         } else {
+            setPics([])
             document.body.classList.remove('disabled_scroll')
             if (!curScrollTop.current.val) return
             document[curScrollTop.current.obj].scrollTop = curScrollTop.current.val
