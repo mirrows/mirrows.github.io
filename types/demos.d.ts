@@ -7,3 +7,5 @@ export type Pic = {
   path: string,
   name: string
 }
+
+export type Mode = "private" | "photo"

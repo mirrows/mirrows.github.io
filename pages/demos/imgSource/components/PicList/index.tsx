@@ -1,7 +1,7 @@
 import LazyImage from "@/components/LazyImage"
 import SVGIcon from "@/components/SVGIcon"
-import { deletePic, queryPicList } from "@/req/demos"
-import { Pic } from "@/types/demos"
+import { ModeMap, deletePic, queryPicList } from "@/req/demos"
+import { Mode, Pic } from "@/types/demos"
 import { stone } from "@/utils/global"
 import { forwardRef, Ref, useCallback, useEffect, useImperativeHandle, useRef, useState } from "react"
 import styled from "styled-components"
@@ -77,6 +77,7 @@ type Props = {
   list: Folder[],
   path?: string,
   show?: boolean | string,
+  mode?: Mode,
   onPreview?: (items: Pic[], ind: number) => void,
   [key: string]: any,
 }
@@ -92,9 +93,9 @@ export type RefType = {
 }
 
 
-function UploadPicList({ list = [], path = 'mini/', show = true, onPreview, ...props }: Props, ref: Ref<RefType>) {
+function UploadPicList({ list = [], mode = ModeMap.PHOTO, path = 'mini/', show = true, onPreview, ...props }: Props, ref: Ref<RefType>) {
   const [isOwner, setOwner] = useState(false)
-  const [folders, setFolders] = useState(list)
+  const [folders, setFolders] = useState(list || [])
   const [pics, setPics] = useState<PicsMap>({})
   const page = useRef(0)
   const size = useRef(1)
@@ -112,16 +113,16 @@ function UploadPicList({ list = [], path = 'mini/', show = true, onPreview, ...p
       path = numOpath
     }
     if (!path) return
-    const res = await queryPicList(path).catch(() => { });
+    const res = await queryPicList(path, mode).catch(() => { });
     setPath('')
     setPics(val => ({
       ...val,
       [path]: res?.data || val?.[path] || []
     }))
     return res?.data || []
-  }, [folders])
+  }, [folders, mode])
   const queryFolder = useCallback(async () => {
-    const { data } = await queryPicList(path);
+    const { data } = await queryPicList(path, mode);
     await new Promise(res => {
       setTimeout(async () => {
         setFolders(data)
@@ -129,7 +130,7 @@ function UploadPicList({ list = [], path = 'mini/', show = true, onPreview, ...p
       })
     })
 
-  }, [path])
+  }, [path, mode])
   const firstTime = useCallback(async () => {
     page.current += 1
     for (let i = 0; i < size.current; i++) {
@@ -138,10 +139,10 @@ function UploadPicList({ list = [], path = 'mini/', show = true, onPreview, ...p
     if (folders.length <= page.current * size.current) {
       setEnd(true)
     }
-  }, [folders.length, queryPics])
+  }, [folders?.length, queryPics])
 
   const delPic = (path: string, item: Pic) => {
-    deletePic({ path: item.path, sha: item.sha }).then(res => {
+    deletePic({ path: item.path, sha: item.sha, mode }).then(res => {
       queryPics(path)
     })
   }
@@ -166,7 +167,7 @@ function UploadPicList({ list = [], path = 'mini/', show = true, onPreview, ...p
     }
   }, [queryFolder])
   useEffect(() => {
-    if(!folders.length) return
+    if(!folders?.length) return
     io.current = new IntersectionObserver(async (entries: IntersectionObserverEntry[]) => {
       if (entries[0].intersectionRatio <= 0) return;
       footer.current && io.current?.unobserve(footer.current);
@@ -182,7 +183,7 @@ function UploadPicList({ list = [], path = 'mini/', show = true, onPreview, ...p
       io.current?.disconnect();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [folders.length])
+  }, [folders?.length])
   useEffect(() => {
     if (show) {
       footer.current && io.current?.observe(footer.current)
@@ -221,7 +222,7 @@ function UploadPicList({ list = [], path = 'mini/', show = true, onPreview, ...p
         ))}
       </div>
       <div ref={footer}>
-        {end ? (
+        {end || !folders ? (
           <div className="no_more_tips">真的一点都没有了。。。。。。</div>
         ) : (
           <SVGIcon className="load_more_sign rotate" width="48" type="loading" fill="gray" />

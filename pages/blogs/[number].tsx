@@ -9,12 +9,14 @@ import { parseBody } from '@/utils/md'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { ClipboardEvent, useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import xss from 'xss'
 import MarkdownIt from 'markdown-it';
 import DateText from '@/components/SsrRender/Timer'
 import Pagination from '@/components/Pagination'
+import ImgUpload, { UploadRefType } from '@/components/ImgUpload'
+import { Pic } from '@/types/demos'
 // marked在安卓默认浏览器兼容性不佳
 
 const DIV = styled.div`
@@ -180,7 +182,7 @@ const BlogContent = styled.div`
     }
   }
   .preview_detail_wrap{
-    max-height: 160px;
+    max-height: 240px;
     overflow: auto;
   }
   .preview_detail{
@@ -306,6 +308,7 @@ export default function Blog({ artical: atl, comments: cmts, pageInfo }: Props) 
   const [isOwner, setOwner] = useState(false)
   const [page, setPage] = useState(1)
   const router = useRouter();
+  const uploadRef = useRef<UploadRefType>(null)
   const mdify = () => {
     if (!input.current?.value) return;
     const body = xss(md.render(input.current.value))
@@ -316,6 +319,31 @@ export default function Blog({ artical: atl, comments: cmts, pageInfo }: Props) 
     setIsPreview((val) => {
       !val && mdify()
       return !val
+    })
+  }
+  const handlePaste = (e: ClipboardEvent<HTMLTextAreaElement>) => {
+    let file = [];
+    const items = e.clipboardData.items;
+    if (items && items.length) {
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf('image') !== -1) {
+          const cpFile = items[i].getAsFile()
+          cpFile && file.push(cpFile);
+        }
+      }
+    }
+    if (file) {
+      // 此时获取到file文件对象，即可处理上传相关处理
+      uploadRef.current?.addFile(file)
+    }
+  }
+  const afterUpload = (pics: {mini: Pic, normal: Pic}[]) => {
+    setTimeout(() => {
+      if(input.current) {
+        console.log(input.current.value)
+        input.current.value = input.current.value + pics.map(({mini, normal}) => `![${mini.name}](${mini.cdn_url})\n![${normal.name}](${normal.cdn_url})`).join('\n')
+        input.current.focus()
+      }
     })
   }
   const submit = (e: React.MouseEvent) => {
@@ -392,18 +420,36 @@ export default function Blog({ artical: atl, comments: cmts, pageInfo }: Props) 
               <LazyImage className='atl_bg' width="700" height="200" src={artical?.img || ''} alt={artical?.title || ''} />
               <div className="blog_content" dangerouslySetInnerHTML={{ __html: parseBody(xss(md.render(artical?.body || '')))}}></div>
             </div>
-            <div className='blog_wrap add_comment'>
-              <div className='operate_wrap'>
-                {/* <img src="/code.svg" className='preview' alt='preview' onClick={handlePreview} /> */}
-                <SVGIcon type="code" className='preview' alt='preview' onClick={handlePreview} />
-                <button className='submit' aria-label='submit comment' onClick={submit}>add comment</button>
+            
+              <div className='blog_wrap add_comment'>
+                  <div className='operate_wrap'>
+                    {/* <img src="/code.svg" className='preview' alt='preview' onClick={handlePreview} /> */}
+                    <SVGIcon type="code" className='preview' alt='preview' onClick={handlePreview} />
+                    <button className='submit' aria-label='submit comment' onClick={submit}>add comment</button>
+                  </div>
+                  <div className='preview_detail_wrap' style={{ display: isPreview ? 'block' : 'none' }}>
+                    <div ref={content} className='blog_content preview_detail'></div>
+                  </div>
+                  <ImgUpload
+                    ref={uploadRef}
+                    autoUpload
+                    clickable={false}
+                    onFinish={afterUpload}
+                  >
+                    <label htmlFor="commentInput"></label>
+                    <textarea
+                      id='commentInput'
+                      ref={input}
+                      className='text_area'
+                      rows={8}
+                      style={{ display: isPreview ? 'none' : 'block' }}
+                      placeholder='这里添加评论......'
+                      suppressContentEditableWarning
+                      contentEditable
+                      onPaste={handlePaste}
+                    />
+                  </ImgUpload>
               </div>
-              <div className='preview_detail_wrap' style={{ display: isPreview ? 'block' : 'none' }}>
-                <div ref={content} className='blog_content preview_detail'></div>
-              </div>
-              <label htmlFor="commentInput"></label>
-              <textarea id='commentInput' ref={input} className='text_area' rows={8} style={{ display: isPreview ? 'none' : 'block' }} placeholder='这里添加评论......'></textarea>
-            </div>
           </div>
           <div className='comments_wrap'>
             <Pagination page={page} total={artical?.comments || 0} onChange={handlePagination} />

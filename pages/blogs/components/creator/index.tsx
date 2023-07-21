@@ -1,11 +1,13 @@
+import ImgUpload, { UploadRefType } from '@/components/ImgUpload'
 import LazyImage from '@/components/LazyImage'
 import DateText from '@/components/SsrRender/Timer'
 import { ArticalParams } from '@/types/blogs'
+import { Pic } from '@/types/demos'
 import { Artical } from '@/types/global'
 import { parseBody } from '@/utils/md'
 import MarkdownIt from 'markdown-it'
 import { useRouter } from 'next/router'
-import { ChangeEvent, useEffect, useState } from 'react'
+import { ChangeEvent, ClipboardEvent, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import xss from 'xss'
 
@@ -20,6 +22,7 @@ const DIV = styled.div`
     width: 80%;
     max-width: 1360px;
     margin: 0 auto;
+    background-color: inherit;
   }
   .input_area,.real_content_area{
     width: 100%;
@@ -126,9 +129,13 @@ const DIV = styled.div`
     font-size: 16px;
     pointer-events: all;
   }
+  .content_area{
+    height: calc(100vh - 218px);
+    box-sizing: content-box;
+  }
   .text_input{
     width: 100%;
-    height: calc(100vh - 218px);
+    height: 100%;
     padding: 10px;
     background-color: #f5f5f5;
     border: none;
@@ -182,9 +189,21 @@ const DIV = styled.div`
     border-radius: 8px;
     pointer-events: all;
   }
+  .con_input_wrap{
+    height: 100%;
+  }
   @media(max-width: 769px){
+    .mobile_top_mask{
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 65px;
+      background-color: inherit;
+    }
     .wrap{
       flex-direction: column;
+      align-items: center;
     }
     .input_area{
       order: -1;
@@ -194,7 +213,7 @@ const DIV = styled.div`
       margin-bottom: 0;
       background-color: #e2e2e2;
     }
-    .text_input{
+    .content_area{
       height: 30vh;
     }
   }
@@ -213,7 +232,29 @@ export default function BlogCreator({ artical, onSubmit: fn }: Props) {
   const parseMd = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setContent(e.target.value)
   }
+  const uploadRef = useRef<UploadRefType>(null)
   const router = useRouter()
+  const handlePaste = (e: ClipboardEvent<HTMLTextAreaElement>) => {
+    let file = [];
+    const items = e.clipboardData.items;
+    if (items && items.length) {
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf('image') !== -1) {
+          const cpFile = items[i].getAsFile()
+          cpFile && file.push(cpFile);
+        }
+      }
+    }
+    if (file) {
+      // 此时获取到file文件对象，即可处理上传相关处理
+      uploadRef.current?.addFile(file)
+    }
+  }
+  const afterUpload = (pics: {mini: Pic, normal: Pic}[]) => {
+    setTimeout(() => {
+      setContent(c => c + pics.map(({mini, normal}) => `![${mini.name}](${mini.cdn_url})\n![${normal.name}](${normal.cdn_url})`).join('\n'))
+    })
+  }
   const onSubmit = () => {
     const { number } = router.query;
     if (!confirm('确认提交？')) return
@@ -236,6 +277,7 @@ export default function BlogCreator({ artical, onSubmit: fn }: Props) {
     setImg(artical?.img || '')
   }, [artical])
   return (<DIV>
+    <div className='mobile_top_mask'></div>
     <div className='wrap'>
       <div className='real_content_area'>
         <h1>{title}</h1>
@@ -262,13 +304,25 @@ export default function BlogCreator({ artical, onSubmit: fn }: Props) {
           {title && content && <button className='create_blog_btn' onClick={onSubmit}>{router.query.number ? 'edit' : 'create'}</button>}
         </div>
         <div className='content_area'>
+        <ImgUpload
+          className="con_input_wrap"
+          ref={uploadRef}
+          autoUpload
+          clickable={false}
+          onFinish={afterUpload}
+        >
           <textarea
             className='text_input'
             name="blog content"
             placeholder='博客正文'
-            defaultValue={content}
+            value={content}
+            autoFocus
+            suppressContentEditableWarning
+            contentEditable
+            onPaste={handlePaste}
             onChange={parseMd}
           ></textarea>
+        </ImgUpload>
         </div>
       </div>
     </div>

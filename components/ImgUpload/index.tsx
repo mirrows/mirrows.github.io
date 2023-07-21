@@ -1,24 +1,28 @@
-import { uploadBase64, uploadUrl } from "@/req/demos"
+import { ModeMap, uploadBase64, uploadUrl } from "@/req/demos"
 import { Format } from "@/utils/common"
 import { file2Base64, fileCompressor } from "@/utils/imgTool"
-import { ChangeEvent, DragEvent, KeyboardEvent, MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { ChangeEvent, DragEvent, KeyboardEvent, MouseEvent, ReactNode, forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react"
 import styled from "styled-components"
 import SVGIcon from "../SVGIcon"
-import { Pic } from "@/types/demos"
 import PicModal, { ModalRefType } from "../PicModal"
+import { Mode, Pic } from "@/types/demos"
 
 type Props = {
     clickable?: boolean,
     children: JSX.Element | JSX.Element[],
     personal?: boolean,
-    onStartUpload: () => void,
-    onFinish: () => void,
+    onStartUpload?: () => void,
+    onFinish?: (items: {mini: Pic, normal: Pic}[]) => void,
     autoUpload?: boolean,
     [key: string]: any,
 }
 
 type UploadType = {
     uploadStatus: 'WAIT' | 'SUCCESS' | 'ERROR' | 'LOADING',
+}
+
+export type UploadRefType = {
+    addFile: (items: File[]) => void,
 }
 
 const DIV = styled.div`
@@ -104,17 +108,20 @@ const DIV = styled.div`
     .submit_btn{
         float: right;
     }
+    .upload_children_wrap{
+        height: 100%;
+    }
 `
 
-export default function ImgUpload({
+const ImgUpload = forwardRef<UploadRefType, Props>(({
     clickable = true,
     children,
     autoUpload = false,
-    onStartUpload,
+    onStartUpload = () => {},
     personal = false,
     onFinish = () => { },
     ...props
-}: Props) {
+}, ref) => {
     const wrapRef = useRef<HTMLDivElement | null>(null)
     const inputRef = useRef<HTMLInputElement | null>(null)
     const [files, setFiles] = useState<File[]>([])
@@ -154,10 +161,10 @@ export default function ImgUpload({
         e.stopPropagation();
         e.dataTransfer.files?.length && setFiles((pics) => [...pics, ...Array.from(e.dataTransfer.files)])
     }
-    const uploadFile = async (file: File, options: any, path: string) => {
+    const uploadFile = async (file: File, options: any, path: string, mode: Mode) => {
         const blob = file.type.match('gif') && !path.match('mini') ? file : await fileCompressor(file, options)
         const base64 = await file2Base64(blob);
-        const result = await uploadBase64({ content: base64.split(',')[1], path })
+        const result = await uploadBase64({ content: base64.split(',')[1], path, mode })
         return result
     }
     const handleSubmit = async (e?: MouseEvent<HTMLButtonElement>) => {
@@ -165,15 +172,18 @@ export default function ImgUpload({
         setLoading(true)
         onStartUpload()
         tmpPersonal.current = personal
+        const mode = tmpPersonal.current ? ModeMap.PRIVATE : ModeMap.PHOTO
         const newMap = { ...uploadStatusMap };
+        const result = []
         for (let i = 0; i < files.length; i++) {
             const name = 'pic' + Date.now() + String(Math.random()).slice(4, 7) + '.' + files[i].name.split('.').reverse()[0]
             const path = `${Format(new Date(), 'YYYY_MM_DD')}/${name}`
             let status: UploadType['uploadStatus'] = 'LOADING';
             newMap[total[i].id] = status
             setUploadStatusMap({ ...newMap })
-            const mini = await uploadFile(files[i], { quality: 0.1, mimeType: 'image/jpeg' }, `${personal ? 'personal/' : ''}mini/${path}`)
-            const normal = await uploadFile(files[i], { quality: 1024 * 1024 * 2 > files[i].size ? 1024 * 1024 * 2 / files[i].size : 0.8 }, `${personal ? 'personal/' : ''}normal/${path}`)
+            const mini = await uploadFile(files[i], { quality: 0.1, mimeType: 'image/jpeg' }, `mini/${path}`, mode)
+            const normal = await uploadFile(files[i], { quality: 1024 * 1024 * 2 > files[i].size ? 1024 * 1024 * 2 / files[i].size : 0.8 }, `normal/${path}`, mode)
+            result.push({ mini: mini.data, normal: normal.data })
             if (normal.code || mini.code) {
                 status = 'ERROR'
             }
@@ -191,15 +201,16 @@ export default function ImgUpload({
             //         resolve(0)
             //     }, 5000)
             // })
-            const mini = await uploadUrl({ url: urls[i], path: `${tmpPersonal.current ? 'personal/' : ''}mini/${path}` })
-            const normal = await uploadUrl({ url: urls[i], path: `${tmpPersonal.current ? 'personal/' : ''}normal/${path}` })
+            const mini = await uploadUrl({ url: urls[i], path: `mini/${path}`, mode })
+            const normal = await uploadUrl({ url: urls[i], path: `normal/${path}`, mode })
+            result.push({ mini: mini.data, normal: normal.data })
             if (normal.code || mini.code) {
                 status = 'ERROR'
             }
             newMap[total[i + files.length].id] = status === 'LOADING' ? 'SUCCESS' : status
             setUploadStatusMap({ ...newMap })
         }
-        onFinish();
+        onFinish(result);
         setUrls((urls) => urls.filter((_, i) => newMap[total[i + files.length].id] === 'ERROR'))
         setFiles((files) => files.filter((_, i) => newMap[total[i].id] === 'ERROR'))
         inputRef.current && (inputRef.current.value = '')
@@ -234,6 +245,10 @@ export default function ImgUpload({
             sha: Date.now().toString() + ind,
         })), ind)
     }
+    const addFile = (items: File[]) => {
+        setFiles((pics) => [...pics, ...items])
+    }
+    useImperativeHandle(ref, () => ({ addFile }))
     useEffect(() => {
         // 释放缓存
         const url = win.current
@@ -266,7 +281,9 @@ export default function ImgUpload({
     }, [total])
     return (<>
         <DIV ref={wrapRef} {...props} onClick={clickHandle} onDrop={dropFile} onDragOver={(e) => e.preventDefault()}>
-            {!!total.length || children}
+            <div className={!!total.length ? 'upload_children_wrap hide' : 'upload_children_wrap'}>
+                {children}
+            </div>
             <input
                 ref={inputRef}
                 type="file"
@@ -308,4 +325,8 @@ export default function ImgUpload({
         </DIV>
         <PicModal ref={picRef} />
     </>)
-}
+})
+
+ImgUpload.displayName = "ImgUpload"
+
+export default ImgUpload

@@ -14,6 +14,8 @@ const DIV = styled.div`
     margin: 0 auto;
     background-image: url('https://empty.t-n.top/pub_lic/2023_07_08/pic1688805979076243.jpg');
     text-align: center;
+    min-height: 100vh;
+    box-sizing: border-box;
     .uploader_wrap{
         width: 60%;
         min-width: 200px;
@@ -101,8 +103,8 @@ export default function ImgSource() {
                     <button className={`switch_btn${personal ? '' : ' active'}`} onClick={() => setPersonal(false)}>COMMON</button>
                     <button className={`switch_btn${personal ? ' active' : ''}`} onClick={() => setPersonal(true)}>PRIVATE</button>
                 </div>}
-                <UploadPicList ref={commonRef} list={[]} path="mini/" show={!personal} className={personal ? 'hide' : ''} onPreview={openSwiper} />
-                {isOwner && <UploadPicList ref={privateRef} list={[]} path="personal/mini/" show={!!personal} className={personal ? '' : 'hide'} onPreview={openSwiper} />}
+                <UploadPicList ref={commonRef} show={!personal} className={personal ? 'hide' : ''} onPreview={openSwiper} />
+                {isOwner && <UploadPicList ref={privateRef} mode="private" show={!!personal} className={personal ? '' : 'hide'} onPreview={openSwiper} />}
 
                 <PicModal ref={picRef} />
             </DIV>

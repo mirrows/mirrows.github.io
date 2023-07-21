@@ -1,9 +1,17 @@
+import { Mode } from "@/types/demos"
 import { query } from "@/utils/api"
 import { stone } from "@/utils/global"
 
 type UploadMiniParams = {
   content: string,
-  path: string
+  path: string,
+  mode: Mode
+}
+
+
+export enum ModeMap {
+  PHOTO = "photo",
+  PRIVATE = "private"
 }
 
 export const uploadBase64 = (params: UploadMiniParams) => {
@@ -21,7 +29,8 @@ export const uploadBase64 = (params: UploadMiniParams) => {
 
 type UploadUrlParams = {
   url: string,
-  path: string
+  path: string,
+  mode: Mode
 }
 
 export const uploadUrl = (params: UploadUrlParams) => {
@@ -37,7 +46,7 @@ export const uploadUrl = (params: UploadUrlParams) => {
   })
 }
 
-export const queryPicList = (path: string) => {
+export const queryPicList = (path: string, mode: Mode) => {
   return query({
     path: '/demos/queryPicList',
     method: 'post',
@@ -47,6 +56,7 @@ export const queryPicList = (path: string) => {
     },
     params: {
       path,
+      mode,
     }
   })
 }
@@ -54,6 +64,7 @@ export const queryPicList = (path: string) => {
 type DeletePicParams = {
   sha: string,
   path: string
+  mode: Mode
 }
 
 export const deletePic = (params: DeletePicParams) => {

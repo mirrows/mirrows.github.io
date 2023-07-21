@@ -81,7 +81,7 @@ export type ModalRefType = {
     close: () => void
 }
 
-const PicModal = forwardRef<ModalRefType>(({ pics }: PicModalProps, ref) => {
+const PicModal = forwardRef<ModalRefType, PicModalProps>(({ pics }, ref) => {
     const [visible, setVisible] = useState<boolean>(false)
     const swiperRef = useRef<Swiper | null>(null);
     const [ind, setInd] = useState(0)
