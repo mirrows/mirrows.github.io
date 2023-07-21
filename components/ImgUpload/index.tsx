@@ -39,7 +39,7 @@ const DIV = styled.div`
         display: flex;
         justify-content: space-between;
         align-items: center;
-        min-height: 24px;
+        height: 26px;
         margin-top: 10px;
         text-align: left;
     }
