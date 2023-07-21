@@ -12,7 +12,7 @@ type Props = {
     children: JSX.Element | JSX.Element[],
     personal?: boolean,
     onStartUpload?: () => void,
-    onFinish?: (items: {mini: Pic, normal: Pic}[]) => void,
+    onFinish?: (items: { mini: Pic, normal: Pic }[]) => void,
     autoUpload?: boolean,
     className?: string,
     align?: 'bottom' | 'top',
@@ -131,7 +131,7 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
     clickable = true,
     children,
     autoUpload = false,
-    onStartUpload = () => {},
+    onStartUpload = () => { },
     personal = false,
     onFinish = () => { },
     className = '',
@@ -234,7 +234,7 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
         setLoading(false)
     }
     const inputUrl = () => {
-        if(!urlInput) return
+        if (!urlInput) return
         setUrls(urls => Array.from(new Set([...urls, ...urlInput.split(',')])))
         setUrlInput('')
     }
@@ -281,10 +281,10 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
     useEffect(() => {
         if (files.length) return
         inputRef.current && (inputRef.current.value = '')
-        
+
     }, [files])
     useEffect(() => {
-        if(autoUpload && total.length) {
+        if (autoUpload && total.length) {
             // 自动上传
             handleSubmit()
         }
@@ -295,12 +295,12 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
             })
             return map
         })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [total, autoUpload])
     return (<>
         <DIV
             ref={wrapRef}
-            className={`con_input_wrap${className ? ` ${className}` :  ''}`}
+            className={`con_input_wrap${className ? ` ${className}` : ''}`}
             {...props}
             onClick={() => allowClick && clickable && clickHandle()}
             onDrop={dropFile}
@@ -338,8 +338,8 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
                 ))}
             </div>
             <div className={`up_operate_${align}`}>
-                <div style={{ display: 'flex' }}>
-                    {allowClick && clickable || <SVGIcon width={26} type="image" style={{marginRight: '10px'}} onClick={clickHandle} />}
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                    {allowClick && clickable || <SVGIcon width={26} type="image" style={{ marginRight: '10px' }} onClick={clickHandle} />}
                     {allowUrl && <div className="url_input_wrap" onClick={e => e.stopPropagation()}>
                         <input
                             className="normal_input url_input"
