@@ -1,5 +1,6 @@
 import { query } from "@/utils/api"
 import { stone } from "@/utils/global"
+import { ListArticalParams } from "./main"
 
 export const about = () => {
   return query({
@@ -7,20 +8,20 @@ export const about = () => {
   })
 }
 
-export const addComment = (body: string) => {
+export const addComment = (body: string, number = 2) => {
   return query({
     path: '/github/addComment',
     method: 'post',
-    params: { number: 2, body, },
+    params: { number, body, },
     headers: stone.data.token ? { Authorization: `token ${stone.data.token}` } : {}
   })
 }
 
-export const queryComments = (page: number) => {
+export const queryComments = (params?: ListArticalParams) => {
   return query({
     path: '/github/queryComments',
     method: 'get',
-    query: { number: 2, page },
+    query: params,
     headers: stone.data.token ? { Authorization: `token ${stone.data.token}` } : {}
   })
 }

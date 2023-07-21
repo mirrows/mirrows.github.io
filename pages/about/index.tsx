@@ -1,12 +1,22 @@
+import SVGIcon from '@/components/SVGIcon'
+import DateText from '@/components/SsrRender/Timer'
 import { about, addComment, queryComments } from '@/req/about'
+import { Artical, Comment } from '@/types/global'
 import { stone } from '@/utils/global'
-import DOMPurify from 'dompurify'
-import { marked } from 'marked'
+import { parseBody } from '@/utils/md'
 import Head from 'next/head'
 import Link from 'next/link'
-import React, { MouseEventHandler, useEffect, useRef, useState } from 'react'
+import React, { ClipboardEvent, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { particlesCursor } from 'threejs-toys'
+import xss from 'xss'
+import MarkdownIt from 'markdown-it';
+import Pagination from '@/components/Pagination'
+import { ListArticalParams } from '@/req/main'
+import { PageInfo } from '@/types/github'
+import ImgUpload, { UploadRefType } from '@/components/ImgUpload'
+import { Pic } from '@/types/demos'
+// marked在安卓默认浏览器兼容性不佳
 
 const DIV = styled.div`
   position: fixed;
@@ -15,7 +25,6 @@ const DIV = styled.div`
   left: 0;
   right: 0;
   z-index: -1;
-  
 `
 
 const BlogContent = styled.div`
@@ -64,6 +73,7 @@ const BlogContent = styled.div`
   .operate_wrap{
     display: flex;
     justify-content: space-between;
+    flex: 1;
     .preview{
       width: 24px;
       height: 24px;
@@ -78,26 +88,30 @@ const BlogContent = styled.div`
     }
     
     .submit{
-      padding: 4px 16px;
+      padding: 5px 16px;
       font-weight: bold;
-      margin-bottom: 10px;
       background-color: #fff;
       border: none;
       border-radius: 4px;
       font-size: 14px;
       color: #000;
       cursor: pointer;
+      white-space: nowrap;
     }
   }
   .blog_content{
-    padding: 10px 20px;
+    padding: 10px;
     /* background-color: rgba(200,200,200,.5); */
     box-sizing: border-box;
     border-radius: 8px;
-    pointer-events: none;
+    pointer-events: all;
+                                
+  }
+  .blog_content,.comment_detail{
     blockquote{
       padding: 4px 0 4px 1em;
       margin: 0;
+      margin-bottom: 8px;
       border-left: 4px solid gray;
       white-space: normal;
       background-color: #5c5c5c;
@@ -110,23 +124,66 @@ const BlogContent = styled.div`
       }
     }
     p{
-      margin: 0;
+      margin: 0 0 10px;;
       white-space: pre-wrap;
       line-height: 1.5;
+      word-break: break-all;
     }
     a{
       pointer-events: all;
-    }                              
+    }
+    img{
+      max-width: 100%;
+    }
+    table{
+      border-collapse:collapse;
+    }
+    table th, table td{
+      min-width: 80px;
+      padding: 4px;
+      border: 1px solid #000;
+    }
+    ul{
+      margin: 10px 0;
+    }
+    ul li:before{
+      content: "⚪";
+      float: left;
+      margin-right: 10px;
+      font-weight: 900;
+    }
+    code {
+      background-color: #f5f5f5;
+      overflow: auto;
+      color: #000;
+    }
+    pre {
+      padding: 10px;
+      background-color: #f5f5f5;
+      overflow: auto;
+      border-radius: 8px;
+      color: #000;
+    }
+    pre {
+      &::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      /* 滚动条滑块 */
+      &::-webkit-scrollbar-thumb {
+        border-radius: 10px;
+        background: #a5a5a5;
+      }
+    }
   }
   .preview_detail_wrap{
-    max-height: 160px;
+    max-height: 240px;
     overflow: auto;
   }
   .preview_detail{
     pointer-events: none;
-    padding: 10px;
   }
-  .preview_detail_wrap,.text_area,.comment_content_wrap{
+  .preview_detail_wrap,.text_area,.comment_detail{
     pointer-events: all;
     &::-webkit-scrollbar {
       width: 8px;
@@ -142,33 +199,44 @@ const BlogContent = styled.div`
   .comments_wrap{
     display: flex;
     flex-direction: column;
-    min-width: 300px;
-    pointer-events: none;
-    .blog_wrap{
-      border-radius: 0 5px 5px 5px;
-      margin: 5px 10px;
+    min-width: 240px;
+    margin: 5px;
+    position: sticky;
+    top: 40px;
+    max-height: calc(100vh - 80px);
+    overflow: auto;
+    &::-webkit-scrollbar{
+      display: none;
     }
   }
   .avator{
     width: 36px;
     height: 36px;
     margin-right: 10px;
+    border-radius: 4px;
   }
   .author_msg{
     display: flex;
-    width: fit-content;
-    padding: 5px 10px;
-    background-color: rgba(200,200,200,.5);
-    margin-bottom: -5px;
-    border-radius: 5px 5px 0 5px;
-    margin-top: 10px;
-    .blog_wrap{
-      border-radius: 0 5px 5px 5px;
-    }
+    padding: 5px;
+    box-shadow: 0px 5px 10px -5px #999;
   }
   .comment_content_wrap{
-    overflow: auto;
-    max-height: 400px;
+    background-color: rgba(200,200,200,.5);
+    border-radius: 5px;
+    margin-bottom: 10px;
+    pointer-events: all;
+    .comment_detail_wrap{
+      padding: 10px;
+    }
+    .comment_detail{
+      max-height: 400px;
+      overflow: auto;
+    }
+  }
+  @media (min-width: 680px) {
+    .comment_detail{
+      max-width: 400px;
+    }
   }
   .text_small{
     font-size: 12px;
@@ -177,34 +245,34 @@ const BlogContent = styled.div`
 
   @media (max-width: 680px) {
     display: block;
+    .comments_wrap{
+      max-height: unset;
+    }
   }
 `
 
-type Comment = {
-  body: string,
-  id: string,
-  updatedAt: string,
-  author: {
-    avatarUrl: string,
-    login: string,
-    url: string,
-  }
+
+type Props = {
+  artical: Artical,
+  comments: Comment[],
+  pageInfo: Partial<PageInfo>
 }
 
-
-export default function About() {
+export default function About({ artical: atl, comments: cmts, pageInfo }: Props) {
+  const md = new MarkdownIt()
   const pic = useRef<HTMLElement | null>()
   const dom = useRef<any>()
-  const personal = useRef<HTMLDivElement | null>(null)
+  const [artical, setArtical] = useState(atl)
   const content = useRef<HTMLDivElement | null>(null)
   const input = useRef<HTMLTextAreaElement | null>(null)
   const [isPreview, setIsPreview] = useState(false)
-  const page = useRef(1)
-  const total = useRef(0)
-  const [comments, setComments] = useState<Comment[]>([])
+  const [comments, setComments] = useState<Comment[]>([...(cmts || [])])
+  const [page, setPage] = useState(1)
+  const [curCommentsInfo, setInfo] = useState<Partial<PageInfo>>(pageInfo || {})
+  const uploadRef = useRef<UploadRefType>(null)
   const mdify = () => {
     if (!input.current?.value) return;
-    const body = DOMPurify.sanitize(marked.parse(input.current.value))
+    const body = xss(md.render(input.current.value))
     content?.current && (content.current.innerHTML = body)
   }
   const handlePreview = (e: React.MouseEvent) => {
@@ -221,18 +289,58 @@ export default function About() {
       if (res.code) return
       listComments()
       input.current && (input.current.value = '')
+      content.current && (content.current.innerHTML = '')
+      setIsPreview(false)
     })
   }
-
-  const listComments = () => {
-    queryComments(page.current).then(res => {
-      console.log(res.data, res.total)
-      total.current = res.total
-      setComments(res.data)
+  const handlePagination = ({type, page }: {type: 'before' | 'after', page?: number}) => {
+    setPage(page || 1)
+    listComments({ number: 33, type, cursor: { before: curCommentsInfo.startCursor, after: curCommentsInfo.endCursor }[type]});
+  }
+  const listComments = (params?: ListArticalParams) => {
+    queryComments(params || { number: 2 }).then(({ data, total, pageInfo }) => {
+      setComments(data)
+      setArtical(atl => ({...atl, comments: total}))
+      setInfo(pageInfo);
+      if(!params) {
+        setPage(1)
+      }
+    })
+  }
+  const queryMe = () => {
+    about().then(res => {
+      setArtical(res.data)
+    })
+  }
+  const handlePaste = (e: ClipboardEvent<HTMLTextAreaElement>) => {
+    let file = [];
+    const items = e.clipboardData.items;
+    if (items && items.length) {
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf('image') !== -1) {
+          const cpFile = items[i].getAsFile()
+          cpFile && file.push(cpFile);
+        }
+      }
+    }
+    if (file) {
+      // 此时获取到file文件对象，即可处理上传相关处理
+      uploadRef.current?.addFile(file)
+    }
+  }
+  const afterUpload = (pics: {mini: Pic, normal: Pic}[]) => {
+    setTimeout(() => {
+      if(input.current) {
+        console.log(input.current.value)
+        input.current.value = input.current.value + pics.map(({mini, normal}) => `![${mini.name}](${mini.cdn_url})\n![${normal.name}](${normal.cdn_url})`).join('\n')
+        input.current.focus()
+      }
     })
   }
 
   useEffect(() => {
+    stone.data.emit()
+    // md解析的图片会添加懒加载机制，此时必须手动检查一次是否在可视区内
     if (dom.current) return
     pic.current = document.getElementById('test')
     dom.current = particlesCursor({
@@ -257,14 +365,8 @@ export default function About() {
       dom.current.uniforms.uNoiseIntensity.value = 0.0001 + Math.random() * 0.001
       dom.current.uniforms.uPointSize.value = 1 + Math.random() * 10
     })
-    about().then(res => {
-      if (res.code) return
-      const { body } = res.data
-      // const content = DOMPurify.sanitize(marked.parse(`${body}<img alt="666" onclick="alert(666)" /><script>alert(888)</script>`))
-      const content = DOMPurify.sanitize(marked.parse(body))
-      personal?.current && (personal.current.innerHTML = content)
-    })
-    listComments()
+    queryMe();
+    listComments();
   }, [])
   return (
     <>
@@ -275,42 +377,84 @@ export default function About() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <DIV id="test">
-          {/* 关于我页面 */}
-          {/* <Link href="/">回到首页</Link> */}
-        </DIV>
+        <DIV id="test"></DIV>
         <BlogContent>
           <div className='blog_left'>
-            <div ref={personal} className="blog_content blog_wrap" />
+            <div className="blog_content blog_wrap" dangerouslySetInnerHTML={{ __html: parseBody(xss(md.render(artical?.body || ''))) }} />
             <div className='blog_wrap add_comment'>
-              <div className='operate_wrap'>
-                <img src="/code.svg" className='preview' alt='preview' onClick={handlePreview} />
-                <button className='submit' onClick={submit}>add comment</button>
-              </div>
+              <label htmlFor="comments_input"></label>
+              <ImgUpload
+                ref={uploadRef}
+                clickable={false}
+                autoUpload
+                align="top"
+                onFinish={afterUpload}
+              >
+                <div>
+                  <textarea
+                    id="comments_input"
+                    ref={input}
+                    className='text_area'
+                    rows={8}
+                    style={{ display: isPreview ? 'none' : 'block' }}
+                    placeholder='此处添加评论'
+                    aria-label='edit some comments'
+                    suppressContentEditableWarning
+                    contentEditable
+                    onPaste={handlePaste}
+                  ></textarea>
+                </div>
+                <div className='operate_wrap'>
+                  <SVGIcon type="code" className='preview' alt='preview' onClick={handlePreview} />
+                  <button className='submit' aria-label='submit comment' onClick={submit}>add comment</button>
+                </div>
+              </ImgUpload>
               <div className='preview_detail_wrap' style={{ display: isPreview ? 'block' : 'none' }}>
                 <div ref={content} className='blog_content preview_detail'></div>
               </div>
-              <textarea ref={input} className='text_area' rows={8} style={{ display: isPreview ? 'none' : 'block' }}></textarea>
             </div>
           </div>
           <div className='comments_wrap'>
-            {comments.map(comment => (
-              <div key={comment.id} className=''>
+            <Pagination page={page} total={artical?.comments || 0} onChange={handlePagination} />
+            {comments.length ? comments.map(comment => (
+              <div key={comment.id} className='comment_content_wrap'>
                 <div className='author_msg'>
                   <img className='avator' src={comment.author.avatarUrl} alt="" />
                   <div>
                     <div>{comment.author.login}</div>
-                    <div className='text_small'>{new Date(comment.updatedAt).toLocaleString()}</div>
+                    <DateText
+                      render={(formattedDate) => <div className='text_small'>{formattedDate}</div>}
+                      value={comment.updatedAt}
+                    />
                   </div>
                 </div>
-                <div className='comment_content_wrap blog_wrap'>
-                  <div className='blog_content' dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(marked.parse(comment.body)) }}></div>
+                <div className='comment_detail_wrap'>
+                  <div className='blog_content comment_detail' dangerouslySetInnerHTML={{ __html: parseBody(xss(md.render(comment.body))) }}></div>
                 </div>
               </div>
-            ))}
+            )) : (
+            <div className='comment_content_wrap'>
+              <div className='blog_content comment_detail text_center'>一个评论都没有呢。。。。。。</div>
+            </div>
+            )}
           </div>
         </BlogContent>
       </main>
     </>
   )
+}
+export const getStaticProps = async (context: any) => {
+  const props: Partial<Props> = {}
+  const reqs = [about(), queryComments({number: 2})]
+  const [artical, comments] = await Promise.allSettled(reqs);
+  if (artical.status === 'fulfilled' && artical.value?.data) {
+    const data = artical.value.data
+    props.artical = data
+  }
+  if (comments.status === 'fulfilled' && comments.value?.data) {
+    const data = comments.value.data
+    props.comments = data
+    props.pageInfo = comments.value.pageInfo
+  }
+  return { props }
 }

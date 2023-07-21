@@ -1,0 +1,45 @@
+name: Build and Deploy Demo when change Issue 
+on: 
+  issues:
+    types: [opened, edited, deleted]
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+    - name: checkLabel
+      id: check_labels
+      uses: actions/github-script@v5
+      with:
+        github-token: ${{ secrets.ACCESS_TOKEN }}
+        script: |
+          const labels = context.payload.issue.labels.map(label => label.name);
+          const containsMyLabel = labels.includes('blog');
+          console.log(`Issue中是否包含"blog": ${containsMyLabel}`);
+          return containsMyLabel
+    - name: reDeploy to vercel
+      if: steps.check_labels.outputs.result == 'true'
+      uses: fjogeleit/http-request-action@v1
+      with:
+        url: '${{ vars.VERCEL_HOOK }}'
+    - name: buid
+      uses: actions/checkout@v3
+      with:
+        ref: dev
+        environment: production
+      if: steps.check_labels.outputs.result == 'true'
+    - run: npm i
+    - run: npm run build
+      env: 
+        NEXT_PUBLIC_CLIENT_ID: ${{ vars.NEXT_PUBLIC_CLIENT_ID }}
+        NEXT_PUBLIC_GITHUB_USER: ${{ vars.NEXT_PUBLIC_GITHUB_USER }}
+        NEXT_PUBLIC_SECRET: ${{ vars.NEXT_PUBLIC_SECRET }}
+        NEXT_PUBLIC_MESS_URL: ${{ vars.NEXT_PUBLIC_MESS_URL }}
+        NEXT_PUBLIC_LOADING_GIF: ${{ vars.NEXT_PUBLIC_LOADING_GIF }}
+    - name: deploy
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        folder: out
+        token: ${{ secrets.ACCESS_TOKEN }}
+        branch: main
+        clean: true

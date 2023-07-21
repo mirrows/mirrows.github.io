@@ -1,7 +1,9 @@
-import { NormalObj, Prettify } from "@/types/common";
-import { githubApi, query } from "@/utils/api";
+import { ArticalParams } from "@/types/blogs";
+import { NormalObj } from "@/types/common";
+import { githubApi, query, req } from "@/utils/api";
+import { stone } from "@/utils/global";
 
-export const queryGithubToken = (data: NormalObj) => {
+export const queryGithubToken = (data: NormalObj<any>) => {
   return query({
     path: '/github/token',
     method: 'POST',
@@ -20,6 +22,54 @@ export const dictQuery = (w: string) => {
   })
 }
 
+export const ipQuery = () => {
+  return req({
+    path: 'https://ip.useragentinfo.com/json',
+  })
+}
+
+// export const ipQuery = () => {
+//   return req({
+//     path: 'http://ip.taobao.com/service/getIpInfo2.php',
+//     method: 'post',
+//   })
+// }
+
+export type ListArticalParams = {
+  number?: number,
+  type?: 'before' | 'after',
+  cursor?: string,
+  first?: number
+}
+
+export const listArtical = (params?: ListArticalParams) => {
+  return query({
+    path: '/github/listArticals',
+    method: 'get',
+    headers: stone.data.token ? { Authorization: `token ${stone.data.token}` } : {},
+    ...(params ? { query: params } : {})
+  })
+}
+
+
+export const addArtical = (params: ArticalParams) => {
+  return query({
+    path: '/github/addArtical',
+    method: 'post',
+    headers: stone.data.token ? { Authorization: `token ${stone.data.token}` } : {},
+    params,
+  })
+}
+
+export const editArtical = (params: ArticalParams) => {
+  return query({
+    path: '/github/editArtical',
+    method: 'post',
+    headers: stone.data.token ? { Authorization: `token ${stone.data.token}` } : {},
+    params,
+  })
+}
+
 export const bingQuery = (n = 7) => {
   return query({
     path: '/bing',
@@ -27,17 +77,18 @@ export const bingQuery = (n = 7) => {
   })
 }
 
-export const statisticVisitor = (time = 0) => {
+export const statisticVisitor = (ip: string, time = 0) => {
   return query({
     path: '/visitor',
     method: 'post',
-    params: { time },
+    params: { time, ip },
     keepalive: true,
   })
 }
 
-export const visitorsData = () => {
+export const visitorsData = (ip: string) => {
   return query({
     path: '/visitor',
+    query: { ip },
   })
 }
