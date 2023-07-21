@@ -344,7 +344,7 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
                     </div>
                     {clickable || <SVGIcon width={26} type="image" style={{margin: '0 10px'}} onClick={clickHandle} />}
                 </div>
-                {!!total.length && <button className="normal_btn submit_btn" onClick={handleSubmit}>submit</button>}
+                {!!total.length && <button className="normal_btn submit_btn" onClick={handleSubmit}>upload</button>}
             </div>}
         </DIV>
         <PicModal ref={picRef} />
