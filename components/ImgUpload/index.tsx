@@ -40,6 +40,7 @@ const DIV = styled.div`
         justify-content: space-between;
         align-items: center;
         height: 26px;
+        min-height: 26px;
         margin-top: 10px;
         text-align: left;
     }
