@@ -77,6 +77,7 @@ const BlogContent = styled.div`
   .operate_wrap{
     display: flex;
     justify-content: space-between;
+    margin-top: 10px;
     .preview{
       width: 24px;
       height: 24px;
@@ -95,7 +96,6 @@ const BlogContent = styled.div`
     .submit{
       padding: 4px 16px;
       font-weight: bold;
-      margin-bottom: 10px;
       background-color: #666;
       border: none;
       border-radius: 4px;
@@ -422,17 +422,8 @@ export default function Blog({ artical: atl, comments: cmts, pageInfo }: Props) 
             </div>
             
               <div className='blog_wrap add_comment'>
-                  <div className='operate_wrap'>
-                    {/* <img src="/code.svg" className='preview' alt='preview' onClick={handlePreview} /> */}
-                    <SVGIcon type="code" className='preview' alt='preview' onClick={handlePreview} />
-                    <button className='submit' aria-label='submit comment' onClick={submit}>add comment</button>
-                  </div>
-                  <div className='preview_detail_wrap' style={{ display: isPreview ? 'block' : 'none' }}>
-                    <div ref={content} className='blog_content preview_detail'></div>
-                  </div>
                   <ImgUpload
                     ref={uploadRef}
-                    autoUpload
                     clickable={false}
                     onFinish={afterUpload}
                   >
@@ -449,6 +440,14 @@ export default function Blog({ artical: atl, comments: cmts, pageInfo }: Props) 
                       onPaste={handlePaste}
                     />
                   </ImgUpload>
+                  <div className='operate_wrap'>
+                    {/* <img src="/code.svg" className='preview' alt='preview' onClick={handlePreview} /> */}
+                    <SVGIcon type="code" className='preview' alt='preview' onClick={handlePreview} />
+                    <button className='submit' aria-label='submit comment' onClick={submit}>add comment</button>
+                  </div>
+                  <div className='preview_detail_wrap' style={{ display: isPreview ? 'block' : 'none' }}>
+                    <div ref={content} className='blog_content preview_detail'></div>
+                  </div>
               </div>
           </div>
           <div className='comments_wrap'>

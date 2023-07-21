@@ -189,9 +189,6 @@ const DIV = styled.div`
     border-radius: 8px;
     pointer-events: all;
   }
-  .con_input_wrap{
-    height: 100%;
-  }
   @media(max-width: 769px){
     .mobile_top_mask{
       position: fixed;
@@ -305,9 +302,8 @@ export default function BlogCreator({ artical, onSubmit: fn }: Props) {
         </div>
         <div className='content_area'>
         <ImgUpload
-          className="con_input_wrap"
           ref={uploadRef}
-          autoUpload
+          align="top"
           clickable={false}
           onFinish={afterUpload}
         >

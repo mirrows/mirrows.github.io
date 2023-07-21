@@ -14,6 +14,8 @@ type Props = {
     onStartUpload?: () => void,
     onFinish?: (items: {mini: Pic, normal: Pic}[]) => void,
     autoUpload?: boolean,
+    className?: string,
+    align?: 'bottom' | 'top',
     [key: string]: any,
 }
 
@@ -26,13 +28,23 @@ export type UploadRefType = {
 }
 
 const DIV = styled.div`
-    .mm-footer{
+    &.con_input_wrap{
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+    .up_operate_bottom,.up_operate_top{
         display: flex;
         justify-content: space-between;
         align-items: center;
         min-height: 24px;
         margin-top: 10px;
         text-align: left;
+    }
+    .up_operate_top{
+        order: -1;
+        margin-top: 0;
+        margin-bottom: 10px;
     }
     .url_input_wrap{
         display: inline-block;
@@ -120,6 +132,8 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
     onStartUpload = () => {},
     personal = false,
     onFinish = () => { },
+    className = '',
+    align = 'bottom',
     ...props
 }, ref) => {
     const wrapRef = useRef<HTMLDivElement | null>(null)
@@ -149,7 +163,6 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
     }, [urls, files])
     const [uploadStatusMap, setUploadStatusMap] = useState<{ [key: string]: UploadType['uploadStatus'] }>({})
     const clickHandle = () => {
-        if (!clickable) return
         inputRef.current?.click();
     }
     const handlefile = (e: ChangeEvent<HTMLInputElement>) => {
@@ -217,6 +230,7 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
         setLoading(false)
     }
     const inputUrl = () => {
+        if(!urlInput) return
         setUrls(urls => Array.from(new Set([...urls, ...urlInput.split(',')])))
         setUrlInput('')
     }
@@ -280,7 +294,14 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
         })
     }, [total])
     return (<>
-        <DIV ref={wrapRef} {...props} onClick={clickHandle} onDrop={dropFile} onDragOver={(e) => e.preventDefault()}>
+        <DIV
+            ref={wrapRef}
+            className={`con_input_wrap${className ? ` ${className}` :  ''}`}
+            {...props}
+            onClick={() => clickable && clickHandle()}
+            onDrop={dropFile}
+            onDragOver={(e) => e.preventDefault()}
+        >
             <div className={!!total.length ? 'upload_children_wrap hide' : 'upload_children_wrap'}>
                 {children}
             </div>
@@ -308,17 +329,20 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
                     </div>
                 ))}
             </div>
-            {autoUpload || <div className="mm-footer">
-                <div className="url_input_wrap" onClick={e => e.stopPropagation()}>
-                    <input
-                        className="normal_input url_input"
-                        type="text"
-                        placeholder={`${total.length || 0} pics will be uploaded`}
-                        value={urlInput}
-                        onInput={e => setUrlInput(e.currentTarget.value)}
-                        onKeyUp={handlekeyUp}
-                    />
-                    <SVGIcon className="enter_icon" type="enter" onClick={inputUrl} />
+            {autoUpload || <div className={`up_operate_${align}`}>
+                <div>
+                    <div className="url_input_wrap" onClick={e => e.stopPropagation()}>
+                        <input
+                            className="normal_input url_input"
+                            type="text"
+                            placeholder={`${total.length || 0} pics will be uploaded`}
+                            value={urlInput}
+                            onInput={e => setUrlInput(e.currentTarget.value)}
+                            onKeyUp={handlekeyUp}
+                        />
+                        <SVGIcon className="enter_icon" type="enter" onClick={inputUrl} />
+                    </div>
+                    {clickable || <SVGIcon width={26} type="image" style={{margin: '0 10px'}} onClick={clickHandle} />}
                 </div>
                 {!!total.length && <button className="normal_btn submit_btn" onClick={handleSubmit}>submit</button>}
             </div>}
