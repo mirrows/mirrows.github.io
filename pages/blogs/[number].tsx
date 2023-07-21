@@ -94,7 +94,7 @@ const BlogContent = styled.div`
     }
     
     .submit{
-      padding: 4px 16px;
+      padding: 5px 16px;
       font-weight: bold;
       background-color: #666;
       border: none;
@@ -102,6 +102,7 @@ const BlogContent = styled.div`
       font-size: 14px;
       color: #fff;
       cursor: pointer;
+      white-space: nowrap;
     }
   }
   .blog_content{

@@ -338,7 +338,7 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
                 ))}
             </div>
             <div className={`up_operate_${align}`}>
-                <div>
+                <div style={{ display: 'flex' }}>
                     {allowClick && clickable || <SVGIcon width={26} type="image" style={{marginRight: '10px'}} onClick={clickHandle} />}
                     {allowUrl && <div className="url_input_wrap" onClick={e => e.stopPropagation()}>
                         <input

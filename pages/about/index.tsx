@@ -6,7 +6,7 @@ import { stone } from '@/utils/global'
 import { parseBody } from '@/utils/md'
 import Head from 'next/head'
 import Link from 'next/link'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { ClipboardEvent, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { particlesCursor } from 'threejs-toys'
 import xss from 'xss'
@@ -14,6 +14,8 @@ import MarkdownIt from 'markdown-it';
 import Pagination from '@/components/Pagination'
 import { ListArticalParams } from '@/req/main'
 import { PageInfo } from '@/types/github'
+import ImgUpload, { UploadRefType } from '@/components/ImgUpload'
+import { Pic } from '@/types/demos'
 // marked在安卓默认浏览器兼容性不佳
 
 const DIV = styled.div`
@@ -71,6 +73,7 @@ const BlogContent = styled.div`
   .operate_wrap{
     display: flex;
     justify-content: space-between;
+    flex: 1;
     .preview{
       width: 24px;
       height: 24px;
@@ -85,15 +88,15 @@ const BlogContent = styled.div`
     }
     
     .submit{
-      padding: 4px 16px;
+      padding: 5px 16px;
       font-weight: bold;
-      margin-bottom: 10px;
       background-color: #fff;
       border: none;
       border-radius: 4px;
       font-size: 14px;
       color: #000;
       cursor: pointer;
+      white-space: nowrap;
     }
   }
   .blog_content{
@@ -174,7 +177,7 @@ const BlogContent = styled.div`
     }
   }
   .preview_detail_wrap{
-    max-height: 160px;
+    max-height: 240px;
     overflow: auto;
   }
   .preview_detail{
@@ -266,6 +269,7 @@ export default function About({ artical: atl, comments: cmts, pageInfo }: Props)
   const [comments, setComments] = useState<Comment[]>([...(cmts || [])])
   const [page, setPage] = useState(1)
   const [curCommentsInfo, setInfo] = useState<Partial<PageInfo>>(pageInfo || {})
+  const uploadRef = useRef<UploadRefType>(null)
   const mdify = () => {
     if (!input.current?.value) return;
     const body = xss(md.render(input.current.value))
@@ -292,20 +296,45 @@ export default function About({ artical: atl, comments: cmts, pageInfo }: Props)
   const handlePagination = ({type, page }: {type: 'before' | 'after', page?: number}) => {
     setPage(page || 1)
     listComments({ number: 33, type, cursor: { before: curCommentsInfo.startCursor, after: curCommentsInfo.endCursor }[type]});
-}
-const listComments = (params?: ListArticalParams) => {
-  queryComments(params || { number: 2 }).then(({ data, total, pageInfo }) => {
-    setComments(data)
-    setArtical(atl => ({...atl, comments: total}))
-    setInfo(pageInfo);
-    if(!params) {
-      setPage(1)
-    }
-  })
-}
+  }
+  const listComments = (params?: ListArticalParams) => {
+    queryComments(params || { number: 2 }).then(({ data, total, pageInfo }) => {
+      setComments(data)
+      setArtical(atl => ({...atl, comments: total}))
+      setInfo(pageInfo);
+      if(!params) {
+        setPage(1)
+      }
+    })
+  }
   const queryMe = () => {
     about().then(res => {
       setArtical(res.data)
+    })
+  }
+  const handlePaste = (e: ClipboardEvent<HTMLTextAreaElement>) => {
+    let file = [];
+    const items = e.clipboardData.items;
+    if (items && items.length) {
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf('image') !== -1) {
+          const cpFile = items[i].getAsFile()
+          cpFile && file.push(cpFile);
+        }
+      }
+    }
+    if (file) {
+      // 此时获取到file文件对象，即可处理上传相关处理
+      uploadRef.current?.addFile(file)
+    }
+  }
+  const afterUpload = (pics: {mini: Pic, normal: Pic}[]) => {
+    setTimeout(() => {
+      if(input.current) {
+        console.log(input.current.value)
+        input.current.value = input.current.value + pics.map(({mini, normal}) => `![${mini.name}](${mini.cdn_url})\n![${normal.name}](${normal.cdn_url})`).join('\n')
+        input.current.focus()
+      }
     })
   }
 
@@ -353,15 +382,36 @@ const listComments = (params?: ListArticalParams) => {
           <div className='blog_left'>
             <div className="blog_content blog_wrap" dangerouslySetInnerHTML={{ __html: parseBody(xss(md.render(artical?.body || ''))) }} />
             <div className='blog_wrap add_comment'>
-              <label htmlFor="comments_input">添加评论</label>
-              <div className='operate_wrap'>
-                <SVGIcon type="code" className='preview' alt='preview' onClick={handlePreview} />
-                <button className='submit' aria-label='submit comment' onClick={submit}>add comment</button>
-              </div>
+              <label htmlFor="comments_input"></label>
+              <ImgUpload
+                ref={uploadRef}
+                clickable={false}
+                autoUpload
+                align="top"
+                onFinish={afterUpload}
+              >
+                <div>
+                  <textarea
+                    id="comments_input"
+                    ref={input}
+                    className='text_area'
+                    rows={8}
+                    style={{ display: isPreview ? 'none' : 'block' }}
+                    placeholder='此处添加评论'
+                    aria-label='edit some comments'
+                    suppressContentEditableWarning
+                    contentEditable
+                    onPaste={handlePaste}
+                  ></textarea>
+                </div>
+                <div className='operate_wrap'>
+                  <SVGIcon type="code" className='preview' alt='preview' onClick={handlePreview} />
+                  <button className='submit' aria-label='submit comment' onClick={submit}>add comment</button>
+                </div>
+              </ImgUpload>
               <div className='preview_detail_wrap' style={{ display: isPreview ? 'block' : 'none' }}>
                 <div ref={content} className='blog_content preview_detail'></div>
               </div>
-              <textarea id="comments_input" ref={input} className='text_area' rows={8} style={{ display: isPreview ? 'none' : 'block' }} placeholder='此处添加评论' aria-label='edit some comments'></textarea>
             </div>
           </div>
           <div className='comments_wrap'>
