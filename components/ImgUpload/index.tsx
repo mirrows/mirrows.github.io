@@ -1,7 +1,7 @@
 import { uploadBase64, uploadUrl } from "@/req/demos"
 import { Format } from "@/utils/common"
 import { file2Base64, fileCompressor } from "@/utils/imgTool"
-import { ChangeEvent, DragEvent, KeyboardEvent, MouseEvent, useEffect, useMemo, useRef, useState } from "react"
+import { ChangeEvent, DragEvent, KeyboardEvent, MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import styled from "styled-components"
 import SVGIcon from "../SVGIcon"
 import { Pic } from "@/types/demos"
@@ -13,6 +13,7 @@ type Props = {
     personal?: boolean,
     onStartUpload: () => void,
     onFinish: () => void,
+    autoUpload?: boolean,
     [key: string]: any,
 }
 
@@ -105,7 +106,15 @@ const DIV = styled.div`
     }
 `
 
-export default function ImgUpload({ clickable = true, children, onStartUpload, personal = false, onFinish = () => { }, ...props }: Props) {
+export default function ImgUpload({
+    clickable = true,
+    children,
+    autoUpload = false,
+    onStartUpload,
+    personal = false,
+    onFinish = () => { },
+    ...props
+}: Props) {
     const wrapRef = useRef<HTMLDivElement | null>(null)
     const inputRef = useRef<HTMLInputElement | null>(null)
     const [files, setFiles] = useState<File[]>([])
@@ -151,8 +160,8 @@ export default function ImgUpload({ clickable = true, children, onStartUpload, p
         const result = await uploadBase64({ content: base64.split(',')[1], path })
         return result
     }
-    const handleSubmit = async (e: MouseEvent<HTMLButtonElement>) => {
-        e.stopPropagation();
+    const handleSubmit = async (e?: MouseEvent<HTMLButtonElement>) => {
+        e?.stopPropagation();
         setLoading(true)
         onStartUpload()
         tmpPersonal.current = personal
@@ -237,9 +246,15 @@ export default function ImgUpload({ clickable = true, children, onStartUpload, p
         }
     }, [total])
     useEffect(() => {
+        if(autoUpload && files.length) {
+            // 自动上传
+            handleSubmit()
+        }
         if (files.length) return
         inputRef.current && (inputRef.current.value = '')
-    }, [files])
+        
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [files, autoUpload])
     useEffect(() => {
         setUploadStatusMap(obj => {
             const map: { [key: string]: UploadType['uploadStatus'] } = {}
@@ -276,7 +291,7 @@ export default function ImgUpload({ clickable = true, children, onStartUpload, p
                     </div>
                 ))}
             </div>
-            <div className="mm-footer">
+            {autoUpload || <div className="mm-footer">
                 <div className="url_input_wrap" onClick={e => e.stopPropagation()}>
                     <input
                         className="normal_input url_input"
@@ -289,7 +304,7 @@ export default function ImgUpload({ clickable = true, children, onStartUpload, p
                     <SVGIcon className="enter_icon" type="enter" onClick={inputUrl} />
                 </div>
                 {!!total.length && <button className="normal_btn submit_btn" onClick={handleSubmit}>submit</button>}
-            </div>
+            </div>}
         </DIV>
         <PicModal ref={picRef} />
     </>)

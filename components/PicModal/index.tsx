@@ -97,9 +97,17 @@ const PicModal = forwardRef<ModalRefType>(({ pics }: PicModalProps, ref) => {
     const open = (items: Partial<Pic>[], ind = 0) => {
         setPics(items)
         setInd(ind)
-        setVisible(true)
         setInit(true)
-        swiperRef.current?.slideTo(ind)
+        if(swiperRef.current) {
+            swiperRef.current.slideTo(ind)
+            setVisible(true)
+        } else {
+            // 首次打开等待dom创建完成后打开弹窗
+            setTimeout(() => {
+                swiperRef.current?.slideTo(ind)
+                setVisible(true)
+            })
+        }
     }
     const close = () => {
         setPics([]) 
