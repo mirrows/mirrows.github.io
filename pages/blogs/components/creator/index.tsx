@@ -307,17 +307,19 @@ export default function BlogCreator({ artical, onSubmit: fn }: Props) {
           clickable={false}
           onFinish={afterUpload}
         >
-          <textarea
-            className='text_input'
-            name="blog content"
-            placeholder='博客正文'
-            value={content}
-            autoFocus
-            suppressContentEditableWarning
-            contentEditable
-            onPaste={handlePaste}
-            onChange={parseMd}
-          ></textarea>
+          <div>
+            <textarea
+              className='text_input'
+              name="blog content"
+              placeholder='博客正文'
+              value={content}
+              autoFocus
+              suppressContentEditableWarning
+              contentEditable
+              onPaste={handlePaste}
+              onChange={parseMd}
+            ></textarea>
+          </div>
         </ImgUpload>
         </div>
       </div>

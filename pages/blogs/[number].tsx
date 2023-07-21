@@ -77,7 +77,7 @@ const BlogContent = styled.div`
   .operate_wrap{
     display: flex;
     justify-content: space-between;
-    margin-top: 10px;
+    flex: 1;
     .preview{
       width: 24px;
       height: 24px;
@@ -425,26 +425,34 @@ export default function Blog({ artical: atl, comments: cmts, pageInfo }: Props) 
                   <ImgUpload
                     ref={uploadRef}
                     clickable={false}
+                    autoUpload
+                    align="top"
                     onFinish={afterUpload}
                   >
-                    <label htmlFor="commentInput"></label>
-                    <textarea
-                      id='commentInput'
-                      ref={input}
-                      className='text_area'
-                      rows={8}
-                      style={{ display: isPreview ? 'none' : 'block' }}
-                      placeholder='这里添加评论......'
-                      suppressContentEditableWarning
-                      contentEditable
-                      onPaste={handlePaste}
-                    />
+                    <div>
+                      <label htmlFor="commentInput"></label>
+                      <textarea
+                        id='commentInput'
+                        ref={input}
+                        className='text_area'
+                        rows={8}
+                        style={{ display: isPreview ? 'none' : 'block' }}
+                        placeholder='这里添加评论......'
+                        suppressContentEditableWarning
+                        contentEditable
+                        onPaste={handlePaste}
+                      />
+                    </div>
+                    <div className='operate_wrap'>
+                      {/* <img src="/code.svg" className='preview' alt='preview' onClick={handlePreview} /> */}
+                      <SVGIcon type="code" className='preview' alt='preview' onClick={handlePreview} />
+                      <button className='submit' aria-label='submit comment' onClick={submit}>add comment</button>
+                    </div>
                   </ImgUpload>
-                  <div className='operate_wrap'>
-                    {/* <img src="/code.svg" className='preview' alt='preview' onClick={handlePreview} /> */}
+                  {/* <div className='operate_wrap'>
                     <SVGIcon type="code" className='preview' alt='preview' onClick={handlePreview} />
                     <button className='submit' aria-label='submit comment' onClick={submit}>add comment</button>
-                  </div>
+                  </div> */}
                   <div className='preview_detail_wrap' style={{ display: isPreview ? 'block' : 'none' }}>
                     <div ref={content} className='blog_content preview_detail'></div>
                   </div>

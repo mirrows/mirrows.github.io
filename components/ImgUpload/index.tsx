@@ -1,7 +1,7 @@
 import { ModeMap, uploadBase64, uploadUrl } from "@/req/demos"
 import { Format } from "@/utils/common"
 import { file2Base64, fileCompressor } from "@/utils/imgTool"
-import { ChangeEvent, DragEvent, KeyboardEvent, MouseEvent, ReactNode, forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react"
+import { ChangeEvent, DragEvent, KeyboardEvent, MouseEvent, ReactNode, cloneElement, forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react"
 import styled from "styled-components"
 import SVGIcon from "../SVGIcon"
 import PicModal, { ModalRefType } from "../PicModal"
@@ -16,6 +16,8 @@ type Props = {
     autoUpload?: boolean,
     className?: string,
     align?: 'bottom' | 'top',
+    allowUrl?: boolean,
+    allowClick?: boolean,
     [key: string]: any,
 }
 
@@ -133,6 +135,8 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
     personal = false,
     onFinish = () => { },
     className = '',
+    allowUrl = true,
+    allowClick = true,
     align = 'bottom',
     ...props
 }, ref) => {
@@ -275,16 +279,15 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
         }
     }, [total])
     useEffect(() => {
-        if(autoUpload && files.length) {
-            // 自动上传
-            handleSubmit()
-        }
         if (files.length) return
         inputRef.current && (inputRef.current.value = '')
         
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [files, autoUpload])
+    }, [files])
     useEffect(() => {
+        if(autoUpload && total.length) {
+            // 自动上传
+            handleSubmit()
+        }
         setUploadStatusMap(obj => {
             const map: { [key: string]: UploadType['uploadStatus'] } = {}
             total.forEach(e => {
@@ -292,19 +295,24 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
             })
             return map
         })
-    }, [total])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [total, autoUpload])
     return (<>
         <DIV
             ref={wrapRef}
             className={`con_input_wrap${className ? ` ${className}` :  ''}`}
             {...props}
-            onClick={() => clickable && clickHandle()}
+            onClick={() => allowClick && clickable && clickHandle()}
             onDrop={dropFile}
             onDragOver={(e) => e.preventDefault()}
         >
-            <div className={!!total.length ? 'upload_children_wrap hide' : 'upload_children_wrap'}>
-                {children}
-            </div>
+            {Array.isArray(children) ? cloneElement(children[0], {
+                ...children[0].props,
+                className: `upload_children_wrap ${children[0].props.className || ''}${!!total.length ? ' hide' : ''}`,
+            }) : cloneElement(children, {
+                ...children.props,
+                className: `upload_children_wrap ${children.props.className || ''}${!!total.length ? ' hide' : ''}`,
+            })}
             <input
                 ref={inputRef}
                 type="file"
@@ -329,9 +337,10 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
                     </div>
                 ))}
             </div>
-            {autoUpload || <div className={`up_operate_${align}`}>
+            <div className={`up_operate_${align}`}>
                 <div>
-                    <div className="url_input_wrap" onClick={e => e.stopPropagation()}>
+                    {allowClick && clickable || <SVGIcon width={26} type="image" style={{marginRight: '10px'}} onClick={clickHandle} />}
+                    {allowUrl && <div className="url_input_wrap" onClick={e => e.stopPropagation()}>
                         <input
                             className="normal_input url_input"
                             type="text"
@@ -341,11 +350,13 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
                             onKeyUp={handlekeyUp}
                         />
                         <SVGIcon className="enter_icon" type="enter" onClick={inputUrl} />
-                    </div>
-                    {clickable || <SVGIcon width={26} type="image" style={{margin: '0 10px'}} onClick={clickHandle} />}
+                    </div>}
                 </div>
-                {!!total.length && <button className="normal_btn submit_btn" onClick={handleSubmit}>upload</button>}
-            </div>}
+                {autoUpload || !!total.length && <button className="normal_btn submit_btn" onClick={handleSubmit}>upload</button>}
+                {Array.isArray(children) ? cloneElement(children[1], {
+                    ...children[1].props,
+                }) : ''}
+            </div>
         </DIV>
         <PicModal ref={picRef} />
     </>)
