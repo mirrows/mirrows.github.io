@@ -338,11 +338,10 @@ export default function Blog({ artical: atl, comments: cmts, pageInfo }: Props) 
       uploadRef.current?.addFile(file)
     }
   }
-  const afterUpload = (pics: {mini: Pic, normal: Pic}[]) => {
+  const afterUpload = (pics: { mini: Pic, normal: Pic }[]) => {
     setTimeout(() => {
-      if(input.current) {
-        console.log(input.current.value)
-        input.current.value = input.current.value + pics.map(({mini, normal}) => `![${mini.name}](${mini.cdn_url})\n![${normal.name}](${normal.cdn_url})`).join('\n')
+      if (input.current) {
+        input.current.value = input.current.value + pics.map(({ mini, normal }) => `![${mini.name}](${mini.cdn_url})\n![${normal.name}](${normal.cdn_url})`).join('\n')
         input.current.focus()
       }
     })
@@ -360,33 +359,33 @@ export default function Blog({ artical: atl, comments: cmts, pageInfo }: Props) 
       }
     })
   }
-  const handlePagination = ({type, page }: {type: 'before' | 'after', page?: number}) => {
-      setPage(page || 1)
-      listComments({ number: +(query.number || ''), type, cursor: { before: curCommentsInfo.startCursor, after: curCommentsInfo.endCursor }[type]});
+  const handlePagination = ({ type, page }: { type: 'before' | 'after', page?: number }) => {
+    setPage(page || 1)
+    listComments({ number: +(query.number || ''), type, cursor: { before: curCommentsInfo.startCursor, after: curCommentsInfo.endCursor }[type] });
   }
   const listComments = useCallback((params?: ListArticalParams) => {
-    if(!query.number) return
-    
+    if (!query.number) return
+
     queryComments(params || { number: +query.number }).then(({ data, total, pageInfo }) => {
       setComments(data)
-      setArtical(atl => ({...atl, comments: total}))
+      setArtical(atl => ({ ...atl, comments: total }))
       setInfo(pageInfo);
-      if(!params) {
+      if (!params) {
         setPage(1)
       }
     })
   }, [query])
   useEffect(() => {
-    if(!artical && query.number) {
-      listArtical({number: +query.number}).then(res => {
-        if(!res.data?.labels?.some((e: any) => e.name === 'blog')) {
+    if (!artical && query.number) {
+      listArtical({ number: +query.number }).then(res => {
+        if (!res.data?.labels?.some((e: any) => e.name === 'blog')) {
           router.replace('/404')
           return
         }
         setArtical(res.data)
         listComments()
       })
-    }else if(!artical?.labels?.some(e => e.name === 'blog')) {
+    } else if (!artical?.labels?.some(e => e.name === 'blog')) {
       router.replace('/404')
     }
     stone.data.emit()
@@ -419,45 +418,45 @@ export default function Blog({ artical: atl, comments: cmts, pageInfo }: Props) 
                 <span className='atl_base_msg'>评论数：{artical?.comments || 0}</span>
               </div>
               <LazyImage className='atl_bg' width="700" height="200" src={artical?.img || ''} alt={artical?.title || ''} />
-              <div className="blog_content" dangerouslySetInnerHTML={{ __html: parseBody(xss(md.render(artical?.body || '')))}}></div>
+              <div className="blog_content" dangerouslySetInnerHTML={{ __html: parseBody(xss(md.render(artical?.body || ''))) }}></div>
             </div>
-            
-              <div className='blog_wrap add_comment'>
-                  <ImgUpload
-                    ref={uploadRef}
-                    clickable={false}
-                    autoUpload
-                    align="top"
-                    onFinish={afterUpload}
-                  >
-                    <div>
-                      <label htmlFor="commentInput"></label>
-                      <textarea
-                        id='commentInput'
-                        ref={input}
-                        className='text_area'
-                        rows={8}
-                        style={{ display: isPreview ? 'none' : 'block' }}
-                        placeholder='这里添加评论......'
-                        suppressContentEditableWarning
-                        contentEditable
-                        onPaste={handlePaste}
-                      />
-                    </div>
-                    <div className='operate_wrap'>
-                      {/* <img src="/code.svg" className='preview' alt='preview' onClick={handlePreview} /> */}
-                      <SVGIcon type="code" className='preview' alt='preview' onClick={handlePreview} />
-                      <button className='submit' aria-label='submit comment' onClick={submit}>add comment</button>
-                    </div>
-                  </ImgUpload>
-                  {/* <div className='operate_wrap'>
+
+            <div className='blog_wrap add_comment'>
+              <ImgUpload
+                ref={uploadRef}
+                clickable={false}
+                autoUpload
+                align="top"
+                onFinish={afterUpload}
+              >
+                <div>
+                  <label htmlFor="commentInput"></label>
+                  <textarea
+                    id='commentInput'
+                    ref={input}
+                    className='text_area'
+                    rows={8}
+                    style={{ display: isPreview ? 'none' : 'block' }}
+                    placeholder='这里添加评论......'
+                    suppressContentEditableWarning
+                    contentEditable
+                    onPaste={handlePaste}
+                  />
+                </div>
+                <div className='operate_wrap'>
+                  {/* <img src="/code.svg" className='preview' alt='preview' onClick={handlePreview} /> */}
+                  <SVGIcon type="code" className='preview' alt='preview' onClick={handlePreview} />
+                  <button className='submit' aria-label='submit comment' onClick={submit}>add comment</button>
+                </div>
+              </ImgUpload>
+              {/* <div className='operate_wrap'>
                     <SVGIcon type="code" className='preview' alt='preview' onClick={handlePreview} />
                     <button className='submit' aria-label='submit comment' onClick={submit}>add comment</button>
                   </div> */}
-                  <div className='preview_detail_wrap' style={{ display: isPreview ? 'block' : 'none' }}>
-                    <div ref={content} className='blog_content preview_detail'></div>
-                  </div>
+              <div className='preview_detail_wrap' style={{ display: isPreview ? 'block' : 'none' }}>
+                <div ref={content} className='blog_content preview_detail'></div>
               </div>
+            </div>
           </div>
           <div className='comments_wrap'>
             <Pagination page={page} total={artical?.comments || 0} onChange={handlePagination} />
@@ -480,10 +479,10 @@ export default function Blog({ artical: atl, comments: cmts, pageInfo }: Props) 
                   </div>
                 </div>
               )) : (
-              <div className='comment_content_wrap'>
-                <div className='blog_content comment_detail text_center'>一个评论都没有呢。。。。。。</div>
-              </div>
-            )}
+                <div className='comment_content_wrap'>
+                  <div className='blog_content comment_detail text_center'>一个评论都没有呢。。。。。。</div>
+                </div>
+              )}
           </div>
           <div className='fixed_operate_wrap'>
             {isOwner && (
@@ -504,10 +503,10 @@ export async function getStaticPaths() {
   atls.push(...(artical?.data || []))
   if (artical?.total > 30) {
     let info = artical?.pageInfo || {}
-    for(let i = 1; i < Math.ceil(artical?.total/30);i++) {
+    for (let i = 1; i < Math.ceil(artical?.total / 30); i++) {
       const type = 'after'
       const cursor = { before: info.startCursor, after: info.endCursor }[type]
-      const artical = await listArtical({type, cursor})
+      const artical = await listArtical({ type, cursor })
       atls.push(...(artical?.data || []))
       info = artical?.pageInfo || {}
     }
@@ -525,7 +524,7 @@ export const getStaticProps = async (context: any) => {
   const { number } = context.params
   const props: Partial<Props> = {}
   if (+String(number) + 1) {
-    const reqs = [listArtical({number: +number}), queryComments({ number })]
+    const reqs = [listArtical({ number: +number }), queryComments({ number })]
     const [artical, comments] = await Promise.allSettled(reqs);
     if (artical.status === 'fulfilled' && artical.value?.data) {
 

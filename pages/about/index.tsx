@@ -293,16 +293,16 @@ export default function About({ artical: atl, comments: cmts, pageInfo }: Props)
       setIsPreview(false)
     })
   }
-  const handlePagination = ({type, page }: {type: 'before' | 'after', page?: number}) => {
+  const handlePagination = ({ type, page }: { type: 'before' | 'after', page?: number }) => {
     setPage(page || 1)
-    listComments({ number: 33, type, cursor: { before: curCommentsInfo.startCursor, after: curCommentsInfo.endCursor }[type]});
+    listComments({ number: 33, type, cursor: { before: curCommentsInfo.startCursor, after: curCommentsInfo.endCursor }[type] });
   }
   const listComments = (params?: ListArticalParams) => {
     queryComments(params || { number: 2 }).then(({ data, total, pageInfo }) => {
       setComments(data)
-      setArtical(atl => ({...atl, comments: total}))
+      setArtical(atl => ({ ...atl, comments: total }))
       setInfo(pageInfo);
-      if(!params) {
+      if (!params) {
         setPage(1)
       }
     })
@@ -328,11 +328,10 @@ export default function About({ artical: atl, comments: cmts, pageInfo }: Props)
       uploadRef.current?.addFile(file)
     }
   }
-  const afterUpload = (pics: {mini: Pic, normal: Pic}[]) => {
+  const afterUpload = (pics: { mini: Pic, normal: Pic }[]) => {
     setTimeout(() => {
-      if(input.current) {
-        console.log(input.current.value)
-        input.current.value = input.current.value + pics.map(({mini, normal}) => `![${mini.name}](${mini.cdn_url})\n![${normal.name}](${normal.cdn_url})`).join('\n')
+      if (input.current) {
+        input.current.value = input.current.value + pics.map(({ mini, normal }) => `![${mini.name}](${mini.cdn_url})\n![${normal.name}](${normal.cdn_url})`).join('\n')
         input.current.focus()
       }
     })
@@ -433,9 +432,9 @@ export default function About({ artical: atl, comments: cmts, pageInfo }: Props)
                 </div>
               </div>
             )) : (
-            <div className='comment_content_wrap'>
-              <div className='blog_content comment_detail text_center'>一个评论都没有呢。。。。。。</div>
-            </div>
+              <div className='comment_content_wrap'>
+                <div className='blog_content comment_detail text_center'>一个评论都没有呢。。。。。。</div>
+              </div>
             )}
           </div>
         </BlogContent>
@@ -445,7 +444,7 @@ export default function About({ artical: atl, comments: cmts, pageInfo }: Props)
 }
 export const getStaticProps = async (context: any) => {
   const props: Partial<Props> = {}
-  const reqs = [about(), queryComments({number: 2})]
+  const reqs = [about(), queryComments({ number: 2 })]
   const [artical, comments] = await Promise.allSettled(reqs);
   if (artical.status === 'fulfilled' && artical.value?.data) {
     const data = artical.value.data
