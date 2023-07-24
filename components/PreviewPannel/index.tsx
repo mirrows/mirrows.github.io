@@ -57,9 +57,9 @@ export default function PreviewPannel() {
   const [totalStayTime, setTotalStayTime] = useState<number[]>([])
   const queryPreviewData = () => {
     const detail = sessionStorage.detail;
-    if(detail) {
+    // if(detail) {
       setIPDetail(JSON.parse(detail))
-    } else {
+    // } else {
       stone.on('ip', ({ data, detail }) => {
         if(!data) return;
         const preview = {
@@ -69,7 +69,7 @@ export default function PreviewPannel() {
         setPreview(preview)
         setIPDetail(detail)
       })
-    }
+    // }
   }
   const setDate = (dateObj: Date, options: Partial<Time>) => {
     const { year, month, date, hour, minute, secend } = options;
