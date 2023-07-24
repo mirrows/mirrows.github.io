@@ -30,7 +30,7 @@ const query = (options: Options) => {
   const { method, path, query, headers, params, ...others } = options
   return fetch(`${baseUrl}${path}${parseObj2queryStr(query)}`, {
     method: method || 'GET',
-    headers: { "Content-Type": "application/json;charset=UTF-8", ...headers},
+    headers: { "content-type": "application/json", ...headers},
     body: params && JSON.stringify(params),
     ...others,
   }).then(res => res.json())
