@@ -93,7 +93,7 @@ const NavHeader = () => {
   const login = () => {
     const par = {
       client_id: process.env.NEXT_PUBLIC_CLIENT_ID,
-      scope: 'repo',
+      scope: 'user,repo',
     }
     location.href = `https://github.com/login/oauth/authorize${parseObj2queryStr(par)}`
   }

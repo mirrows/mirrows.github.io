@@ -10,6 +10,7 @@ import { Mode, Pic } from "@/types/demos"
 type Props = {
     clickable?: boolean,
     children: JSX.Element | JSX.Element[],
+    operateLine?: JSX.Element | JSX.Element[],
     personal?: boolean,
     onStartUpload?: () => void,
     onFinish?: (items: { mini: Pic, normal: Pic }[]) => void,
@@ -131,6 +132,7 @@ const DIV = styled.div`
 const ImgUpload = forwardRef<UploadRefType, Props>(({
     clickable = true,
     children,
+    operateLine,
     autoUpload = false,
     onStartUpload = () => { },
     personal = false,

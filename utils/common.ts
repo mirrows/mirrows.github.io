@@ -54,3 +54,7 @@ export const useDebos = (cb: Function, timeout = 300) => {
 export const isMobile = () => {
   return /Android|webOS|iPhone|iPad|iPod|IOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
 }
+
+export const randomString = (length = 4, chars = 'abcdefghijklmnopqrstuvwxyz'): string => {
+  return [...Array(length)].map(_ => chars.charAt(Math.floor(Math.random() * chars.length))).join('')
+}

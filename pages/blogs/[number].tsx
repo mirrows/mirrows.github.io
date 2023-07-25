@@ -17,6 +17,7 @@ import DateText from '@/components/SsrRender/Timer'
 import Pagination from '@/components/Pagination'
 import ImgUpload, { UploadRefType } from '@/components/ImgUpload'
 import { Pic } from '@/types/demos'
+import { randomString } from '@/utils/common'
 // marked在安卓默认浏览器兼容性不佳
 
 const DIV = styled.div`
@@ -289,6 +290,28 @@ const BlogContent = styled.div`
   .pagination_wrap{
     text-align: right;
   }
+  .other_words{
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .input_item{
+    flex: 1;
+    width: 0;
+    padding: 10px;
+    margin: 0 5px;
+    border: none;
+    box-sizing: border-box;
+    border-radius: 6px;
+    vertical-align: bottom;
+    background-color: #f5f5f5;
+  }
+  .input_item:first-child{
+    margin-left: 0;
+  }
+  .input_item:last-child{
+    margin-right: 0;
+  }
 `
 
 type Props = {
@@ -303,6 +326,8 @@ export default function Blog({ artical: atl, comments: cmts, pageInfo }: Props) 
   const [artical, setArtical] = useState(atl)
   const content = useRef<HTMLDivElement | null>(null)
   const input = useRef<HTMLTextAreaElement | null>(null)
+  const username = useRef<HTMLInputElement | null>(null)
+  const email = useRef<HTMLInputElement | null>(null)
   const [isPreview, setIsPreview] = useState(false)
   const [comments, setComments] = useState<Comment[]>(cmts || [])
   const [curCommentsInfo, setInfo] = useState<Partial<PageInfo>>(pageInfo || {})
@@ -348,8 +373,18 @@ export default function Blog({ artical: atl, comments: cmts, pageInfo }: Props) 
   }
   const submit = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!input.current?.value || !query.number) return
-    addComment(input.current.value, +query.number).then(res => {
+    if (!username.current?.value || !email.current?.value || !input.current?.value || !query.number) return
+    const body = {
+      body: input.current.value,
+      login: username.current.value,
+      email: email.current.value,
+      avatarUrl: !!email.current.value.match('@qq.com')
+        ? `https://q.qlogo.cn/g?b=qq&nk=${email.current.value.trim().replace('@qq.com', '')}&s=100`
+        : (stone.data.userInfo?.login && !isOwner)
+          ? stone.data.userInfo.avatar_url
+          : `https://ui-avatars.com/api/?name=${randomString()}`
+    }
+    addComment(JSON.stringify(body), +query.number).then(res => {
       if (res.code) return
       listComments()
       if (input.current) {
@@ -422,11 +457,14 @@ export default function Blog({ artical: atl, comments: cmts, pageInfo }: Props) 
             </div>
 
             <div className='blog_wrap add_comment'>
+              <div className='other_words'>
+                <input ref={username} type="text" className='input_item' placeholder='用户名' name="" id="" />
+                <input ref={email} type="text" className='input_item' placeholder='邮箱' name="" id="" />
+              </div>
               <ImgUpload
                 ref={uploadRef}
                 clickable={false}
                 autoUpload
-                align="top"
                 onFinish={afterUpload}
               >
                 <div>

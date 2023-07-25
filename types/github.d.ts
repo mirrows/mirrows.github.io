@@ -1,6 +1,7 @@
 
 export type UserInfo = {
-  avatar_url: string,
+  avatar_url?: string,
+  avatarUrl?: string,
   html_url: string,
   login: string,
 }
