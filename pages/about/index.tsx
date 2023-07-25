@@ -16,6 +16,7 @@ import { ListArticalParams } from '@/req/main'
 import { PageInfo } from '@/types/github'
 import ImgUpload, { UploadRefType } from '@/components/ImgUpload'
 import { Pic } from '@/types/demos'
+import { randomString } from '@/utils/common'
 // marked在安卓默认浏览器兼容性不佳
 
 const DIV = styled.div`
@@ -249,6 +250,28 @@ const BlogContent = styled.div`
       max-height: unset;
     }
   }
+  .other_words{
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .input_item{
+    flex: 1;
+    width: 0;
+    padding: 10px;
+    margin: 0 5px;
+    border: none;
+    box-sizing: border-box;
+    border-radius: 6px;
+    vertical-align: bottom;
+    background-color: rgba(255,255,255,.8);
+  }
+  .input_item:first-child{
+    margin-left: 0;
+  }
+  .input_item:last-child{
+    margin-right: 0;
+  }
 `
 
 
@@ -265,11 +288,14 @@ export default function About({ artical: atl, comments: cmts, pageInfo }: Props)
   const [artical, setArtical] = useState(atl)
   const content = useRef<HTMLDivElement | null>(null)
   const input = useRef<HTMLTextAreaElement | null>(null)
+  const username = useRef<HTMLInputElement | null>(null)
+  const email = useRef<HTMLInputElement | null>(null)
   const [isPreview, setIsPreview] = useState(false)
   const [comments, setComments] = useState<Comment[]>([...(cmts || [])])
   const [page, setPage] = useState(1)
   const [curCommentsInfo, setInfo] = useState<Partial<PageInfo>>(pageInfo || {})
   const uploadRef = useRef<UploadRefType>(null)
+  const [isOwner, setOwner] = useState(false)
   const mdify = () => {
     if (!input.current?.value) return;
     const body = xss(md.render(input.current.value))
@@ -284,8 +310,18 @@ export default function About({ artical: atl, comments: cmts, pageInfo }: Props)
   }
   const submit = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!input.current?.value) return
-    addComment(input.current.value).then(res => {
+    if (!username.current?.value || !email.current?.value || !input.current?.value) return
+    const body = {
+      body: input.current.value,
+      login: username.current.value,
+      email: email.current.value,
+      avatarUrl: !!email.current.value.match('@qq.com')
+        ? `https://q.qlogo.cn/g?b=qq&nk=${email.current.value.trim().replace('@qq.com', '')}&s=100`
+        : (stone.data.userInfo?.login && !isOwner)
+          ? stone.data.userInfo.avatar_url
+          : `https://ui-avatars.com/api/?name=${randomString()}`
+    }
+    addComment(JSON.stringify(body)).then(res => {
       if (res.code) return
       listComments()
       input.current && (input.current.value = '')
@@ -366,6 +402,7 @@ export default function About({ artical: atl, comments: cmts, pageInfo }: Props)
     })
     queryMe();
     listComments();
+    stone.isGithubOwner((isowner) => setOwner(isowner))
   }, [])
   return (
     <>
@@ -381,12 +418,15 @@ export default function About({ artical: atl, comments: cmts, pageInfo }: Props)
           <div className='blog_left'>
             <div className="blog_content blog_wrap" dangerouslySetInnerHTML={{ __html: parseBody(xss(md.render(artical?.body || ''))) }} />
             <div className='blog_wrap add_comment'>
+              <div className='other_words'>
+                <input ref={username} type="text" className='input_item' placeholder='用户名' name="" id="" />
+                <input ref={email} type="text" className='input_item' placeholder='邮箱' name="" id="" />
+              </div>
               <label htmlFor="comments_input"></label>
               <ImgUpload
                 ref={uploadRef}
                 clickable={false}
                 autoUpload
-                align="top"
                 onFinish={afterUpload}
               >
                 <div>
