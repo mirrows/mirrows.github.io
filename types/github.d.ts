@@ -4,6 +4,7 @@ export type UserInfo = {
   avatarUrl?: string,
   html_url: string,
   login: string,
+  email?: string,
 }
 
 export type PageInfo = {

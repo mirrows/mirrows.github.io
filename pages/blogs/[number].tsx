@@ -384,9 +384,17 @@ export default function Blog({ artical: atl, comments: cmts, pageInfo }: Props) 
           ? stone.data.userInfo.avatar_url
           : `https://ui-avatars.com/api/?name=${randomString()}`
     }
+    if (!email.current.value.match(/^[A-Za-z0-9-_\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+$/)) {
+      alert('邮箱格式错误')
+      return
+    }
     addComment(JSON.stringify(body), +query.number).then(res => {
       if (res.code) return
       listComments()
+      localStorage.setItem('userMsg', JSON.stringify({
+        username: username.current?.value,
+        email: email.current?.value,
+      }))
       if (input.current) {
         input.current.value = ''
         content.current && (content.current.innerHTML = '')
@@ -425,7 +433,21 @@ export default function Blog({ artical: atl, comments: cmts, pageInfo }: Props) 
     }
     stone.data.emit()
     // md解析的图片会添加懒加载机制，此时必须手动检查一次是否在可视区内
-    stone.isGithubOwner((isowner) => setOwner(isowner))
+    stone.isGithubOwner((isowner) => {
+      try {
+        // 自动填充用户名和邮箱
+        const data = JSON.parse(localStorage.userMsg)
+        username.current && (username.current.value = data.username)
+        email.current && (email.current.value = data.email)
+      } catch {
+        if (stone.data.userInfo?.login && !isowner) {
+          username.current && (username.current.value = stone.data.userInfo.login)
+          email.current && stone.data.userInfo?.email && (email.current.value = stone.data.userInfo.email)
+        }
+      }
+      setOwner(isowner)
+    })
+    
   }, [router, artical, query, listComments])
 
   return (
@@ -458,8 +480,8 @@ export default function Blog({ artical: atl, comments: cmts, pageInfo }: Props) 
 
             <div className='blog_wrap add_comment'>
               <div className='other_words'>
-                <input ref={username} type="text" className='input_item' placeholder='用户名' name="" id="" />
-                <input ref={email} type="text" className='input_item' placeholder='邮箱' name="" id="" />
+                <input ref={username} type="text" className='input_item' placeholder='用户名(必填)' name="" id="" />
+                <input ref={email} type="text" className='input_item' placeholder='邮箱(必填)' name="" id="" />
               </div>
               <ImgUpload
                 ref={uploadRef}
