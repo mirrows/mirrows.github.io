@@ -1,7 +1,7 @@
 import { queryGithubToken, queryUser } from "@/req/main"
 import { UserInfo } from "@/types/github"
 import { parseObj2queryStr, parsequeryStr2Obj } from "@/utils/common"
-import { stone } from "@/utils/global"
+import { logout, stone } from "@/utils/global"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { Fragment, useCallback, useEffect, useState } from "react"
@@ -98,6 +98,11 @@ const NavHeader = () => {
     location.href = `https://github.com/login/oauth/authorize${parseObj2queryStr(par)}`
   }
 
+  const userLogout = () => {
+    logout()
+    setUser(undefined)
+  }
+
   const queryToken = useCallback((code: any) => {
     queryGithubToken({ code }).then(res => {
       if (!res.access_token) return console.log('登录失败', res.msg);
@@ -153,10 +158,16 @@ const NavHeader = () => {
                 <SVGIcon type="about_me" className="nav_icon" />
                 <span>About me</span>
               </Link>
-              {user ? (<a className="nav_item item_right" aria-label="link to github page" href={user.html_url} target="_blank">
-                <span>{user.login}</span>
-                <img src={user.avatar_url} className="nav_icon" alt="" />
-              </a>)
+              {user ? (<>
+                <a className="nav_item item_right" aria-label="link to github page" href={user.html_url} target="_blank">
+                  <span>{user.login}</span>
+                  <img src={user.avatar_url} className="nav_icon" alt="" />
+                </a>
+                <div className="nav_item item_right" onClick={userLogout}>
+                  <span>Logout</span>
+                  <SVGIcon type="logout" className="nav_icon" />
+                </div>
+              </>)
                 : (<div className="nav_item item_right" onClick={login}>
                   <span>Login</span>
                   <SVGIcon type="github" className="nav_icon" viewBox="0 0 16 16" />

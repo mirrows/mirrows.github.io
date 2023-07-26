@@ -55,6 +55,14 @@ export const stone = {
   }
 }
 
+export const logout = () => {
+  stone.set({
+    token: '',
+    userInfo: {},
+  })
+  localStorage.setItem('tmpData', JSON.stringify(stone.data))
+}
+
 if (typeof window !== "undefined") {
   if (localStorage.tmpData) {
     const data = JSON.parse(localStorage.tmpData)
