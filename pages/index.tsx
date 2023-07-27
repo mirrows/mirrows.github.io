@@ -283,6 +283,7 @@ const Div = styled.div`
 export default function Home({ artical, total: initTotal }: Props) {
   const [pics, setPics] = useState<BingPic[]>([]);
   const [ind, setInd] = useState(0);
+  const [title, setTitle] = useState('RDL');
   const [total, setTotal] = useState(initTotal || 0);
   const [curPageInfo, setPageInfo] = useState<Partial<PageInfo>>({});
   const swiperRef = useRef<Swiper | null>(null);
@@ -333,12 +334,12 @@ export default function Home({ artical, total: initTotal }: Props) {
     stone.isGithubOwner((isowner) => setOwner(isowner))
     queryBing();
     queryArticalList();
-    document.title = 'Welcome to my world!!!'
+    setTitle('Welcome to my world!!!')
   }, [])
   return (
     <>
       <Head>
-        <title>RDL</title>
+        <title>{title}</title>
         <meta name="description" content="用于自我学习的博客站点,欢迎大家参观。本站基于vercel+nextjs+githubAPI搭建,比较少写blog,更多的是在自己的网上小窝开发有趣内容。" />
         <meta name="keywords" content="前端,个人博客,david,reed leaves,reedls,博客,知识展示" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
