@@ -333,6 +333,7 @@ export default function Home({ artical, total: initTotal }: Props) {
     stone.isGithubOwner((isowner) => setOwner(isowner))
     queryBing();
     queryArticalList();
+    document.title = 'Welcome to my world!!!'
   }, [])
   return (
     <>
