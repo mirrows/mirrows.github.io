@@ -337,7 +337,7 @@ export default function Home({ artical, total: initTotal }: Props) {
   return (
     <>
       <Head>
-        <title>welcome to my world!!!</title>
+        <title>RDL</title>
         <meta name="description" content="用于自我学习的博客站点,欢迎大家参观。本站基于vercel+nextjs+githubAPI搭建,比较少写blog,更多的是在自己的网上小窝开发有趣内容。" />
         <meta name="keywords" content="前端,个人博客,david,reed leaves,reedls,博客,知识展示" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
