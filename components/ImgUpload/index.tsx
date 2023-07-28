@@ -1,4 +1,4 @@
-import { ModeMap, uploadBase64, uploadUrl } from "@/req/demos"
+import { ModeMap, migrate, uploadBase64, uploadUrl } from "@/req/demos"
 import { Format } from "@/utils/common"
 import { file2Base64, fileCompressor } from "@/utils/imgTool"
 import { ChangeEvent, DragEvent, KeyboardEvent, MouseEvent, ReactNode, cloneElement, forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react"
@@ -149,6 +149,7 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
     const [urls, setUrls] = useState<string[]>([])
     const [urlInput, setUrlInput] = useState('')
     const [loading, setLoading] = useState(false)
+    const [curPic, setCurPic] = useState('')
     const tmpPersonal = useRef(personal)
     const picRef = useRef<ModalRefType | null>(null)
     const win = useRef(typeof window !== "undefined" ? window?.URL || window?.webkitURL : undefined)
@@ -187,6 +188,30 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
         const result = await uploadBase64({ content: base64.split(',')[1], path, mode })
         return result
     }
+    const migrateSubmit = async (e?: MouseEvent<HTMLButtonElement>) => {
+        e?.stopPropagation();
+        setLoading(true)
+        tmpPersonal.current = personal
+        const mode = tmpPersonal.current ? ModeMap.PRIVATE : ModeMap.PHOTO
+        const result = []
+        const { data } = await migrate()
+        const arr = Object.keys(data)
+        for (let i = 0; i < arr.length; i++) {
+            for (let j = 0; j < data[arr[i]].length; j++) {
+                setCurPic(data[arr[i]][j].download_url)
+                console.log(`${i} / ${arr.length}`, arr[i], `${j} / ${data[arr[i]].length}, start`)
+
+                // const name = data[arr[i]][j].name
+                const path = data[arr[i]][j].path
+                const mini = await uploadUrl({ url: data[arr[i]][j].download_url, path: `mini/${path}`, mode })
+                const normal = await uploadUrl({ url: data[arr[i]][j].download_url, path: `normal/${path}`, mode })
+                result.push({ mini: mini.data, normal: normal.data })
+
+                console.log(`${i} / ${arr.length}`, arr[i], `${j} / ${data[arr[i]].length}, end`)
+            }
+        }
+        setLoading(false)
+    }
     const handleSubmit = async (e?: MouseEvent<HTMLButtonElement>) => {
         e?.stopPropagation();
         setLoading(true)
@@ -201,7 +226,7 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
             let status: UploadType['uploadStatus'] = 'LOADING';
             newMap[total[i].id] = status
             setUploadStatusMap({ ...newMap })
-            const mini = await uploadFile(files[i], { quality: 0.1, mimeType: 'image/jpeg' }, `mini/${path}`, mode)
+            const mini = await uploadFile(files[i], { quality: 0.3, mimeType: 'image/jpeg' }, `mini/${path}`, mode)
             const normal = await uploadFile(files[i], { quality: 1024 * 1024 * 2 > files[i].size ? 1024 * 1024 * 2 / files[i].size : 0.8 }, `normal/${path}`, mode)
             result.push({ mini: mini.data, normal: normal.data })
             if (normal.code || mini.code) {
@@ -339,6 +364,9 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
                         }[uploadStatusMap[e.id]]}
                     </div>
                 ))}
+                <div className={`tmp_item_wrap`} onClick={e => e.stopPropagation()}>
+                    <img className="tmp_item" width="40" height="96" src={curPic} alt="" />
+                </div>
             </div>
             <div className={`up_operate_${align}`}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -355,6 +383,7 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
                         <SVGIcon className="enter_icon" type="enter" onClick={inputUrl} />
                     </div>}
                 </div>
+                {<button className="normal_btn submit_btn" onClick={migrateSubmit}>migrate</button>}
                 {autoUpload || !!total.length && <button className="normal_btn submit_btn" onClick={handleSubmit}>upload</button>}
                 {Array.isArray(children) ? cloneElement(children[1], {
                     ...children[1].props,

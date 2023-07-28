@@ -79,3 +79,10 @@ export const deletePic = (params: DeletePicParams) => {
     params,
   })
 }
+
+export const migrate = () => {
+  return query({
+    path: '/github/pics',
+    method: 'get',
+  })
+}
