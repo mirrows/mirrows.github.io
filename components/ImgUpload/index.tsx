@@ -199,15 +199,15 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
         for (let i = 0; i < arr.length; i++) {
             for (let j = 0; j < data[arr[i]].length; j++) {
                 setCurPic(data[arr[i]][j].download_url)
-                console.log(`${i} / ${arr.length}`, arr[i], `${j} / ${data[arr[i]].length}, start`)
+                const path = data[arr[i]][j].path.replace('pro/', '')
+                console.log(`${i} / ${arr.length}`, arr[i], path, `${j} / ${data[arr[i]].length}, start`)
 
                 // const name = data[arr[i]][j].name
-                const path = data[arr[i]][j].path
                 const mini = await uploadUrl({ url: data[arr[i]][j].download_url, path: `mini/${path}`, mode })
                 const normal = await uploadUrl({ url: data[arr[i]][j].download_url, path: `normal/${path}`, mode })
                 result.push({ mini: mini.data, normal: normal.data })
 
-                console.log(`${i} / ${arr.length}`, arr[i], `${j} / ${data[arr[i]].length}, end`)
+                console.log(`${i} / ${arr.length}`, arr[i], path, `${j} / ${data[arr[i]].length}, end`)
             }
         }
         setLoading(false)
