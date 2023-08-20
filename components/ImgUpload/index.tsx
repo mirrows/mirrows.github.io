@@ -193,7 +193,11 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
         onStartUpload()
         tmpPersonal.current = personal
         const mode = tmpPersonal.current ? ModeMap.PRIVATE : ModeMap.PHOTO
-        const newMap = { ...uploadStatusMap };
+        const newMap: typeof uploadStatusMap = {};
+        for (let key in uploadStatusMap) {
+            newMap[key] = 'WAIT'
+        }
+        setUploadStatusMap({ ...newMap })
         const result = []
         for (let i = 0; i < files.length; i++) {
             const name = 'pic' + Date.now() + String(Math.random()).slice(4, 7) + '.' + files[i].name.split('.').reverse()[0]
