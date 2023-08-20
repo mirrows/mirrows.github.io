@@ -203,10 +203,14 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
             setUploadStatusMap({ ...newMap })
             const mini = await uploadFile(files[i], { quality: 0.1, mimeType: 'image/jpeg' }, `mini/${path}`, mode)
             const normal = await uploadFile(files[i], { quality: 1024 * 1024 * 2 > files[i].size ? 1024 * 1024 * 2 / files[i].size : 0.8 }, `normal/${path}`, mode)
-            result.push({ mini: mini.data, normal: normal.data })
-            if (normal.code || mini.code) {
+            if (!mini?.data || !normal.data || normal?.code || mini?.code) {
                 status = 'ERROR'
+            } else {
+                result.push({ mini: mini.data, normal: normal.data })
             }
+            // if (normal.code || mini.code) {
+            //     status = 'ERROR'
+            // }
             newMap[total[i].id] = status === 'LOADING' ? 'SUCCESS' : status
             setUploadStatusMap({ ...newMap })
         }
