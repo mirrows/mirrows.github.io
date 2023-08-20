@@ -66,6 +66,10 @@ const DIV = styled.div`
         letter-spacing: 0.1rem;
         color: gray;
     }
+    .if_del_btn{
+      width: 1rem;
+      height: 1rem;
+    }
 `
 
 type Folder = {
@@ -105,6 +109,7 @@ function UploadPicList({ list = [], mode = ModeMap.PHOTO, path = 'mini/', show =
   const [curPath, setPath] = useState<number | string>('')
   const io = useRef<IntersectionObserver>()
   const footer = useRef<HTMLDivElement | null>(null)
+  const [startDel, setStartDel] = useState('')
   const queryPics = useCallback(async (numOpath: number | string) => {
     let path = ''
     if (typeof numOpath === 'number') {
@@ -161,13 +166,13 @@ function UploadPicList({ list = [], mode = ModeMap.PHOTO, path = 'mini/', show =
     queryPics(curPath)
   }, [curPath, queryPics])
   useEffect(() => {
-    if(!once.current) {
+    if (!once.current) {
       once.current = true
       queryFolder();
     }
   }, [queryFolder])
   useEffect(() => {
-    if(!folders?.length) return
+    if (!folders?.length) return
     io.current = new IntersectionObserver(async (entries: IntersectionObserverEntry[]) => {
       if (entries[0].intersectionRatio <= 0) return;
       footer.current && io.current?.unobserve(footer.current);
@@ -198,7 +203,7 @@ function UploadPicList({ list = [], mode = ModeMap.PHOTO, path = 'mini/', show =
     }
   }, [show])
   const randomColor = useCallback((num: number) => {
-    return `#${String(random.current * (num + 4)).slice(4,7)}`
+    return `#${String(random.current * (num + 4)).slice(4, 7)}`
   }, [])
   useEffect(() => {
     stone.isGithubOwner((isowner) => setOwner(isowner))
@@ -208,11 +213,16 @@ function UploadPicList({ list = [], mode = ModeMap.PHOTO, path = 'mini/', show =
       <div className="list_wrap">
         {folders?.map((fold, i) => (pics[fold.path]?.length ? (
           <div key={fold.path} className={`time_fold_wrap${page.current * size.current > i ? '' : ' hide'}`}>
-            <div className="timestone">{fold.name}</div>
+            <div className="timestone">
+              {isOwner && <input type="checkbox" className="if_del_btn" onChange={(e) => {
+                setStartDel(e.target.checked ? fold.name : '')
+              }} />}
+              {fold.name}
+            </div>
             <div className="pics_item_wrap">
               {pics[fold.path]?.map((pic, i) => (
                 <div key={pic.name} className="pic_item_wrap" style={{ backgroundColor: randomColor(i) }}>
-                  {isOwner && <SVGIcon className="img_del_btn" type="close" onClick={() => delPic(fold.path, pic)} />}
+                  {startDel === fold.name && <SVGIcon className="img_del_btn" type="close" onClick={() => delPic(fold.path, pic)} />}
                   <LazyImage className="img_item" src={pic.cdn_url} width="130" height="320" onClick={() => previewPic(pics[fold.path], i)} />
                 </div>
               ))}
