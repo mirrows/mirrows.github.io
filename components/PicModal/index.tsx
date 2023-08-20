@@ -98,7 +98,7 @@ const PicModal = forwardRef<ModalRefType, PicModalProps>(({ pics }, ref) => {
         setPics(items)
         setInd(ind)
         setInit(true)
-        if(swiperRef.current) {
+        if (swiperRef.current) {
             swiperRef.current.slideTo(ind)
             setVisible(true)
         } else {
@@ -110,7 +110,7 @@ const PicModal = forwardRef<ModalRefType, PicModalProps>(({ pics }, ref) => {
         }
     }
     const close = () => {
-        setPics([]) 
+        setPics([])
         setVisible(false)
     }
     useImperativeHandle(ref, () => ({ open, close }))
@@ -138,28 +138,28 @@ const PicModal = forwardRef<ModalRefType, PicModalProps>(({ pics }, ref) => {
         }
     }, [visible, emit])
     return init || visible ? <PIC
-            className={`imgs_wrap${visible ? '' : ' hide'}`}
-            onScroll={(e) => { e.stopPropagation() }}
-            onWheel={(e) => { e.stopPropagation() }}
+        className={`imgs_wrap${visible ? '' : ' hide'}`}
+        onScroll={(e) => { e.stopPropagation() }}
+        onWheel={(e) => { e.stopPropagation() }}
+    >
+        <div className="swiper_header">
+            <span className="name">{list[ind]?.name || ''}</span>
+            <SVGIcon type="close" width="30" height="30" fill="#fff" className="close_swiper" onClick={() => setVisible(false)} />
+        </div>
+        <MySwiper
+            loop={true}
+            // autoplay={{ delay: 2000, disableOnInteraction: false }}
+            className={`img_swiper_wrap`}
+            onSwiper={swiper => swiperRef.current = swiper}
+            onSlideChangeTransitionEnd={slideChange}
         >
-            <div className="swiper_header">
-                <span className="name">{list[ind]?.name || ''}</span>
-                <SVGIcon type="close" width="30" height="30" fill="#fff" className="close_swiper" onClick={() => setVisible(false)} />
-            </div>
-            <MySwiper
-                loop={true}
-                // autoplay={{ delay: 2000, disableOnInteraction: false }}
-                className={`img_swiper_wrap`}
-                onSwiper={swiper => swiperRef.current = swiper}
-                onSlideChangeTransitionEnd={slideChange}
-            >
-                {list.map((pic, ind) => (<SwiperSlide key={ind} className="pic_wrap">
-                    <LazyImage loadingPic={pic.cdn_url} src={mobile ? pic?.cdn_url || '' : pic?.normal_url || pic?.cdn_url || ''} className={"pic_item"} width="1920" height="1080" alt="bing">
-                        <SVGIcon className="tmp_status_btn rotate" type="loading" fill="#fff" />
-                    </LazyImage>
-                </SwiperSlide>))}
-            </MySwiper>
-        </PIC> : <></>
+            {list.map((pic, ind) => (<SwiperSlide key={ind} className="pic_wrap">
+                <LazyImage src={mobile ? pic?.cdn_url || '' : pic?.normal_url || pic?.cdn_url || ''} className={"pic_item"} width="1920" height="1080" alt="bing">
+                    <SVGIcon className="tmp_status_btn rotate" type="loading" fill="#fff" />
+                </LazyImage>
+            </SwiperSlide>))}
+        </MySwiper>
+    </PIC> : <></>
 })
 
 PicModal.displayName = 'PicModal'
