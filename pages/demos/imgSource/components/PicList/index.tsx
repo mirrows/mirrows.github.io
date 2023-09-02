@@ -2,6 +2,7 @@ import LazyImage from "@/components/LazyImage"
 import SVGIcon from "@/components/SVGIcon"
 import { ModeMap, deletePic, queryPicList } from "@/req/demos"
 import { Mode, Pic } from "@/types/demos"
+import { isMobile } from "@/utils/common"
 import { stone } from "@/utils/global"
 import { forwardRef, Ref, useCallback, useEffect, useImperativeHandle, useRef, useState } from "react"
 import styled from "styled-components"
@@ -103,6 +104,7 @@ function UploadPicList({ list = [], mode = ModeMap.PHOTO, path = 'normal/', show
   const [pics, setPics] = useState<PicsMap>({})
   const page = useRef(0)
   const size = useRef(1)
+  const [mobile, setMobile] = useState(false)
   const random = useRef(Math.random())
   const once = useRef(false)
   const [end, setEnd] = useState(false)
@@ -208,6 +210,9 @@ function UploadPicList({ list = [], mode = ModeMap.PHOTO, path = 'normal/', show
   useEffect(() => {
     stone.isGithubOwner((isowner) => setOwner(isowner))
   }, [])
+  useEffect(() => {
+    setMobile(isMobile())
+}, [])
   return (<>
     <DIV {...props}>
       <div className="list_wrap">
@@ -223,7 +228,7 @@ function UploadPicList({ list = [], mode = ModeMap.PHOTO, path = 'normal/', show
               {pics[fold.path]?.map((pic, i) => (
                 <div key={pic.name} className="pic_item_wrap" style={{ backgroundColor: randomColor(i) }}>
                   {startDel === fold.name && <SVGIcon className="img_del_btn" type="close" onClick={() => delPic(fold.path, pic)} />}
-                  <LazyImage className="img_item" src={pic.download_url} width="130" height="320" onClick={() => previewPic(pics[fold.path], i)} />
+                  <LazyImage className="img_item" src={`https://wsrv.nl/?url=${(pic.download_url || '').replace('https://', '')}&w=80&h=180&fit=cover&n=-1&q=80`} width="130" height="320" onClick={() => previewPic(pics[fold.path], i)} />
                 </div>
               ))}
             </div>

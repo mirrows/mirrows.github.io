@@ -154,7 +154,7 @@ const PicModal = forwardRef<ModalRefType, PicModalProps>(({ pics }, ref) => {
             onSlideChangeTransitionEnd={slideChange}
         >
             {list.map((pic, ind) => (<SwiperSlide key={ind} className="pic_wrap">
-                <LazyImage src={mobile ? pic?.cdn_url || '' : pic?.normal_url || pic?.cdn_url || ''} className={"pic_item"} width="1920" height="1080" alt="bing">
+                <LazyImage src={`https://wsrv.nl/?url=${(pic.download_url || '').replace('https://', '')}${mobile ? '&w=240' : ''}&n=-1&q=80`} className={"pic_item"} width="1920" height="1080" alt="bing">
                     <SVGIcon className="tmp_status_btn rotate" type="loading" fill="#fff" />
                 </LazyImage>
             </SwiperSlide>))}
