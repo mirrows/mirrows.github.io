@@ -97,7 +97,7 @@ export type RefType = {
 }
 
 
-function UploadPicList({ list = [], mode = ModeMap.PHOTO, path = 'mini/', show = true, onPreview, ...props }: Props, ref: Ref<RefType>) {
+function UploadPicList({ list = [], mode = ModeMap.PHOTO, path = 'normal/', show = true, onPreview, ...props }: Props, ref: Ref<RefType>) {
   const [isOwner, setOwner] = useState(false)
   const [folders, setFolders] = useState(list || [])
   const [pics, setPics] = useState<PicsMap>({})
@@ -223,7 +223,7 @@ function UploadPicList({ list = [], mode = ModeMap.PHOTO, path = 'mini/', show =
               {pics[fold.path]?.map((pic, i) => (
                 <div key={pic.name} className="pic_item_wrap" style={{ backgroundColor: randomColor(i) }}>
                   {startDel === fold.name && <SVGIcon className="img_del_btn" type="close" onClick={() => delPic(fold.path, pic)} />}
-                  <LazyImage className="img_item" src={pic.cdn_url} width="130" height="320" onClick={() => previewPic(pics[fold.path], i)} />
+                  <LazyImage className="img_item" src={pic.download_url} width="130" height="320" onClick={() => previewPic(pics[fold.path], i)} />
                 </div>
               ))}
             </div>
