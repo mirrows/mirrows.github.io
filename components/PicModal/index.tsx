@@ -73,7 +73,8 @@ const PIC = styled.div`
 `
 
 type PicModalProps = {
-    pics?: Partial<Pic>[]
+    pics?: Partial<Pic>[],
+    github?: boolean
 }
 
 export type ModalRefType = {
@@ -81,7 +82,7 @@ export type ModalRefType = {
     close: () => void
 }
 
-const PicModal = forwardRef<ModalRefType, PicModalProps>(({ pics }, ref) => {
+const PicModal = forwardRef<ModalRefType, PicModalProps>(({ pics, github =  true }, ref) => {
     const [visible, setVisible] = useState<boolean>(false)
     const swiperRef = useRef<Swiper | null>(null);
     const [ind, setInd] = useState(0)
@@ -154,7 +155,7 @@ const PicModal = forwardRef<ModalRefType, PicModalProps>(({ pics }, ref) => {
             onSlideChangeTransitionEnd={slideChange}
         >
             {list.map((pic, ind) => (<SwiperSlide key={ind} className="pic_wrap">
-                <LazyImage src={`https://wsrv.nl/?url=${(pic.cdn_url || '').replace('https://', '')}${mobile ? '&w=240' : ''}&n=-1&q=80`} className={"pic_item"} width="1920" height="1080" alt="bing">
+                <LazyImage src={github ? `https://wsrv.nl/?url=${(pic.cdn_url || '').replace('https://', '')}${mobile ? '&w=240' : ''}&n=-1&q=80` : pic.cdn_url || ''} className={"pic_item"} width="1920" height="1080" alt="bing">
                     <SVGIcon className="tmp_status_btn rotate" type="loading" fill="#fff" />
                 </LazyImage>
             </SwiperSlide>))}

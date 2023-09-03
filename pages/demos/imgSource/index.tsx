@@ -60,6 +60,7 @@ const DIV = styled.div`
 export default function ImgSource() {
     const [personal, setPersonal] = useState(false)
     const [isOwner, setOwner] = useState(false)
+    const [showUpload, uploadShow] = useState(false)
     const commonRef = useRef<RefType>(null)
     const privateRef = useRef<RefType>(null)
     const curPersonal = useRef(false)
@@ -76,6 +77,10 @@ export default function ImgSource() {
     }
     const openSwiper = (items: Partial<Pic>[], ind: number) => {
         picRef.current?.open(items, ind)
+    }
+    const uploadPreview = (items: Partial<Pic>[], ind: number) => {
+        uploadShow(false)
+        openSwiper(items, ind)
     }
     useEffect(() => {
         stone.isGithubOwner((isowner) => setOwner(isowner))
@@ -103,10 +108,10 @@ export default function ImgSource() {
                     <button className={`switch_btn${personal ? '' : ' active'}`} onClick={() => setPersonal(false)}>COMMON</button>
                     <button className={`switch_btn${personal ? ' active' : ''}`} onClick={() => setPersonal(true)}>PRIVATE</button>
                 </div>}
-                <UploadPicList ref={commonRef} show={!personal} className={personal ? 'hide' : ''} onPreview={openSwiper} />
+                <UploadPicList ref={commonRef} show={!personal} className={personal ? 'hide' : ''} onPreview={uploadPreview} />
                 {isOwner && <UploadPicList ref={privateRef} mode="private" show={!!personal} className={personal ? '' : 'hide'} onPreview={openSwiper} />}
 
-                <PicModal ref={picRef} />
+                <PicModal github={showUpload} ref={picRef} />
             </DIV>
 
         </main>
