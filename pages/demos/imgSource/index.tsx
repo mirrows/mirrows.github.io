@@ -7,6 +7,8 @@ import { useEffect, useRef, useState } from "react"
 import styled from "styled-components"
 import UploadPicList, { RefType } from "./components/PicList"
 import PicModal, { ModalRefType } from "@/components/PicModal"
+import { queryPic } from "@/req/demos"
+import { isMobile, parsequeryStr2Obj } from "@/utils/common"
 
 
 const DIV = styled.div`
@@ -63,6 +65,7 @@ export default function ImgSource() {
     const [showUpload, uploadShow] = useState(false)
     const commonRef = useRef<RefType>(null)
     const privateRef = useRef<RefType>(null)
+    const [mobile, setMobile] = useState(false)
     const curPersonal = useRef(false)
     const picRef = useRef<ModalRefType | null>(null)
     const afterUpload = async () => {
@@ -75,15 +78,24 @@ export default function ImgSource() {
     const onStartUpload = () => {
         curPersonal.current = personal
     }
-    const openSwiper = (items: Partial<Pic>[], ind: number) => {
+    const openSwiper = (items: Partial<Pic>[], ind: number, upload = false) => {
+        uploadShow(upload)
         picRef.current?.open(items, ind)
     }
     const uploadPreview = (items: Partial<Pic>[], ind: number) => {
-        uploadShow(false)
-        openSwiper(items, ind)
+        openSwiper(items, ind, true)
+    }
+    const PreviewBeforeLoad = async (src: string) => {
+        let realSrc = src
+        if (personal) {
+            const { data } = await queryPic(parsequeryStr2Obj(src).url.replace('cdn.jsdelivr.net/gh/mirrows/private@main/', ''), 'private')
+            realSrc = data?.content ? `data:image/${data.name.split('.').reverse()[0]};base64,${data?.content || ''}` : data.cdn_url || src
+        }
+        return realSrc
     }
     useEffect(() => {
         stone.isGithubOwner((isowner) => setOwner(isowner))
+        setMobile(isMobile())
     }, [])
     return (<>
         <Head>
@@ -108,10 +120,14 @@ export default function ImgSource() {
                     <button className={`switch_btn${personal ? '' : ' active'}`} onClick={() => setPersonal(false)}>COMMON</button>
                     <button className={`switch_btn${personal ? ' active' : ''}`} onClick={() => setPersonal(true)}>PRIVATE</button>
                 </div>}
-                <UploadPicList ref={commonRef} show={!personal} className={personal ? 'hide' : ''} onPreview={uploadPreview} />
+                <UploadPicList ref={commonRef} show={!personal} className={personal ? 'hide' : ''} onPreview={openSwiper} />
                 {isOwner && <UploadPicList ref={privateRef} mode="private" show={!!personal} className={personal ? '' : 'hide'} onPreview={openSwiper} />}
 
-                <PicModal github={showUpload} ref={picRef} />
+                <PicModal
+                    ref={picRef}
+                    slice={!showUpload}
+                    beforeLoad={PreviewBeforeLoad}
+                />
             </DIV>
 
         </main>

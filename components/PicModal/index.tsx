@@ -74,15 +74,17 @@ const PIC = styled.div`
 
 type PicModalProps = {
     pics?: Partial<Pic>[],
-    github?: boolean
+    slice?: boolean,
+    beforeLoad?: (src: string) => Promise<string>,
+    onChange?: () => {},
 }
 
 export type ModalRefType = {
     open: (items: Partial<Pic>[], ind: number) => void,
-    close: () => void
+    close: () => void,
 }
 
-const PicModal = forwardRef<ModalRefType, PicModalProps>(({ pics, github =  true }, ref) => {
+const PicModal = forwardRef<ModalRefType, PicModalProps>(({ pics, slice = true, onChange = () => { }, beforeLoad = (src) => Promise.resolve(src) }, ref) => {
     const [visible, setVisible] = useState<boolean>(false)
     const swiperRef = useRef<Swiper | null>(null);
     const [ind, setInd] = useState(0)
@@ -93,6 +95,7 @@ const PicModal = forwardRef<ModalRefType, PicModalProps>(({ pics, github =  true
     const curScrollTop = useRef<{ val: number, obj: 'body' | 'documentElement' }>({ obj: 'body', val: 0 })
     const slideChange = (swiper: Swiper) => {
         setInd(swiper.realIndex)
+        onChange()
         emit()
     }
     const open = (items: Partial<Pic>[], ind = 0) => {
@@ -107,7 +110,7 @@ const PicModal = forwardRef<ModalRefType, PicModalProps>(({ pics, github =  true
             setTimeout(() => {
                 swiperRef.current?.slideTo(ind)
                 setVisible(true)
-            })
+            }, 500)
         }
     }
     const close = () => {
@@ -155,7 +158,14 @@ const PicModal = forwardRef<ModalRefType, PicModalProps>(({ pics, github =  true
             onSlideChangeTransitionEnd={slideChange}
         >
             {list.map((pic, ind) => (<SwiperSlide key={ind} className="pic_wrap">
-                <LazyImage src={github ? `https://wsrv.nl/?url=${(pic.cdn_url || '').replace('https://', '')}${mobile ? '&w=240' : ''}&n=-1&q=80` : pic.cdn_url || ''} className={"pic_item"} width="1920" height="1080" alt="bing">
+                <LazyImage
+                    src={slice ? `https://wsrv.nl/?url=${(pic.download_url || '').replace('https://', '')}${mobile ? '&w=240' : ''}&n=-1&q=80` : pic.cdn_url || ''}
+                    className={"pic_item"}
+                    width="1920"
+                    height="1080"
+                    alt="bing"
+                    beforeLoad={beforeLoad}
+                >
                     <SVGIcon className="tmp_status_btn rotate" type="loading" fill="#fff" />
                 </LazyImage>
             </SwiperSlide>))}

@@ -270,6 +270,7 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
         }
     }
     const handlePreview = (ind: number) => {
+
         picRef.current?.open(total.map(p => ({
             cdn_url: p.src,
             sha: Date.now().toString() + ind,
@@ -370,7 +371,7 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
                 }) : ''}
             </div>
         </DIV>
-        <PicModal ref={picRef} />
+        <PicModal ref={picRef} slice={false} />
     </>)
 })
 

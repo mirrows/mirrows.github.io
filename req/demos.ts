@@ -61,6 +61,21 @@ export const queryPicList = (path: string, mode: Mode) => {
   })
 }
 
+export const queryPic = (path: string, mode: Mode) => {
+  return query({
+    path: '/demos/queryPic',
+    method: 'post',
+    headers: {
+      'content-type': 'application/json',
+      ...(stone.data.token ? { Authorization: `token ${stone.data.token}` } : {})
+    },
+    params: {
+      path,
+      mode,
+    }
+  })
+}
+
 type DeletePicParams = {
   sha: string,
   path: string
