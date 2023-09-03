@@ -13,7 +13,8 @@ type Props = {
     operateLine?: JSX.Element | JSX.Element[],
     personal?: boolean,
     onStartUpload?: () => void,
-    onFinish?: (items: { mini: Pic, normal: Pic }[]) => void,
+    onFinish?: (items: { normal: Pic }[]) => void,
+    // onFinish?: (items: { mini: Pic, normal: Pic }[]) => void,
     autoUpload?: boolean,
     className?: string,
     align?: 'bottom' | 'top',
@@ -205,12 +206,12 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
             let status: UploadType['uploadStatus'] = 'LOADING';
             newMap[total[i].id] = status
             setUploadStatusMap({ ...newMap })
-            const mini = await uploadFile(files[i], { quality: 0.1, mimeType: 'image/jpeg' }, `mini/${path}`, mode)
+            // const mini = await uploadFile(files[i], { quality: 0.1, mimeType: 'image/jpeg' }, `mini/${path}`, mode)
             const normal = await uploadFile(files[i], { quality: 1024 * 1024 * 2 > files[i].size ? 1024 * 1024 * 2 / files[i].size : 0.8 }, `normal/${path}`, mode)
-            if (!mini?.data || !normal?.data || normal?.code || mini?.code) {
+            if (!normal?.data || normal?.code) {
                 status = 'ERROR'
             } else {
-                result.push({ mini: mini.data, normal: normal.data })
+                result.push({ normal: normal.data })
             }
             // if (normal.code || mini.code) {
             //     status = 'ERROR'
@@ -229,10 +230,10 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
             //         resolve(0)
             //     }, 5000)
             // })
-            const mini = await uploadUrl({ url: urls[i], path: `mini/${path}`, mode })
+            // const mini = await uploadUrl({ url: urls[i], path: `mini/${path}`, mode })
             const normal = await uploadUrl({ url: urls[i], path: `normal/${path}`, mode })
-            result.push({ mini: mini.data, normal: normal.data })
-            if (normal.code || mini.code) {
+            result.push({normal: normal.data })
+            if (normal.code) {
                 status = 'ERROR'
             }
             newMap[total[i + files.length].id] = status === 'LOADING' ? 'SUCCESS' : status
