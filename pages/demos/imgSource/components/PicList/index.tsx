@@ -6,6 +6,7 @@ import { isMobile } from "@/utils/common"
 import { stone } from "@/utils/global"
 import { forwardRef, Ref, useCallback, useEffect, useImperativeHandle, useRef, useState } from "react"
 import styled from "styled-components"
+import { Node } from "typescript"
 
 
 const DIV = styled.div`
@@ -112,6 +113,7 @@ function UploadPicList({ list = [], mode = ModeMap.PHOTO, path = 'normal/', show
   const io = useRef<IntersectionObserver>()
   const footer = useRef<HTMLDivElement | null>(null)
   const [startDel, setStartDel] = useState('')
+  const timer = useRef<NodeJS.Timer>()
   const queryPics = useCallback(async (numOpath: number | string) => {
     let path = ''
     if (typeof numOpath === 'number') {
@@ -163,6 +165,30 @@ function UploadPicList({ list = [], mode = ModeMap.PHOTO, path = 'normal/', show
   const previewPic = (items: Pic[], ind: number) => {
     onPreview?.(items, ind)
   }
+  // const queryPreviewUrl = useCallback(() => {
+  //     setPics((val) => {
+  //       const pathArr = Object.keys(val)
+  //       const map: typeof val = {}
+  //       // for (let i = 0; i < pathArr.length; i++) {
+  //       pathArr.forEach(async (path) => {
+  //         // const path = pathArr[i]
+  //         const res = await queryPicList(path, mode)
+  //         map[path] = [...val[path].map(pic => ({ ...pic, ...(res?.data.find((p: Pic) => p.name === pic.name) || {}) }))]
+  //       })
+  //       return map
+  //   })
+  // }, [mode])
+  const queryPreviewUrl = useCallback(async () => {
+    const pathArr = Object.keys(pics)
+    for (let i = 0; i < pathArr.length; i++) {
+      const path = pathArr[i]
+      const res = await queryPicList(path, mode)
+      setPics((val) => ({
+        ...val,
+        [path]: [...val[path].map(pic => ({ ...pic, ...(res?.data.find((p: Pic) => p.name === pic.name) || {}) }))]
+      }))
+    }
+  }, [mode, pics])
   useEffect(() => {
     if (curPath === '') return
     queryPics(curPath)
@@ -210,6 +236,16 @@ function UploadPicList({ list = [], mode = ModeMap.PHOTO, path = 'normal/', show
   useEffect(() => {
     stone.isGithubOwner((isowner) => setOwner(isowner))
   }, [])
+  useEffect(() => {
+    if (!show || mode !== 'private') return
+    clearInterval(timer.current)
+    timer.current = setInterval(() => {
+      queryPreviewUrl()
+    }, 1000 * 180)
+    return () => {
+      clearInterval(timer.current)
+    }
+  }, [mode, queryPreviewUrl, show])
   useEffect(() => {
     setMobile(isMobile())
 }, [])

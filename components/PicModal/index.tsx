@@ -17,7 +17,9 @@ const PIC = styled.div`
         left: 0;
         right: 0;
         background-color: #666;
-        z-index: 60;
+        z-index: -10;
+        opacity: 0;
+        transition: .3s;
     }
     .pic_wrap{
         /* position: absolute;
@@ -70,6 +72,10 @@ const PIC = styled.div`
         width: 64px;
         z-index: -1;
     }
+    &.flow_up{
+        opacity: 1;
+        z-index: 60;
+    }
 `
 
 type PicModalProps = {
@@ -91,7 +97,6 @@ const PicModal = forwardRef<ModalRefType, PicModalProps>(({ pics, slice = true, 
     const [mobile, setMobile] = useState(false)
     const { emit } = useLazyImgs('.img_swiper_wrap .lazy');
     const [list, setPics] = useState<Partial<Pic>[]>(pics || [])
-    const [init, setInit] = useState(false)
     const curScrollTop = useRef<{ val: number, obj: 'body' | 'documentElement' }>({ obj: 'body', val: 0 })
     const slideChange = (swiper: Swiper) => {
         setInd(swiper.realIndex)
@@ -101,15 +106,19 @@ const PicModal = forwardRef<ModalRefType, PicModalProps>(({ pics, slice = true, 
     const open = (items: Partial<Pic>[], ind = 0) => {
         setPics(items)
         setInd(ind)
-        setInit(true)
+        console.log(swiperRef.current, ind)
         if (swiperRef.current) {
-            swiperRef.current.slideTo(ind)
-            setVisible(true)
+            swiperRef.current?.slideTo(ind)
+            setTimeout(() => {
+                setVisible(true)
+            }, 300);
         } else {
             // 首次打开等待dom创建完成后打开弹窗
             setTimeout(() => {
                 swiperRef.current?.slideTo(ind)
-                setVisible(true)
+                setTimeout(() => {
+                    setVisible(true)
+                }, 2000)
             }, 500)
         }
     }
@@ -141,8 +150,8 @@ const PicModal = forwardRef<ModalRefType, PicModalProps>(({ pics, slice = true, 
             curScrollTop.current.val = 0
         }
     }, [visible, emit])
-    return init || visible ? <PIC
-        className={`imgs_wrap${visible ? '' : ' hide'}`}
+    return <PIC
+        className={`imgs_wrap${visible ? ' flow_up' : ''}`}
         onScroll={(e) => { e.stopPropagation() }}
         onWheel={(e) => { e.stopPropagation() }}
     >
@@ -159,7 +168,7 @@ const PicModal = forwardRef<ModalRefType, PicModalProps>(({ pics, slice = true, 
         >
             {list.map((pic, ind) => (<SwiperSlide key={ind} className="pic_wrap">
                 <LazyImage
-                    src={slice ? `https://wsrv.nl/?url=${(pic.download_url || '').replace('https://', '')}${mobile ? '&w=240' : ''}&n=-1&q=80` : pic.cdn_url || ''}
+                    src={slice ? `https://wsrv.nl/?url=${(pic.preview_url || pic.download_url || '').replace('https://', '')}${mobile ? '&w=240' : ''}&n=-1&q=80` : pic.cdn_url || ''}
                     className={"pic_item"}
                     width="1920"
                     height="1080"
@@ -170,7 +179,7 @@ const PicModal = forwardRef<ModalRefType, PicModalProps>(({ pics, slice = true, 
                 </LazyImage>
             </SwiperSlide>))}
         </MySwiper>
-    </PIC> : <></>
+    </PIC>
 })
 
 PicModal.displayName = 'PicModal'
