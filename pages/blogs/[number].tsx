@@ -362,10 +362,11 @@ export default function Blog({ artical: atl, comments: cmts, pageInfo }: Props) 
       uploadRef.current?.addFile(file)
     }
   }
-  const afterUpload = (pics: { mini: Pic, normal: Pic }[]) => {
+  const afterUpload = (pics: { normal: Pic }[]) => {
+    console.log(pics)
     setTimeout(() => {
       if (input.current) {
-        input.current.value = input.current.value + pics.map(({ mini, normal }) => `![${mini.name}](${mini.cdn_url})\n![${normal.name}](${normal.cdn_url})`).join('\n')
+        input.current.value = input.current.value + pics.map(({ normal }) => `\n![${normal.name}](https://wsrv.nl/?url=${normal.download_url.replace('https://', '')})`).join('\n')
         input.current.focus()
       }
     })
@@ -445,7 +446,7 @@ export default function Blog({ artical: atl, comments: cmts, pageInfo }: Props) 
       setOwner(isowner)
     })
     
-  }, [query, listComments])
+  }, [query, listComments, replace])
 
   return (
     <>
