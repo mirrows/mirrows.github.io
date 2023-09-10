@@ -419,17 +419,15 @@ export default function Blog({ artical: atl, comments: cmts, pageInfo }: Props) 
     })
   }, [query])
   useEffect(() => {
-    if (!artical && query.number) {
+    if (query.number) {
       listArtical({ number: +query.number }).then(res => {
         if (!res.data?.labels?.some((e: any) => e.name === 'blog')) {
           router.replace('/404')
           return
         }
-        setArtical(res.data)
+        res?.data && setArtical(res.data)
         listComments()
       })
-    } else if (!artical?.labels?.some(e => e.name === 'blog')) {
-      router.replace('/404')
     }
     stone.data.emit()
     // md解析的图片会添加懒加载机制，此时必须手动检查一次是否在可视区内
@@ -448,7 +446,7 @@ export default function Blog({ artical: atl, comments: cmts, pageInfo }: Props) 
       setOwner(isowner)
     })
     
-  }, [router, artical, query, listComments])
+  }, [router, query, listComments])
 
   return (
     <>
