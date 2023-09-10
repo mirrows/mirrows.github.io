@@ -247,9 +247,9 @@ export default function BlogCreator({ artical, onSubmit: fn }: Props) {
       uploadRef.current?.addFile(file)
     }
   }
-  const afterUpload = (pics: {mini: Pic, normal: Pic}[]) => {
+  const afterUpload = (pics: {normal: Pic}[]) => {
     setTimeout(() => {
-      setContent(c => c + pics.map(({mini, normal}) => `![${mini.name}](${mini.cdn_url})\n![${normal.name}](${normal.cdn_url})`).join('\n'))
+      setContent(c => c + pics.map(({normal}) => `\n![${normal.name}](${normal.cdn_url})`).join('\n'))
     })
   }
   const onSubmit = () => {
