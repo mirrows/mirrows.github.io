@@ -322,7 +322,7 @@ type Props = {
 
 export default function Blog({ artical: atl, comments: cmts, pageInfo }: Props) {
   const md = new MarkdownIt()
-  const { query } = useRouter()
+  const { query, replace } = useRouter()
   const [artical, setArtical] = useState(atl)
   const content = useRef<HTMLDivElement | null>(null)
   const input = useRef<HTMLTextAreaElement | null>(null)
@@ -333,7 +333,6 @@ export default function Blog({ artical: atl, comments: cmts, pageInfo }: Props) 
   const [curCommentsInfo, setInfo] = useState<Partial<PageInfo>>(pageInfo || {})
   const [isOwner, setOwner] = useState(false)
   const [page, setPage] = useState(1)
-  const router = useRouter();
   const uploadRef = useRef<UploadRefType>(null)
   const mdify = () => {
     if (!input.current?.value) return;
@@ -422,7 +421,7 @@ export default function Blog({ artical: atl, comments: cmts, pageInfo }: Props) 
     if (query.number) {
       listArtical({ number: +query.number }).then(res => {
         if (!res.data?.labels?.some((e: any) => e.name === 'blog')) {
-          router.replace('/404')
+          replace('/404')
           return
         }
         res?.data && setArtical(res.data)
@@ -446,7 +445,7 @@ export default function Blog({ artical: atl, comments: cmts, pageInfo }: Props) 
       setOwner(isowner)
     })
     
-  }, [router, query, listComments])
+  }, [query, listComments])
 
   return (
     <>
