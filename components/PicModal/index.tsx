@@ -106,7 +106,6 @@ const PicModal = forwardRef<ModalRefType, PicModalProps>(({ pics, slice = true, 
     const open = (items: Partial<Pic>[], ind = 0) => {
         setPics(items)
         setInd(ind)
-        console.log(swiperRef.current, ind)
         if (swiperRef.current) {
             swiperRef.current?.slideTo(ind)
             setTimeout(() => {
