@@ -1,4 +1,3 @@
-import RImage from "next/image"
 import { ReactElement, useEffect, useRef, useState } from "react"
 
 
@@ -8,12 +7,23 @@ type TProps = {
     className?: string,
     children?: Element | ReactElement<any, any>,
     beforeLoad?: (src: string) => Promise<string>,
+    onLoad?: (src: string) => void,
     isShow?: boolean,
     noReload?: boolean,
     [key: string]: any,
 }
 
-function LazyImage({ loadingPic, src, className, beforeLoad = (src) => Promise.resolve(src), noReload = false, children, isShow = true, ...props }: TProps) {
+function LazyImage({
+    loadingPic,
+    src,
+    className,
+    beforeLoad = (src) => Promise.resolve(src),
+    onLoad = (src) => Promise.resolve(src),
+    noReload = false,
+    children,
+    isShow = true,
+    ...props
+}: TProps) {
     const loadingGif = useRef(loadingPic || process.env.NEXT_PUBLIC_LOADING_GIF)
     const failImg = useRef(process.env.NEXT_FAIL_IMG)
     const [imgSrc, setSrc] = useState(loadingGif.current)
@@ -24,6 +34,11 @@ function LazyImage({ loadingPic, src, className, beforeLoad = (src) => Promise.r
         imgRef.current?.classList.add('lazy')
         setSrc(failImg.current)
         setLoaded(true)
+    }
+    const handleLoad = () => {
+        setLoaded(true)
+        if(src !== imgRef.current?.src) return
+        onLoad(src)
     }
     useEffect(() => {
         if (oneTime.current) return
@@ -57,7 +72,7 @@ function LazyImage({ loadingPic, src, className, beforeLoad = (src) => Promise.r
             src={imgSrc}
             data-src={src}
             alt=""
-            onLoad={() => setLoaded(true)}
+            onLoad={handleLoad}
             onError={handleError}
             {...props}
         />

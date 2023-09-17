@@ -6,7 +6,8 @@ export type Pic = {
   cdn_url: string,
   sha: string,
   path: string,
-  name: string
+  name: string,
+  loaded: boolean
 }
 
 export type Mode = "private" | "photo"

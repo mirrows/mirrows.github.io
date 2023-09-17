@@ -182,6 +182,8 @@ function UploadPicList({ list = [], mode = ModeMap.PHOTO, path = 'normal/', show
     const pathArr = Object.keys(pics)
     for (let i = 0; i < pathArr.length; i++) {
       const path = pathArr[i]
+      const ifNodeLoaded = pics[path].some(pic => !pic.loaded)
+      if (!ifNodeLoaded) continue
       const res = await queryPicList(path, mode)
       setPics((val) => ({
         ...val,
@@ -189,6 +191,13 @@ function UploadPicList({ list = [], mode = ModeMap.PHOTO, path = 'normal/', show
       }))
     }
   }, [mode, pics])
+  const picLoaded = (path: string, ind: number) => {
+    console.log(333)
+    setPics((val) => ({
+      ...val,
+      [path]: [...val[path].map((pic, i) => ({ ...pic, loaded: i === ind ? true : (pic.loaded || false) }))]
+    }))
+  }
   useEffect(() => {
     if (curPath === '') return
     queryPics(curPath)
@@ -270,6 +279,9 @@ function UploadPicList({ list = [], mode = ModeMap.PHOTO, path = 'normal/', show
                     width="130"
                     height="320"
                     noReload
+                    onLoad={(src) => {
+                      picLoaded(fold.path, i)
+                    }}
                     onClick={() => previewPic(pics[fold.path], i)}
                   />
                   {/* <img
