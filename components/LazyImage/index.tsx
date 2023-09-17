@@ -9,23 +9,30 @@ type TProps = {
     children?: Element | ReactElement<any, any>,
     beforeLoad?: (src: string) => Promise<string>,
     isShow?: boolean,
+    noReload?: boolean,
     [key: string]: any,
 }
 
-function LazyImage({ loadingPic, src, className, beforeLoad = (src) => Promise.resolve(src), children, isShow = true, ...props }: TProps) {
-    const loadingGif = useRef(loadingPic || process.env.NEXT_PUBLIC_LOADING_GIF || 'https://empty.t-n.top/pub_lic/2023_06_09/pic1686281264582557.gif')
-    const failImg = useRef('https://empty.t-n.top/pub_lic/2023_06_26/pic1687748007844003.png')
+function LazyImage({ loadingPic, src, className, beforeLoad = (src) => Promise.resolve(src), noReload = false, children, isShow = true, ...props }: TProps) {
+    const loadingGif = useRef(loadingPic || process.env.NEXT_PUBLIC_LOADING_GIF)
+    const failImg = useRef(process.env.NEXT_FAIL_IMG)
     const [imgSrc, setSrc] = useState(loadingGif.current)
     const [loaded, setLoaded] = useState(false)
     const imgRef = useRef<HTMLImageElement | null>(null)
+    const oneTime = useRef(0)
     const handleError = () => {
+        imgRef.current?.classList.add('lazy')
         setSrc(failImg.current)
         setLoaded(true)
     }
     useEffect(() => {
+        console.log(noReload, oneTime.current)
+        if (oneTime.current) return
         const clientHeight = document.documentElement.clientHeight
         const clientWidth = document.documentElement.clientWidth
-        imgRef.current?.classList.add('lazy')
+        if (!noReload) {
+            imgRef.current?.classList.add('lazy')
+        }
         setLoaded(false)
         if (
             imgRef.current
@@ -37,9 +44,13 @@ function LazyImage({ loadingPic, src, className, beforeLoad = (src) => Promise.r
             && imgRef.current.getBoundingClientRect().height
             && isShow
         ) {
+            if (noReload) {
+                oneTime.current = 1
+            }
+            imgRef.current?.classList.remove('lazy')
             setSrc(src)
         }
-    }, [src, isShow])
+    }, [src, isShow, noReload])
     return (<>
         <img
             className={`${className ? `lazy ${className}` : 'lazy'}`}

@@ -269,6 +269,7 @@ function UploadPicList({ list = [], mode = ModeMap.PHOTO, path = 'normal/', show
                     src={`https://wsrv.nl/?url=${(pic.download_url || '').replace('https://', '')}${mobile ? '&w=80&h=180' : '&w=300'}&fit=cover&n=-1&q=80`}
                     width="130"
                     height="320"
+                    noReload
                     onClick={() => previewPic(pics[fold.path], i)}
                   />
                   {/* <img
