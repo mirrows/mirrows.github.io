@@ -26,7 +26,6 @@ function LazyImage({ loadingPic, src, className, beforeLoad = (src) => Promise.r
         setLoaded(true)
     }
     useEffect(() => {
-        console.log(noReload, oneTime.current)
         if (oneTime.current) return
         const clientHeight = document.documentElement.clientHeight
         const clientWidth = document.documentElement.clientWidth
