@@ -63,6 +63,11 @@ button:hover{
   box-shadow: 0 0 5px -1px #666;
 }
 
+.normal_btn:disabled{
+  opacity: 0.5;
+  cursor: default;
+}
+
 .scroll_er{
   width: 100%;
   overflow-x: auto;
@@ -210,6 +215,15 @@ img{
   max-height: 100vh;
   overflow: hidden;
   box-sizing: border-box;
+}
+
+.invalid{
+  cursor: default;
+}
+
+input:disabled{
+  opacity: 0.5;
+  cursor: default;
 }
 
 

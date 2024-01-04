@@ -22,6 +22,12 @@ export const dictQuery = (w: string) => {
   })
 }
 
+// export const ipQuery = () => {
+//   return query({
+//     path: '/ip',
+//   })
+// }
+
 export const ipQuery = () => {
   return req({
     path: 'https://ip.useragentinfo.com/json',

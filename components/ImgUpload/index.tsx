@@ -171,6 +171,7 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
     }, [urls, files])
     const [uploadStatusMap, setUploadStatusMap] = useState<{ [key: string]: UploadType['uploadStatus'] }>({})
     const clickHandle = () => {
+        if(loading) return;
         inputRef.current?.click();
     }
     const handlefile = (e: ChangeEvent<HTMLInputElement>) => {
@@ -180,6 +181,7 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
     const dropFile = (e: DragEvent<HTMLDivElement>) => {
         e.preventDefault();
         e.stopPropagation();
+        if(loading) return;
         e.dataTransfer.files?.length && setFiles((pics) => [...pics, ...Array.from(e.dataTransfer.files)])
     }
     const uploadFile = async (file: File, options: any, path: string, mode: Mode) => {
@@ -246,7 +248,7 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
         setLoading(false)
     }
     const inputUrl = () => {
-        if (!urlInput) return
+        if (!urlInput || loading) return
         setUrls(urls => Array.from(new Set([...urls, ...urlInput.split(',')])))
         setUrlInput('')
     }
@@ -313,7 +315,7 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
     return (<>
         <DIV
             ref={wrapRef}
-            className={`con_input_wrap${className ? ` ${className}` : ''}`}
+            className={`con_input_wrap${loading ? ' invalid' : ''}${className ? ` ${className}` : ''}`}
             {...props}
             onClick={() => allowClick && clickable && clickHandle()}
             onDrop={dropFile}
@@ -359,13 +361,14 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
                             type="text"
                             placeholder={`${total.length || 0} pics will be uploaded`}
                             value={urlInput}
+                            disabled={loading}
                             onInput={e => setUrlInput(e.currentTarget.value)}
                             onKeyUp={handlekeyUp}
                         />
-                        <SVGIcon className="enter_icon" type="enter" onClick={inputUrl} />
+                        <SVGIcon className="enter_icon" type="enter" style={loading ? { opacity: 0.5, cursor: 'default' } : {}} onClick={inputUrl} />
                     </div>}
                 </div>
-                {autoUpload || !!total.length && <button className="normal_btn submit_btn" onClick={handleSubmit}>upload</button>}
+                {autoUpload || !!total.length && <button className="normal_btn submit_btn" disabled={loading} onClick={handleSubmit}>upload</button>}
                 {Array.isArray(children) ? cloneElement(children[1], {
                     ...children[1].props,
                 }) : ''}

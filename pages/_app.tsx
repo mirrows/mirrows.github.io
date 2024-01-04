@@ -29,18 +29,19 @@ export default function App({ Component, pageProps }: AppProps) {
     // if (process.env.NODE_ENV !== 'production') return
     let detail = sessionStorage.detail
     if (!detail) {
-      const data = await ipQuery()
+      const { data } = await ipQuery()
       detail = data
       sessionStorage.setItem('detail', JSON.stringify(detail))
     } else {
       try {
         detail = JSON.parse(detail)
       } catch {
-        const data: IPDetail = await ipQuery()
+        const { data }: { data: IPDetail } = await ipQuery()
         detail = data
         sessionStorage.setItem('detail', JSON.stringify(detail))
       }
     }
+    console.log(detail)
     if (!detail.ip) return
     const data = await visitorsData(detail.ip)
     const preview = {
