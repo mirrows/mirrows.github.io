@@ -5,7 +5,7 @@ import Head from "next/head"
 import { ChangeEvent, FocusEvent, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import styled from "styled-components"
 
-const DIV = styled.div`
+const DIV = styled.div<any>`
     .lottery_bg{
         position: fixed;
         top: 0;

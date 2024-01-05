@@ -9,7 +9,8 @@ import { useRouter } from 'next/router'
 import { useLazyImgs } from '@/utils/imgTool'
 import { IPDetail } from '@/types/global'
 
-const Div = styled.div`
+const Div = styled.div<any>`
+  width: 100vw;
   .hidden{
     opacity: 0;
     z-index: -10;
@@ -91,7 +92,7 @@ export default function App({ Component, pageProps }: AppProps) {
     <>
       <NavHeader />
       <Component {...pageProps} />
-      <Div style={{ width: '100vw' }}>
+      <Div>
         <div className={`ps_mask${loading ? '' : ' hidden'}`}>
           <div className="loading_wrap" style={{ width: '120px', margin: '20% auto 0' }}>
             <img style={{width: '100%'}} src="https://empty.t-n.top/pub_lic/2023_04_29/pic1682756884211870.gif" alt="loading img" />

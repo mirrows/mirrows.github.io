@@ -11,7 +11,7 @@ import { queryPic } from "@/req/demos"
 import { isMobile, parsequeryStr2Obj } from "@/utils/common"
 
 
-const DIV = styled.div`
+const DIV = styled.div<any>`
     padding: 80px 0;
     margin: 0 auto;
     background-image: url('https://empty.t-n.top/pub_lic/2023_07_08/pic1688805979076243.jpg');

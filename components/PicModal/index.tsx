@@ -9,7 +9,7 @@ import { isMobile } from '@/utils/common';
 import SVGIcon from '../SVGIcon';
 import 'swiper/css';
 
-const PIC = styled.div`
+const PIC = styled.div<any>`
     &.imgs_wrap{
         position: fixed;
         top: 0;
@@ -151,8 +151,8 @@ const PicModal = forwardRef<ModalRefType, PicModalProps>(({ pics, slice = true, 
     }, [visible, emit])
     return <PIC
         className={`imgs_wrap${visible ? ' flow_up' : ''}`}
-        onScroll={(e) => { e.stopPropagation() }}
-        onWheel={(e) => { e.stopPropagation() }}
+        onScroll={(e: any) => { e.stopPropagation() }}
+        onWheel={(e: any) => { e.stopPropagation() }}
     >
         <div className="swiper_header">
             <span className="name">{list[ind]?.name || ''}</span>

@@ -31,7 +31,7 @@ export type UploadRefType = {
     addFile: (items: File[]) => void,
 }
 
-const DIV = styled.div`
+const DIV = styled.div<any>`
     &.con_input_wrap{
         display: flex;
         flex-direction: column;
@@ -319,7 +319,7 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
             {...props}
             onClick={() => allowClick && clickable && clickHandle()}
             onDrop={dropFile}
-            onDragOver={(e) => e.preventDefault()}
+            onDragOver={(e: any) => e.preventDefault()}
         >
             {Array.isArray(children) ? cloneElement(children[0], {
                 ...children[0].props,

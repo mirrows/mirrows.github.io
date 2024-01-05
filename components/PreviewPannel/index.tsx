@@ -13,7 +13,7 @@ type Time = {
 }
 
 
-const DIV = styled.div`
+const DIV = styled.div<any>`
   position: relative;
   margin: 10px auto;
   padding: 10px 0;

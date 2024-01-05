@@ -19,7 +19,7 @@ import Pagination from '@/components/Pagination';
 import DateText from '@/components/SsrRender/Timer';
 import { PageInfo } from '@/types/github';
 
-const Div = styled.div`
+const Div = styled.div<any>`
   min-height: 100vh;
   .imgs_wrap{
     position: fixed;

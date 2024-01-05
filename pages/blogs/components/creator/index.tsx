@@ -11,7 +11,7 @@ import { ChangeEvent, ClipboardEvent, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import xss from 'xss'
 
-const DIV = styled.div`
+const DIV = styled.div<any>`
   min-height: 100vh;
   padding: 60px 0;
   background-color: #e2e2e2;

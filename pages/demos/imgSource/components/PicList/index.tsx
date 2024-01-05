@@ -9,7 +9,7 @@ import styled from "styled-components"
 import { Node } from "typescript"
 
 
-const DIV = styled.div`
+const DIV = styled.div<any>`
     .list_wrap{
         max-width: 1200px;
         padding: 0 10px 10px;

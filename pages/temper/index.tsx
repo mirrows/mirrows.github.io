@@ -1,7 +1,7 @@
 import styled from "styled-components"
 
 
-const DIV = styled.div`
+const DIV = styled.div<any>`
     margin: 80px auto;
     text-align: center;
 `

@@ -5,7 +5,7 @@ import { useRouter } from 'next/router'
 import { useEffect, useLayoutEffect, useRef } from 'react'
 import styled from 'styled-components'
 
-const DIV = styled.div`
+const DIV = styled.div<any>`
   &.wrap{
     width: fit-content;
     margin: 10vh auto;

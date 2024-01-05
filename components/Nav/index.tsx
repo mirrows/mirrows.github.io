@@ -11,7 +11,7 @@ import { env } from "process"
 import TriggerBtn from "../TriggerBtn"
 
 
-const Div = styled.div`
+const Div = styled.div<any>`
 .nav{
   display: flex;
   justify-content:space-between;

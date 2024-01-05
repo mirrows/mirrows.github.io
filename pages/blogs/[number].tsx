@@ -20,7 +20,7 @@ import { Pic } from '@/types/demos'
 import { randomString } from '@/utils/common'
 // marked在安卓默认浏览器兼容性不佳
 
-const DIV = styled.div`
+const DIV = styled.div<any>`
   position: fixed;
   top: 0;
   bottom: 0;
@@ -30,7 +30,7 @@ const DIV = styled.div`
   background-color: #e2e2e2;
 `
 
-const BlogContent = styled.div`
+const BlogContent = styled.div<any>`
   position: absolute;
   left: 0;
   right: 0;

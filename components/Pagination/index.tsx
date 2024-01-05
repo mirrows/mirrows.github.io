@@ -2,7 +2,7 @@ import styled from "styled-components"
 import SVGIcon from "../SVGIcon"
 import { useEffect, useState } from "react"
 
-const DIV = styled.div`
+const DIV = styled.div<any>`
     &.pagination_wrap{
         margin-bottom: 10px;
         text-align: right;

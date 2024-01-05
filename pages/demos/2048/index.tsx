@@ -2,7 +2,7 @@ import Head from 'next/head'
 import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
-const DIV = styled.div`
+const DIV = styled.div<any>`
   overflow: hidden;
   .fire_wrap{
     position: fixed;

@@ -72,3 +72,5 @@ export type EventEmits = {
   'github': (info: UserInfo) => void,
   'jsonpIp': (props: IPDetail) => void
 }
+
+export type styled = any
