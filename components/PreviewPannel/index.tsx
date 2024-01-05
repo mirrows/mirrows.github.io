@@ -58,7 +58,7 @@ export default function PreviewPannel() {
   const queryPreviewData = () => {
     const detail = sessionStorage.detail;
     // if(detail) {
-    detail && setIPDetail(JSON.parse(detail))
+    detail && setIPDetail(JSON.parse(detail || {}))
     // } else {
       stone.on('ip', ({ data, detail }) => {
         if(!data) return;
