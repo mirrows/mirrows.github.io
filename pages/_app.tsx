@@ -22,8 +22,6 @@ const Div = styled.div`
   }
 `
 
-
-
 export default function App({ Component, pageProps }: AppProps) {
   const statistics = async () => {
     // if (process.env.NODE_ENV !== 'production') return
@@ -38,11 +36,11 @@ export default function App({ Component, pageProps }: AppProps) {
       } catch {
         const { data }: { data: IPDetail } = await ipQuery()
         detail = data
-        sessionStorage.setItem('detail', JSON.stringify(detail))
+        sessionStorage.setItem('detail', JSON.stringify(detail || {}))
       }
     }
     console.log(detail)
-    if (!detail.ip) return
+    if (!detail?.ip) return
     const data = await visitorsData(detail.ip)
     const preview = {
       ip: detail?.ip,

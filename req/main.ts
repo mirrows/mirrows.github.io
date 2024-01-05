@@ -1,7 +1,9 @@
 import { ArticalParams } from "@/types/blogs";
 import { NormalObj } from "@/types/common";
-import { githubApi, query, req } from "@/utils/api";
+import { IPDetail } from "@/types/global";
+import { githubApi, query } from "@/utils/api";
 import { stone } from "@/utils/global";
+import JsonP from 'jsonp'
 
 export const queryGithubToken = (data: NormalObj<any>) => {
   return query({
@@ -29,10 +31,24 @@ export const dictQuery = (w: string) => {
 // }
 
 export const ipQuery = () => {
-  return req({
-    path: 'https://ip.useragentinfo.com/json',
+  return new Promise<{ data: IPDetail }>(res => {
+    return JsonP('https://ip.useragentinfo.com/jsonp', {
+      param: 'callback',
+      name: 'callback'
+    }, (err, data: IPDetail) => {
+      console.log(err, data);
+      res({
+        data,
+      })
+    })
   })
 }
+
+// export const ipQuery = () => {
+//   return req({
+//     path: 'https://ip.useragentinfo.com/json',
+//   })
+// }
 
 // export const ipQuery = () => {
 //   return req({

@@ -70,4 +70,5 @@ export type GblData = {
 export type EventEmits = {
   'ip': (props: { data: {data: Preview['data']}, detail: IPDetail }) => void,
   'github': (info: UserInfo) => void,
+  'jsonpIp': (props: IPDetail) => void
 }
