@@ -115,8 +115,8 @@ function UploadPicList({ list = [], mode = ModeMap.PHOTO, path = 'normal/', show
     const pathArr = Object.keys(pics)
     for (let i = 0; i < pathArr.length; i++) {
       const path = pathArr[i]
-      const ifNodeLoaded = pics[path].some(pic => !pic.loaded)
-      if (!ifNodeLoaded) continue
+      // const ifNodeLoaded = pics[path].some(pic => !pic.loaded)
+      // if (!ifNodeLoaded) continue
       const res = await queryPicList(path, mode)
       setPics((val) => ({
         ...val,
