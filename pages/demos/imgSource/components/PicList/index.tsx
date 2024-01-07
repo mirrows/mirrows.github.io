@@ -206,7 +206,7 @@ function UploadPicList({ list = [], mode = ModeMap.PHOTO, path = 'normal/', show
                 {pics[fold.path]?.map((pic, i) => (
                   <div key={pic.name} className={style['pic_item_wrap']} style={{ backgroundColor: randomColor(i) }}>
                     {startDel === fold.name && <SVGIcon className={style['img_del_btn']} type="close" onClick={() => delPic(fold.path, pic)} />}
-                    {/* <LazyImage
+                    <LazyImage
                       className={style['img_item']}
                       src={`https://wsrv.nl/?url=${(pic.download_url || '').replace('https://', '')}${mobile ? '&w=80&h=180' : '&w=300'}&fit=cover&n=-1&q=80`}
                       width="130"
@@ -216,8 +216,8 @@ function UploadPicList({ list = [], mode = ModeMap.PHOTO, path = 'normal/', show
                         picLoaded(fold.path, i)
                       }}
                       onClick={() => previewPic(pics[fold.path], i)}
-                    /> */}
-                    <img
+                    />
+                    {/* <img
                       className={style['img_item']}
                       src={`https://wsrv.nl/?url=${(pic.download_url || '').replace('https://', '')}${mobile ? '&w=160&h=360' : '&w=280'}&fit=cover&n=-1&q=80`}
                       width="130"
@@ -227,7 +227,7 @@ function UploadPicList({ list = [], mode = ModeMap.PHOTO, path = 'normal/', show
                         picLoaded(fold.path, i)
                       }}
                       onClick={() => previewPic(pics[fold.path], i)}
-                    />
+                    /> */}
                   </div>
                 ))}
               </div>
