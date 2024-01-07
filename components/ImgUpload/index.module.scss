@@ -5,8 +5,8 @@
     height: 100%;
   }
 
-  .up_operate_bottom,
-  .up_operate_top {
+  :global(.up_operate_bottom),
+  :global(.up_operate_top) {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -16,7 +16,7 @@
     text-align: left;
   }
 
-  .up_operate_top {
+  :global(.up_operate_top) {
     order: -1;
     margin-top: 0;
     margin-bottom: 10px;

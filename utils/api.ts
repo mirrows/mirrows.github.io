@@ -45,7 +45,8 @@ const githubQuery = (options: Options) => {
     method: method || 'GET',
     headers: {
       "content-type": "application/json",
-      ...(stone.data.token ? { Authorization: `token ${stone.data.userInfo?.login === env.user ? env.userToken : stone.data.token}` } : {})
+      ...(stone.data.token ? { Authorization: `token ${stone.data.token}` } : {}),
+      ...headers,
     },
     body: params && JSON.stringify(params),
     ...others,

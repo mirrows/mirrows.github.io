@@ -56,7 +56,7 @@ export default function ImgSource() {
             <link rel="icon" href="/favicon.ico" />
         </Head>
         <main>
-            <div className={`${style['img_sorce_wrap']} ${style['bg_wrap']}`}>
+            <div className={`${style['img_sorce_wrap']}`}>
                 <ImgUpload
                     className={style['uploader_wrap']}
                     personal={personal}

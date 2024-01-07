@@ -240,7 +240,7 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
                 style={{ display: 'none' }}
                 onChange={handlefile}
             />
-            <div className={`${style['scroll_er']} ${style['tmp_wrap']}`}>
+            <div className={`scroll_er ${style['tmp_wrap']}`}>
                 {total.map((e, i) => (
                     <div key={e.id} className={`${style['tmp_item_wrap']} upload_${uploadStatusMap[e.id]}`} onClick={e => e.stopPropagation()}>
                         <img className={style['tmp_item']} width="40" height="96" src={e.src} alt="" onClick={() => handlePreview(i)} />
@@ -249,7 +249,7 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
                             SUCCESS: <SVGIcon className={style['tmp_status_btn']} type="yes" fill="green" />,
                             ERROR: <SVGIcon className={style['tmp_status_btn']} type="no" fill="red" />,
                             WAIT: '',
-                            LOADING: <SVGIcon className={`${style['tmp_status_bt']} rotate`} type="loading" fill="gray" />,
+                            LOADING: <SVGIcon className={`${style['tmp_status_btn']} rotate`} type="loading" fill="gray" />,
                         }[uploadStatusMap[e.id]]}
                     </div>
                 ))}
