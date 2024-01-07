@@ -49,7 +49,7 @@
       .expand_icon {
         display: block;
       }
-      .nav_list.modal-active {
+      .nav_list:global(.modal-active) {
         display: block;
         position: absolute;
         right: 0;

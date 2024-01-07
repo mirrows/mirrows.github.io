@@ -1,7 +1,7 @@
 import { ArticalParams } from "@/types/blogs";
 import { NormalObj } from "@/types/common";
 import { IPDetail } from "@/types/global";
-import { githubApi, query } from "@/utils/api";
+import { githubApi, githubQuery, query } from "@/utils/api";
 import { stone } from "@/utils/global";
 import JsonP from 'jsonp'
 
@@ -70,29 +70,26 @@ export type ListArticalParams = {
 }
 
 export const listArtical = (params?: ListArticalParams) => {
-  return query({
+  return githubQuery({
     path: '/github/listArticals',
     method: 'get',
-    headers: stone.data.token ? { Authorization: `token ${stone.data.token}` } : {},
     ...(params ? { query: params } : {})
   })
 }
 
 
 export const addArtical = (params: ArticalParams) => {
-  return query({
+  return githubQuery({
     path: '/github/addArtical',
     method: 'post',
-    headers: stone.data.token ? { Authorization: `token ${stone.data.token}` } : {},
     params,
   })
 }
 
 export const editArtical = (params: ArticalParams) => {
-  return query({
+  return githubQuery({
     path: '/github/editArtical',
     method: 'post',
-    headers: stone.data.token ? { Authorization: `token ${stone.data.token}` } : {},
     params,
   })
 }

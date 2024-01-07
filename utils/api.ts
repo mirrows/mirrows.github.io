@@ -1,5 +1,5 @@
 import { parseObj2queryStr } from "./common"
-import { stone } from "./global"
+import { env, stone } from "./global"
 
 type Options = {
   path: string,
@@ -17,7 +17,7 @@ const githubApi = ({ path, ...options }: Options) => {
     ...(options || {}),
     headers: {
       Accept: 'application/vnd.github+json',
-      ...(stone.data.token ? { Authorization: `token ${stone.data.token}` } : {}),
+      ...(stone.data.token ? { Authorization: `token ${stone.data.userInfo?.login === env.user ? env.userToken : stone.data.token}` } : {}),
       ...(options?.headers || {}),
     }
   }).then(res => res.json())
@@ -31,6 +31,22 @@ const query = (options: Options) => {
   return fetch(`${baseUrl}${path}${parseObj2queryStr(query)}`, {
     method: method || 'GET',
     headers: { "content-type": "application/json", ...headers},
+    body: params && JSON.stringify(params),
+    ...others,
+  }).then(res => res.json())
+    .catch(err => {
+      console.log(err)
+    })
+}
+
+const githubQuery = (options: Options) => {
+  const { method, path, query, headers, params, ...others } = options
+  return fetch(`${baseUrl}${path}${parseObj2queryStr(query)}`, {
+    method: method || 'GET',
+    headers: {
+      "content-type": "application/json",
+      Authorization: `token ${stone.data.userInfo?.login === env.user ? env.userToken : stone.data.token}`
+    },
     body: params && JSON.stringify(params),
     ...others,
   }).then(res => res.json())
@@ -57,5 +73,6 @@ const req = (options: Options) => {
 export {
   githubApi,
   query,
-  req
+  githubQuery,
+  req,
 }

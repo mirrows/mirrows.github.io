@@ -1,6 +1,5 @@
 import { Mode } from "@/types/demos"
-import { query } from "@/utils/api"
-import { stone } from "@/utils/global"
+import { githubQuery } from "@/utils/api"
 
 type UploadMiniParams = {
   content: string,
@@ -15,13 +14,11 @@ export enum ModeMap {
 }
 
 export const uploadBase64 = (params: UploadMiniParams) => {
-  return query({
+  return githubQuery({
     path: '/demos/uploadBase64',
     method: 'put',
     headers: {
       timestamp: Date.now(),
-      'content-type': 'application/json',
-      ...(stone.data.token ? { Authorization: `token ${stone.data.token}` } : {})
     },
     params,
   })
@@ -34,26 +31,20 @@ type UploadUrlParams = {
 }
 
 export const uploadUrl = (params: UploadUrlParams) => {
-  return query({
+  return githubQuery({
     path: '/demos/uploadUrl',
     method: 'put',
     headers: {
       timestamp: Date.now(),
-      'content-type': 'application/json',
-      ...(stone.data.token ? { Authorization: `token ${stone.data.token}` } : {})
     },
     params,
   })
 }
 
 export const queryPicList = (path: string, mode: Mode) => {
-  return query({
+  return githubQuery({
     path: '/demos/queryPicList',
     method: 'post',
-    headers: {
-      'content-type': 'application/json',
-      ...(stone.data.token ? { Authorization: `token ${stone.data.token}` } : {})
-    },
     params: {
       path,
       mode,
@@ -62,13 +53,9 @@ export const queryPicList = (path: string, mode: Mode) => {
 }
 
 export const queryPic = (path: string, mode: Mode) => {
-  return query({
+  return githubQuery({
     path: '/demos/queryPic',
     method: 'post',
-    headers: {
-      'content-type': 'application/json',
-      ...(stone.data.token ? { Authorization: `token ${stone.data.token}` } : {})
-    },
     params: {
       path,
       mode,
@@ -83,13 +70,11 @@ type DeletePicParams = {
 }
 
 export const deletePic = (params: DeletePicParams) => {
-  return query({
+  return githubQuery({
     path: '/demos/deletePic',
     method: 'post',
     headers: {
       timestamp: Date.now(),
-      'content-type': 'application/json',
-      ...(stone.data.token ? { Authorization: `token ${stone.data.token}` } : {})
     },
     params,
   })
