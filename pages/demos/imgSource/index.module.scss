@@ -1,0 +1,46 @@
+.img_sorce_wrap {
+  padding: 80px 0;
+  margin: 0 auto;
+  background-image: url("https://empty.t-n.top/pub_lic/2023_07_08/pic1688805979076243.jpg");
+  text-align: center;
+  min-height: 100vh;
+  box-sizing: border-box;
+  .uploader_wrap {
+    width: 60%;
+    min-width: 200px;
+    max-width: 900px;
+    padding: 10px;
+    margin: auto;
+    border: 2px dashed gray;
+    border-radius: 6px;
+    background-image: url(https://empty.t-n.top/pub_lic/2023_07_08/pic1688805979076243.jpg);
+    box-shadow: 0 0 5px #999;
+    cursor: pointer;
+  }
+  .tips {
+    font-size: 0.8em;
+    color: gray;
+  }
+  @media (max-width: 769px) {
+    .uploader_wrap {
+      width: 90%;
+    }
+  }
+  .switch_wrap {
+    margin: 10px;
+  }
+  .switch_btn {
+    padding: 4px 20px;
+    background-color: #fff;
+    border: 1px solid #000;
+    font-size: 1rem;
+    color: #000;
+  }
+  .switch_btn.active {
+    background-color: #000;
+    color: #fff;
+  }
+  .switch_btn:hover {
+    box-shadow: none;
+  }
+}

@@ -5,9 +5,7 @@ import { Artical, Comment } from '@/types/global'
 import { stone } from '@/utils/global'
 import { parseBody } from '@/utils/md'
 import Head from 'next/head'
-import Link from 'next/link'
 import React, { ClipboardEvent, useEffect, useRef, useState } from 'react'
-import styled from 'styled-components'
 import { particlesCursor } from 'threejs-toys'
 import xss from 'xss'
 import MarkdownIt from 'markdown-it';
@@ -19,261 +17,7 @@ import { Pic } from '@/types/demos'
 import { randomString } from '@/utils/common'
 // marked在安卓默认浏览器兼容性不佳
 
-const DIV = styled.div<any>`
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: -1;
-`
-
-const BlogContent = styled.div<any>`
-  position: absolute;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  /* width: fit-content; */
-  margin: 60px auto;
-  color: #fff;
-  line-height: 1.2;
-  pointer-events: none;
-  vertical-align: bottom;
-  .blog_wrap{
-    padding: 10px;
-    margin: 5px;
-    background-color: rgba(200,200,200,.5);
-    box-sizing: border-box;
-    border-radius: 8px;
-  }
-  .blog_left{
-    display: flex;
-    flex-direction: column;
-    flex: 1 1 680px;
-    max-width: 680px;
-    overflow: hidden;
-  }
-  .add_comment{
-    pointer-events: all;
-  }
-  
-  .text_area{
-    width: 100%;
-    padding: 10px;
-    background-color: rgba(255,255,255,.8);
-    border: none;
-    box-sizing: border-box;
-    border-radius: 6px;
-    vertical-align: bottom;
-    resize: none;
-    outline: none;
-    font-size: 16px;
-  }
-  .operate_wrap{
-    display: flex;
-    justify-content: space-between;
-    flex: 1;
-    .preview{
-      width: 24px;
-      height: 24px;
-      padding: 0 2px;
-      margin: 0 4px;
-      vertical-align: middle;
-      cursor: pointer;
-      &:hover{
-        background-color: rgba(200,200,200,.5);
-        border-radius: 4px;
-      }
-    }
-    
-    .submit{
-      padding: 5px 16px;
-      font-weight: bold;
-      background-color: #fff;
-      border: none;
-      border-radius: 4px;
-      font-size: 14px;
-      color: #000;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-  }
-  .blog_content{
-    padding: 10px;
-    /* background-color: rgba(200,200,200,.5); */
-    box-sizing: border-box;
-    border-radius: 8px;
-    pointer-events: all;
-                                
-  }
-  .blog_content,.comment_detail{
-    blockquote{
-      padding: 4px 0 4px 1em;
-      margin: 0;
-      margin-bottom: 8px;
-      border-left: 4px solid gray;
-      white-space: normal;
-      background-color: #5c5c5c;
-      border-radius: 0 6px 6px 0;
-      opacity: 0.8;
-      font-size: 14px;
-      p{
-        margin: 0;
-        line-height: 1.2;
-      }
-    }
-    p{
-      margin: 0 0 10px;;
-      white-space: pre-wrap;
-      line-height: 1.5;
-      word-break: break-all;
-    }
-    a{
-      pointer-events: all;
-    }
-    img{
-      max-width: 100%;
-    }
-    table{
-      border-collapse:collapse;
-    }
-    table th, table td{
-      min-width: 80px;
-      padding: 4px;
-      border: 1px solid #000;
-    }
-    ul{
-      margin: 10px 0;
-    }
-    ul li:before{
-      content: "⚪";
-      float: left;
-      margin-right: 10px;
-      font-weight: 900;
-    }
-    code {
-      background-color: #f5f5f5;
-      overflow: auto;
-      color: #000;
-    }
-    pre {
-      padding: 10px;
-      background-color: #f5f5f5;
-      overflow: auto;
-      border-radius: 8px;
-      color: #000;
-    }
-    pre {
-      &::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
-      }
-      /* 滚动条滑块 */
-      &::-webkit-scrollbar-thumb {
-        border-radius: 10px;
-        background: #a5a5a5;
-      }
-    }
-  }
-  .preview_detail_wrap{
-    max-height: 240px;
-    overflow: auto;
-  }
-  .preview_detail{
-    pointer-events: none;
-  }
-  .preview_detail_wrap,.text_area,.comment_detail{
-    pointer-events: all;
-    &::-webkit-scrollbar {
-      width: 8px;
-      height: 8px;
-    }
-    /* 滚动条滑块 */
-    &::-webkit-scrollbar-thumb {
-      border-radius: 10px;
-      background: #a5a5a5;
-    }
-  }
-  
-  .comments_wrap{
-    display: flex;
-    flex-direction: column;
-    min-width: 240px;
-    margin: 5px;
-    position: sticky;
-    top: 40px;
-    max-height: calc(100vh - 80px);
-    overflow: auto;
-    &::-webkit-scrollbar{
-      display: none;
-    }
-  }
-  .avator{
-    width: 36px;
-    height: 36px;
-    margin-right: 10px;
-    border-radius: 4px;
-  }
-  .author_msg{
-    display: flex;
-    padding: 5px;
-    box-shadow: 0px 5px 10px -5px #999;
-  }
-  .comment_content_wrap{
-    background-color: rgba(200,200,200,.5);
-    border-radius: 5px;
-    margin-bottom: 10px;
-    pointer-events: all;
-    .comment_detail_wrap{
-      padding: 10px;
-    }
-    .comment_detail{
-      max-height: 400px;
-      overflow: auto;
-    }
-  }
-  @media (min-width: 680px) {
-    .comment_detail{
-      max-width: 400px;
-    }
-  }
-  .text_small{
-    font-size: 12px;
-    color: #c1c1c1;
-  }
-
-  @media (max-width: 680px) {
-    display: block;
-    .comments_wrap{
-      max-height: unset;
-    }
-  }
-  .other_words{
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-  .input_item{
-    flex: 1;
-    width: 0;
-    padding: 10px;
-    margin: 0 5px;
-    border: none;
-    box-sizing: border-box;
-    border-radius: 6px;
-    vertical-align: bottom;
-    background-color: rgba(255,255,255,.8);
-  }
-  .input_item:first-child{
-    margin-left: 0;
-  }
-  .input_item:last-child{
-    margin-right: 0;
-  }
-`
-
+import style from './index.module.scss'
 
 type Props = {
   artical: Artical,
@@ -434,14 +178,14 @@ export default function About({ artical: atl, comments: cmts, pageInfo }: Props)
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <DIV id="test"></DIV>
-        <BlogContent>
-          <div className='blog_left'>
-            <div className="blog_content blog_wrap" dangerouslySetInnerHTML={{ __html: parseBody(xss(md.render(artical?.body || ''))) }} />
-            <div className='blog_wrap add_comment'>
-              <div className='other_words'>
-                <input ref={username} type="text" className='input_item' placeholder='用户名(必填)' name="" id="" />
-                <input ref={email} type="text" className='input_item' placeholder='邮箱(必填)' name="" id="" />
+        <div id="test" className={style['about_bg']} />
+        <div className={style['aboout_me_wrap']}>
+          <div className={style['blog_left']}>
+            <div className={`${style['blog_content']} ${style['blog_wrap']}`} dangerouslySetInnerHTML={{ __html: parseBody(xss(md.render(artical?.body || ''))) }} />
+            <div className={`${style['blog_wrap']} ${style['add_comment']}`}>
+              <div className={style['other_words']}>
+                <input ref={username} type="text" className={style['input_item']} placeholder='用户名(必填)' name="" id="" />
+                <input ref={email} type="text" className={style['input_item']} placeholder='邮箱(必填)' name="" id="" />
               </div>
               <label htmlFor="comments_input"></label>
               <ImgUpload
@@ -454,7 +198,7 @@ export default function About({ artical: atl, comments: cmts, pageInfo }: Props)
                   <textarea
                     id="comments_input"
                     ref={input}
-                    className='text_area'
+                    className={style['text_area']}
                     rows={8}
                     style={{ display: isPreview ? 'none' : 'block' }}
                     placeholder='此处添加评论'
@@ -464,41 +208,41 @@ export default function About({ artical: atl, comments: cmts, pageInfo }: Props)
                     onPaste={handlePaste}
                   ></textarea>
                 </div>
-                <div className='operate_wrap'>
-                  <SVGIcon type="code" className='preview' alt='preview' onClick={handlePreview} />
-                  <button className='submit' aria-label='submit comment' onClick={submit}>add comment</button>
+                <div className={style['operate_wrap']}>
+                  <SVGIcon type="code" className={style['preview']} alt='preview' onClick={handlePreview} />
+                  <button className={style['submit']} aria-label='submit comment' onClick={submit}>add comment</button>
                 </div>
               </ImgUpload>
-              <div className='preview_detail_wrap' style={{ display: isPreview ? 'block' : 'none' }}>
-                <div ref={content} className='blog_content preview_detail'></div>
+              <div className={style['preview_detail_wrap']} style={{ display: isPreview ? 'block' : 'none' }}>
+                <div ref={content} className={`${style['blog_content']} ${style['preview_detail']}`}></div>
               </div>
             </div>
           </div>
-          <div className='comments_wrap'>
+          <div className={style['comments_wrap']}>
             <Pagination page={page} total={artical?.comments || 0} onChange={handlePagination} />
             {comments.length ? comments.map(comment => (
-              <div key={comment.id} className='comment_content_wrap'>
-                <div className='author_msg'>
-                  <img className='avator' src={comment.author.avatarUrl} alt="" />
+              <div key={comment.id} className={style['comment_content_wrap']}>
+                <div className={style['author_msg']}>
+                  <img className={style['avator']} src={comment.author.avatarUrl} alt="" />
                   <div>
                     <div>{comment.author.login}</div>
                     <DateText
-                      render={(formattedDate) => <div className='text_small'>{formattedDate}</div>}
+                      render={(formattedDate) => <div className={style['text_small']}>{formattedDate}</div>}
                       value={comment.updatedAt}
                     />
                   </div>
                 </div>
-                <div className='comment_detail_wrap'>
-                  <div className='blog_content comment_detail' dangerouslySetInnerHTML={{ __html: parseBody(xss(md.render(comment.body))) }}></div>
+                <div className={style['comment_detail_wrap']}>
+                  <div className={`${style['blog_content']} ${style['comment_detail']}`} dangerouslySetInnerHTML={{ __html: parseBody(xss(md.render(comment.body))) }}></div>
                 </div>
               </div>
             )) : (
-              <div className='comment_content_wrap'>
-                <div className='blog_content comment_detail text_center'>一个评论都没有呢。。。。。。</div>
+              <div className={style['comment_content_wrap']}>
+                <div className={`${style['blog_content']} ${style['comment_detail']} ${style['text_center']}`}>一个评论都没有呢。。。。。。</div>
               </div>
             )}
           </div>
-        </BlogContent>
+        </div>
       </main>
     </>
   )

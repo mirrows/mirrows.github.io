@@ -11,6 +11,7 @@ const gbData: GblData = {
   preview: {},
   stayTime: 0,
   bing: [],
+  ipDetail: {},
   emit: () => { }
 }
 
@@ -70,6 +71,9 @@ if (typeof window !== "undefined") {
       data.token = ''
       data.userInfo = {}
       data.stayTime = 0
+    }
+    if (data?.ipDetail) {
+      sessionStorage.setItem('detail', JSON.stringify(data.ipDetail))
     }
     stone.set(data)
     // localStorage.removeItem('tmpData')

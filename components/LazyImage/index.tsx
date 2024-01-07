@@ -25,7 +25,7 @@ function LazyImage({
     ...props
 }: TProps) {
     const loadingGif = useRef(loadingPic || process.env.NEXT_PUBLIC_LOADING_GIF)
-    const failImg = useRef(process.env.NEXT_FAIL_IMG)
+    const failImg = useRef(process.env.NEXT_PUBLIC_FAIL_IMG)
     const [imgSrc, setSrc] = useState(loadingGif.current)
     const [loaded, setLoaded] = useState(false)
     const imgRef = useRef<HTMLImageElement | null>(null)

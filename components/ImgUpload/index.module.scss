@@ -1,0 +1,113 @@
+.imgupload_wrap {
+  &.con_input_wrap {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .up_operate_bottom,
+  .up_operate_top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: fit-content;
+    min-height: 26px;
+    margin-top: 10px;
+    text-align: left;
+  }
+
+  .up_operate_top {
+    order: -1;
+    margin-top: 0;
+    margin-bottom: 10px;
+  }
+
+  .url_input_wrap {
+    display: inline-block;
+    position: relative;
+    vertical-align: middle;
+
+    .url_input_wrap {
+      margin-right: 10px;
+    }
+
+    .url_input {
+      flex: 1 1 0;
+      width: 100%;
+      height: 100%;
+      padding-right: 36px;
+      box-sizing: border-box;
+      font-size: 12px;
+    }
+
+    .enter_icon {
+      position: absolute;
+      right: 3px;
+      top: 0;
+      bottom: 0;
+      height: 12px;
+      width: 12px;
+      padding: 4px;
+      background-color: #000;
+      border-radius: 4px;
+      margin: auto;
+      fill: #fff;
+    }
+  }
+
+  .file_wrap {
+    display: inline-block;
+    /* display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    flex: 1; */
+    padding: 0 8px;
+    margin: 0 10px;
+    white-space: nowrap;
+    font-size: 1rem;
+    color: gray;
+  }
+
+  .tmp_wrap {
+    display: flex;
+    flex-wrap: wrap;
+    max-height: 215px;
+  }
+
+  .tmp_item_wrap {
+    position: relative;
+  }
+
+  .tmp_item {
+    width: 40px;
+    height: 96px;
+    object-fit: cover;
+    margin: 5px;
+  }
+
+  .tmp_del_btn {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 15px;
+    padding: 0 0 5px 5px;
+    border-radius: 0 0 0 20px;
+    fill: #fff;
+    background-color: #000;
+  }
+
+  .tmp_status_btn {
+    position: absolute;
+    left: 5px;
+    bottom: 5px;
+    width: 20px;
+  }
+
+  .submit_btn {
+    float: right;
+  }
+
+  .upload_children_wrap {
+    height: 100%;
+  }
+}

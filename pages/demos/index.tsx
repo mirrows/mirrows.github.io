@@ -2,72 +2,7 @@ import LazyImage from '@/components/LazyImage'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import styled from 'styled-components'
-
-const DIV = styled.div<any>`
-  overflow: hidden;
-  .fire_wrap{
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    vertical-align: bottom;
-    z-index: 0;
-  }
-  .items_wrap{
-    position: relative;
-    z-index: 2;
-    display: grid;
-    justify-content: center;
-    grid-template-columns: repeat(auto-fill, 8rem);
-    grid-gap: 10px;
-    min-width: 200px;
-    max-width: 1200px;
-    width: 100%;
-    padding: 10px 0;
-    margin: 60px auto;
-    pointer-events: none;
-  }
-  .item_wrap{
-    position: relative;
-    pointer-events: all;
-    padding: 0.5rem;
-  }
-  .item{
-    position: relative;
-    width: 100%;
-    padding-bottom: 100%;
-    overflow: hidden;
-    cursor: pointer;
-    
-  }
-  .item_middle{
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    padding: 10px;
-    box-sizing: border-box;
-    border: 3px dashed #f5f5f5;
-    border-radius: 12px;
-  }
-  .item_img{
-    width: 100%;
-    height: 100%;
-    border-radius: 6px;
-  }
-  .demo_name{
-    margin: 10px 0;
-    text-align: center;
-    word-break: break-all;
-    font-size: 14px;
-    color: #fff;
-    cursor: pointer;
-  }
-  @media (min-width: 769px) {
-    .item:hover ~ .item_mask{
-      opacity: 1;
-    }
-  }
-`
+import style from './index.module.scss'
 
 export default function Demos() {
   const [show, isShow] = useState(false)
@@ -100,19 +35,19 @@ export default function Demos() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <DIV>
-          {show && <iframe className='fire_wrap' src="https://empty.t-n.top/html/WebGL%20Fluid%20Simulation.html"></iframe>}
-          <div className="items_wrap">
-            {list.map((item, i) => (<Link key={i} className='item_wrap' aria-label={item.name} href={item.link}>
-              <div className='item'>
-                <div className='item_middle'>
-                  <LazyImage className='item_img' width="100" height="100" src={item.icon} />
+        <div className={style['demos_wrap']}>
+          {show && <iframe className={style['fire_wrap']} src="https://empty.t-n.top/html/WebGL%20Fluid%20Simulation.html"></iframe>}
+          <div className={style['items_wrap']}>
+            {list.map((item, i) => (<Link key={i} className={style['item_wrap']} aria-label={item.name} href={item.link}>
+              <div className={style['item']}>
+                <div className={style['item_middle']}>
+                  <LazyImage className={style['item_img']} width="100" height="100" src={item.icon} />
                 </div>
               </div>
-              <div className='demo_name two_line'>{item.name}</div>
+              <div className={`${style['demo_name']} ${style['two_line']}`}>{item.name}</div>
             </Link>))}
           </div>
-        </DIV>
+        </div>
       </main>
     </>
   )

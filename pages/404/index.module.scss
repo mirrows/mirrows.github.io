@@ -1,0 +1,20 @@
+.err_wrap {
+  &.wrap{
+    width: fit-content;
+    margin: 10vh auto;
+    text-align: center;
+  }
+  .img{
+    max-width: 100%;
+    height: unset;
+    max-height: 60vh;
+    object-fit: contain;
+  }
+  .back{
+    display: block;
+    text-shadow: 0 0 10px gray;
+    font-weight: bold;
+    font-size: 6vh;
+    color: #fff
+  }
+}

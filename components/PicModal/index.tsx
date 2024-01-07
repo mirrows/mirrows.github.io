@@ -1,6 +1,5 @@
 import { Swiper as MySwiper, SwiperSlide } from 'swiper/react';
 import LazyImage from "../LazyImage"
-import styled from 'styled-components';
 import { Pic } from '@/types/demos';
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import Swiper from 'swiper';
@@ -9,74 +8,7 @@ import { isMobile } from '@/utils/common';
 import SVGIcon from '../SVGIcon';
 import 'swiper/css';
 
-const PIC = styled.div<any>`
-    &.imgs_wrap{
-        position: fixed;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background-color: #666;
-        z-index: -10;
-        opacity: 0;
-        transition: .3s;
-    }
-    .pic_wrap{
-        /* position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: fit-content; */
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 30px;
-        margin: auto;
-        box-sizing: border-box;
-    }
-    .pic_item{
-        width: unset;
-        height: unset;
-        max-width: 100%;
-        max-height: 100%;
-    }
-    .swiper_header{
-        display: flex;
-        flex-wrap: nowrap;
-        justify-content: space-between;
-        align-items: center;
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: fit-content;
-        padding: 10px;
-        background-image: linear-gradient(black 0%, transparent 80%);
-        box-sizing: border-box;
-        color: #fff;
-        z-index: 80;
-        .name{
-            line-height: 1;
-        }
-    }
-    .modal_wrap{
-
-    }
-    .img_swiper_wrap{
-        width: 100%;
-        height: 100%;
-    }
-    .img_swiper_wrap .tmp_status_btn{
-        position: absolute;
-        width: 64px;
-        z-index: -1;
-    }
-    &.flow_up{
-        opacity: 1;
-        z-index: 60;
-    }
-`
+import style from './index.module.scss'
 
 type PicModalProps = {
     pics?: Partial<Pic>[],
@@ -149,36 +81,36 @@ const PicModal = forwardRef<ModalRefType, PicModalProps>(({ pics, slice = true, 
             curScrollTop.current.val = 0
         }
     }, [visible, emit])
-    return <PIC
-        className={`imgs_wrap${visible ? ' flow_up' : ''}`}
+    return <div
+        className={`${style['pic_modal_wrap']} ${style['imgs_wrap']}${visible ? ' flow_up' : ''}`}
         onScroll={(e: any) => { e.stopPropagation() }}
         onWheel={(e: any) => { e.stopPropagation() }}
     >
-        <div className="swiper_header">
-            <span className="name">{list[ind]?.name || ''}</span>
-            <SVGIcon type="close" width="30" height="30" fill="#fff" className="close_swiper" onClick={() => setVisible(false)} />
+        <div className={style['swiper_header']}>
+            <span className={style['name']}>{list[ind]?.name || ''}</span>
+            <SVGIcon type="close" width="30" height="30" fill="#fff" className={style['close_swiper']} onClick={() => setVisible(false)} />
         </div>
         <MySwiper
             loop={true}
             // autoplay={{ delay: 2000, disableOnInteraction: false }}
-            className={`img_swiper_wrap`}
+            className={style['img_swiper_wrap']}
             onSwiper={swiper => swiperRef.current = swiper}
             onSlideChangeTransitionEnd={slideChange}
         >
-            {list.map((pic, ind) => (<SwiperSlide key={ind} className="pic_wrap">
+            {list.map((pic, ind) => (<SwiperSlide key={ind} className={style['pic_wrap']}>
                 <LazyImage
                     src={slice ? `https://wsrv.nl/?url=${(pic.preview_url || pic.download_url || '').replace('https://', '')}${mobile ? '&w=240' : ''}&n=-1&q=80` : pic.cdn_url || ''}
-                    className={"pic_item"}
+                    className={style['pic_item']}
                     width="1920"
                     height="1080"
                     alt="bing"
                     beforeLoad={beforeLoad}
                 >
-                    <SVGIcon className="tmp_status_btn rotate" type="loading" fill="#fff" />
+                    <SVGIcon className={`${style['tmp_status_btn']} rotate`} type="loading" fill="#fff" />
                 </LazyImage>
             </SwiperSlide>))}
         </MySwiper>
-    </PIC>
+    </div>
 })
 
 PicModal.displayName = 'PicModal'

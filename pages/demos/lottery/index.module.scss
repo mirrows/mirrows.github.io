@@ -1,0 +1,264 @@
+.lottery_wrap {
+  .lottery_bg {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: 80%;
+    height: unset;
+    max-height: 80%;
+    margin: auto;
+    text-align: center;
+  }
+
+  .pointer_wrap {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 6rem;
+    height: 9rem;
+    margin: auto;
+    text-align: center;
+    transition: 3s ease;
+    transform: rotate(0deg);
+
+    .pointer {
+      position: relative;
+      top: 50%;
+      left: 50%;
+      width: 100%;
+      height: 100%;
+      transform: translate(-50%, -70%);
+    }
+  }
+
+  .start_btn {
+    width: 5rem;
+    height: 5rem;
+    cursor: pointer;
+    border-radius: 50%;
+  }
+
+  .line_wrap {
+    max-width: 400px;
+    max-height: 400px;
+    width: 70vw;
+    height: 70vw;
+    border-radius: 50%;
+  }
+
+  .line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    height: 45%;
+    width: 1px;
+    transform-origin: 50% 100%;
+    background-color: rgb(154 200 255 / 55%);
+  }
+
+  .area_item {
+    position: absolute;
+    top: 10px;
+    left: 0;
+    right: 0;
+    max-width: 100px;
+    height: unset;
+    margin: auto;
+    border-radius: 30%;
+    overflow: hidden;
+    perspective: 1000;
+    transform-origin: 50% 32vw;
+    cursor: pointer;
+
+    &:hover {
+      background-image: linear-gradient(45deg, black, transparent);
+    }
+  }
+
+  @media (min-width: 600px) {
+    .area_item {
+      transform-origin: 50% 190px;
+    }
+  }
+
+  .rate_table {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    margin: 10px;
+  }
+
+  .table_wrap {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    max-width: 100vw;
+    padding: 10px 5px 32px;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 4px;
+    color: #fff;
+    transform-origin: 100% 100%;
+    transition: 0.3s;
+
+    &:global(.modal-active) {
+      transform: scale(1);
+    }
+
+     &:global(.modal-hide) {
+      transform: scale(0);
+    }
+
+    .n_input {
+      width: 100px;
+      padding: 2px 5px;
+      border-radius: 4px;
+      border: none;
+      outline: none;
+    }
+  }
+
+  .table_switch {
+    position: relative;
+    z-index: 6;
+
+    &.modal-active {
+      fill: #fff;
+    }
+  }
+
+  input[readonly] {
+    background-color: inherit;
+    border: none;
+    color: #fff;
+  }
+
+  .modal_wrap {
+    position: fixed;
+    top: 50%;
+    left: 0;
+    right: 0;
+    max-width: 40%;
+    min-width: 240px;
+    margin: auto;
+    transform: translateY(-50%);
+    text-align: center;
+  }
+
+  .con_img {
+    position: relative;
+    bottom: -16px;
+    width: 160px;
+    height: unset;
+    z-index: 1;
+  }
+
+  .modal_content {
+    position: relative;
+    width: fit-content;
+    min-width: 160px;
+    max-width: 240px;
+    padding: 10px 32px;
+    background-color: #ff3030;
+    border-radius: 12px;
+    border: 4px solid;
+    margin: auto;
+    word-break: break-all;
+    font-size: 2.5rem;
+    font-weight: bold;
+    font-family: youyuan;
+    color: #ffc788;
+  }
+
+  .modal_content:after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    bottom: 2px;
+    left: 2px;
+    right: 2px;
+    border: 2px dashed;
+    border-radius: 6px;
+  }
+
+  .sector_wrap {
+    overflow: hidden;
+
+    .sector_item {
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 100%;
+      height: 100%;
+      padding: 0;
+      transform-origin: bottom right;
+      cursor: pointer;
+      transition: 0.3s;
+      box-sizing: border-box;
+    }
+
+    .sector_item:before {
+      content: "";
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .sector_item:hover {
+      padding: 10px;
+    }
+
+    .sector_item:hover:before {
+      background-color: rgba(225, 225, 225, 0.5);
+      box-shadow: 0 0 20px #cccccc;
+    }
+  }
+
+  .item_wrap {
+    display: flex;
+    margin: 5px;
+
+    .input_wrap {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      align-items: center;
+      margin-right: 8px;
+
+      .item_checked {
+        width: 20px;
+        height: 20px;
+      }
+    }
+
+    .item_opera {
+      position: relative;
+    }
+  }
+
+  .checked_btn {
+    width: 20px;
+    height: 20px;
+    margin: 0;
+  }
+
+  .scroll_wrap {
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+
+  .power_wrap {
+    position: absolute;
+    margin: 5px;
+
+    .checked_btn {
+      margin-right: 4px;
+    }
+  }
+}

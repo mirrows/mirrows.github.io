@@ -3,45 +3,30 @@ import { ipQuery, statisticVisitor, visitorsData } from '@/req/main'
 import { stone } from '@/utils/global'
 import type { AppProps } from 'next/app'
 import { useEffect, useRef, useState } from 'react'
-import styled from 'styled-components'
 import '../public/common.css';
 import { useRouter } from 'next/router'
 import { useLazyImgs } from '@/utils/imgTool'
 import { IPDetail } from '@/types/global'
 
-const Div = styled.div<any>`
-  width: 100vw;
-  .hidden{
-    opacity: 0;
-    z-index: -10;
-    transition: 2s;
-    // display: none;
-  }
-  .disappear{
-    opacity: 0;
-    z-index: -9;
-  }
-`
-
 export default function App({ Component, pageProps }: AppProps) {
   const statistics = async () => {
     // if (process.env.NODE_ENV !== 'production') return
     let detail = sessionStorage.detail
-    if (!detail) {
+    if (!detail?.ip) {
       const { data } = await ipQuery()
       detail = data
-      sessionStorage.setItem('detail', JSON.stringify(detail))
+      detail && sessionStorage.setItem('detail', JSON.stringify(detail))
     } else {
       try {
         detail = JSON.parse(detail)
       } catch {
         const { data }: { data: IPDetail } = await ipQuery()
         detail = data
-        sessionStorage.setItem('detail', JSON.stringify(detail || {}))
+        detail && sessionStorage.setItem('detail', JSON.stringify(detail || {}))
       }
     }
-    console.log(detail)
     if (!detail?.ip) return
+    stone.set({ ipDetail: detail })
     const data = await visitorsData(detail.ip)
     const preview = {
       ip: detail?.ip,
@@ -92,13 +77,6 @@ export default function App({ Component, pageProps }: AppProps) {
     <>
       <NavHeader />
       <Component {...pageProps} />
-      <Div>
-        <div className={`ps_mask${loading ? '' : ' hidden'}`}>
-          <div className="loading_wrap" style={{ width: '120px', margin: '20% auto 0' }}>
-            <img style={{width: '100%'}} src="https://empty.t-n.top/pub_lic/2023_04_29/pic1682756884211870.gif" alt="loading img" />
-          </div>
-        </div>
-      </Div>
     </>
   )
 }

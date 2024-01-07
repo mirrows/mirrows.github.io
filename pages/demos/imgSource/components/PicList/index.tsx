@@ -5,74 +5,7 @@ import { Mode, Pic } from "@/types/demos"
 import { isMobile } from "@/utils/common"
 import { stone } from "@/utils/global"
 import { forwardRef, Ref, useCallback, useEffect, useImperativeHandle, useRef, useState } from "react"
-import styled from "styled-components"
-import { Node } from "typescript"
-
-
-const DIV = styled.div<any>`
-    .list_wrap{
-        max-width: 1200px;
-        padding: 0 10px 10px;
-        margin: 10px auto;
-    }
-    .timestone{
-        width: fit-content;
-        padding: 10px 20px;
-        background-color: #000;
-        font-size: 1.2rem;
-        color: #fff;
-    }
-    .time_fold_wrap{
-        margin-bottom: 10px;
-    }
-    .pics_item_wrap{
-        display: grid;
-        justify-content: center;
-        grid-template-columns: repeat(auto-fill, 130px);
-        grid-template-rows: repeat(auto-fill, 320px);
-        gap: 10px;
-        min-width: 200px;
-        max-width: 1200px;
-        width: 100%;
-        margin: 10px 0;
-    }
-    @media (max-width: 769px) {
-        .pics_item_wrap{
-            grid-template-columns: repeat(auto-fill, 80px);
-            grid-template-rows: repeat(auto-fill, 180px);
-            gap: 5px;
-            margin: 5px 0;
-        }
-        .img_item{
-            width: 80px;
-            height: 180px;
-        }
-    }
-    .pic_item_wrap{
-      position: relative;
-    }
-    .img_del_btn{
-      position: absolute;
-      right: 0;
-      top: 0;
-      width: 24px;
-      padding: 5px 5px 12px 12px;
-      border-radius: 0 0 0 36px;
-      fill: #fff;
-      background-color: #000;
-    }
-    .no_more_tips{
-        font-size: 2rem;
-        font-weight: 700;
-        font-family: youyuan;
-        letter-spacing: 0.1rem;
-        color: gray;
-    }
-    .if_del_btn{
-      width: 1rem;
-      height: 1rem;
-    }
-`
+import style from './index.module.scss'
 
 type Folder = {
   path: string,
@@ -192,7 +125,6 @@ function UploadPicList({ list = [], mode = ModeMap.PHOTO, path = 'normal/', show
     }
   }, [mode, pics])
   const picLoaded = (path: string, ind: number) => {
-    console.log(333)
     setPics((val) => ({
       ...val,
       [path]: [...val[path].map((pic, i) => ({ ...pic, loaded: i === ind ? true : (pic.loaded || false) }))]
@@ -259,57 +191,59 @@ function UploadPicList({ list = [], mode = ModeMap.PHOTO, path = 'normal/', show
     setMobile(isMobile())
 }, [])
   return (<>
-    <DIV {...props}>
-      <div className="list_wrap">
-        {folders?.map((fold, i) => (pics[fold.path]?.length ? (
-          <div key={fold.path} className={`time_fold_wrap${page.current * size.current > i ? '' : ' hide'}`}>
-            <div className="timestone">
-              {isOwner && <input type="checkbox" className="if_del_btn" onChange={(e) => {
-                setStartDel(e.target.checked ? fold.name : '')
-              }} />}
-              {fold.name}
+    <div {...props}>
+      <div className={style['picList']}>
+        <div className={style['list_wrap']}>
+          {folders?.map((fold, i) => (pics[fold.path]?.length ? (
+            <div key={fold.path} className={`${style['time_fold_wrap']}${page.current * size.current > i ? '' : ' hide'}`}>
+              <div className={style['timestone']}>
+                {isOwner && <input type="checkbox" className={style['if_del_btn']} onChange={(e) => {
+                  setStartDel(e.target.checked ? fold.name : '')
+                }} />}
+                {fold.name}
+              </div>
+              <div className={style['pics_item_wrap']}>
+                {pics[fold.path]?.map((pic, i) => (
+                  <div key={pic.name} className={style['pic_item_wrap']} style={{ backgroundColor: randomColor(i) }}>
+                    {startDel === fold.name && <SVGIcon className={style['img_del_btn']} type="close" onClick={() => delPic(fold.path, pic)} />}
+                    <LazyImage
+                      className={style['img_item']}
+                      src={`https://wsrv.nl/?url=${(pic.download_url || '').replace('https://', '')}${mobile ? '&w=80&h=180' : '&w=300'}&fit=cover&n=-1&q=80`}
+                      width="130"
+                      height="320"
+                      noReload
+                      onLoad={(src) => {
+                        picLoaded(fold.path, i)
+                      }}
+                      onClick={() => previewPic(pics[fold.path], i)}
+                    />
+                    {/* <img
+                      className={style['img_item']}
+                      src={`https://wsrv.nl/?url=${(pic.download_url || '').replace('https://', '')}${mobile ? '&w=80&h=180' : '&w=130'}&fit=cover&n=-1&q=80`}
+                      width="130"
+                      height="320"
+                      alt=""
+                      onLoad={(src) => {
+                        picLoaded(fold.path, i)
+                      }}
+                      onClick={() => previewPic(pics[fold.path], i)}
+                    /> */}
+                  </div>
+                ))}
+              </div>
             </div>
-            <div className="pics_item_wrap">
-              {pics[fold.path]?.map((pic, i) => (
-                <div key={pic.name} className="pic_item_wrap" style={{ backgroundColor: randomColor(i) }}>
-                  {startDel === fold.name && <SVGIcon className="img_del_btn" type="close" onClick={() => delPic(fold.path, pic)} />}
-                  {/* <LazyImage
-                    className="img_item"
-                    src={`https://wsrv.nl/?url=${(pic.download_url || '').replace('https://', '')}${mobile ? '&w=80&h=180' : '&w=300'}&fit=cover&n=-1&q=80`}
-                    width="130"
-                    height="320"
-                    noReload
-                    onLoad={(src) => {
-                      picLoaded(fold.path, i)
-                    }}
-                    onClick={() => previewPic(pics[fold.path], i)}
-                  /> */}
-                  <img
-                    className="img_item"
-                    src={`https://wsrv.nl/?url=${(pic.download_url || '').replace('https://', '')}${mobile ? '&w=80&h=180' : '&w=130'}&fit=cover&n=-1&q=80`}
-                    width="130"
-                    height="320"
-                    alt=""
-                    onLoad={(src) => {
-                      picLoaded(fold.path, i)
-                    }}
-                    onClick={() => previewPic(pics[fold.path], i)}
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-        ) : ''
-        ))}
+          ) : ''
+          ))}
+        </div>
+        <div ref={footer}>
+          {end || !folders ? (
+            <div className={style['no_more_tips']}>真的一点都没有了。。。。。。</div>
+          ) : (
+            <SVGIcon className={`${style['load_more_sign']} rotate`} width="48" type="loading" fill="gray" />
+          )}
+        </div>
       </div>
-      <div ref={footer}>
-        {end || !folders ? (
-          <div className="no_more_tips">真的一点都没有了。。。。。。</div>
-        ) : (
-          <SVGIcon className="load_more_sign rotate" width="48" type="loading" fill="gray" />
-        )}
-      </div>
-    </DIV>
+    </div>
   </>)
 }
 

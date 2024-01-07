@@ -1,8 +1,7 @@
 import { ModeMap, uploadBase64, uploadUrl } from "@/req/demos"
 import { Format } from "@/utils/common"
 import { file2Base64, fileCompressor } from "@/utils/imgTool"
-import { ChangeEvent, DragEvent, KeyboardEvent, MouseEvent, ReactNode, cloneElement, forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react"
-import styled from "styled-components"
+import { ChangeEvent, DragEvent, KeyboardEvent, MouseEvent, cloneElement, forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react"
 import SVGIcon from "../SVGIcon"
 import PicModal, { ModalRefType } from "../PicModal"
 import { Mode, Pic } from "@/types/demos"
@@ -31,104 +30,7 @@ export type UploadRefType = {
     addFile: (items: File[]) => void,
 }
 
-const DIV = styled.div<any>`
-    &.con_input_wrap{
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-    }
-    .up_operate_bottom,.up_operate_top{
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        height: fit-content;
-        min-height: 26px;
-        margin-top: 10px;
-        text-align: left;
-    }
-    .up_operate_top{
-        order: -1;
-        margin-top: 0;
-        margin-bottom: 10px;
-    }
-    .url_input_wrap{
-        display: inline-block;
-        position: relative;
-        vertical-align: middle;
-        .url_input_wrap{
-            margin-right: 10px;
-        }
-        .url_input{
-            flex: 1 1 0;
-            width: 100%;
-            height: 100%;
-            padding-right: 36px;
-            box-sizing: border-box;
-            font-size: 12px;
-        }
-        .enter_icon{
-            position: absolute;
-            right: 3px;
-            top: 0;
-            bottom: 0;
-            height: 12px;
-            width: 12px;
-            padding: 4px;
-            background-color: #000;
-            border-radius: 4px;
-            margin: auto;
-            fill: #fff;
-        }
-    }
-    .file_wrap{
-        display: inline-block;
-        /* display: flex;
-        align-items: flex-end;
-        justify-content: center;
-        flex: 1; */
-        padding: 0 8px;
-        margin: 0 10px;
-        white-space: nowrap;
-        font-size: 1rem;
-        color: gray;
-    }
-    .tmp_wrap{
-        display: flex;
-        flex-wrap: wrap;
-        max-height: 215px;
-    }
-    .tmp_item_wrap{
-        position: relative;
-    }
-    .tmp_item{
-        width: 40px;
-        height: 96px;
-        object-fit: cover;
-        margin: 5px;
-    }
-    .tmp_del_btn{
-        position: absolute;
-        right: 0;
-        top: 0;
-        width: 15px;
-        padding: 0 0 5px 5px;
-        border-radius: 0 0 0 20px;
-        fill: #fff;
-        background-color: #000;
-    }
-    .tmp_status_btn{
-        position: absolute;
-        left: 5px;
-        bottom: 5px;
-        width: 20px;
-    }
-    .submit_btn{
-        float: right;
-    }
-    .upload_children_wrap{
-        height: 100%;
-    }
-`
+import style from './index.module.scss'
 
 const ImgUpload = forwardRef<UploadRefType, Props>(({
     clickable = true,
@@ -313,9 +215,9 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [total, autoUpload])
     return (<>
-        <DIV
+        <div
             ref={wrapRef}
-            className={`con_input_wrap${loading ? ' invalid' : ''}${className ? ` ${className}` : ''}`}
+            className={`${style['imgupload_wrap']} ${style['con_input_wrap']}${loading ? ' invalid' : ''}${className ? ` ${className}` : ''}`}
             {...props}
             onClick={() => allowClick && clickable && clickHandle()}
             onDrop={dropFile}
@@ -323,10 +225,10 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
         >
             {Array.isArray(children) ? cloneElement(children[0], {
                 ...children[0].props,
-                className: `upload_children_wrap ${children[0].props.className || ''}${!!total.length ? ' hide' : ''}`,
+                className: `${style['upload_children_wrap']} ${children[0].props.className || ''}${!!total.length ? ' hide' : ''}`,
             }) : cloneElement(children, {
                 ...children.props,
-                className: `upload_children_wrap ${children.props.className || ''}${!!total.length ? ' hide' : ''}`,
+                className: `${style['upload_children_wrap']} ${children.props.className || ''}${!!total.length ? ' hide' : ''}`,
             })}
             <input
                 ref={inputRef}
@@ -338,16 +240,16 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
                 style={{ display: 'none' }}
                 onChange={handlefile}
             />
-            <div className="scroll_er tmp_wrap">
+            <div className={`${style['scroll_er']} ${style['tmp_wrap']}`}>
                 {total.map((e, i) => (
-                    <div key={e.id} className={`tmp_item_wrap upload_${uploadStatusMap[e.id]}`} onClick={e => e.stopPropagation()}>
-                        <img className="tmp_item" width="40" height="96" src={e.src} alt="" onClick={() => handlePreview(i)} />
-                        {loading || <SVGIcon className="tmp_del_btn" type="close" onClick={() => deleteTmpPic(e, i)} />}
+                    <div key={e.id} className={`${style['tmp_item_wrap']} upload_${uploadStatusMap[e.id]}`} onClick={e => e.stopPropagation()}>
+                        <img className={style['tmp_item']} width="40" height="96" src={e.src} alt="" onClick={() => handlePreview(i)} />
+                        {loading || <SVGIcon className={style['tmp_del_btn']} type="close" onClick={() => deleteTmpPic(e, i)} />}
                         {{
-                            SUCCESS: <SVGIcon className="tmp_status_btn" type="yes" fill="green" />,
-                            ERROR: <SVGIcon className="tmp_status_btn" type="no" fill="red" />,
+                            SUCCESS: <SVGIcon className={style['tmp_status_btn']} type="yes" fill="green" />,
+                            ERROR: <SVGIcon className={style['tmp_status_btn']} type="no" fill="red" />,
                             WAIT: '',
-                            LOADING: <SVGIcon className="tmp_status_btn rotate" type="loading" fill="gray" />,
+                            LOADING: <SVGIcon className={`${style['tmp_status_bt']} rotate`} type="loading" fill="gray" />,
                         }[uploadStatusMap[e.id]]}
                     </div>
                 ))}
@@ -355,9 +257,9 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
             <div className={`up_operate_${align}`}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                     {allowClick && clickable || <SVGIcon width={26} type="image" style={{ marginRight: '10px' }} onClick={clickHandle} />}
-                    {allowUrl && <div className="url_input_wrap" onClick={e => e.stopPropagation()}>
+                    {allowUrl && <div className={style['url_input_wrap']} onClick={e => e.stopPropagation()}>
                         <input
-                            className="normal_input url_input"
+                            className={`normal_input ${style['url_input']}`}
                             type="text"
                             placeholder={`${total.length || 0} pics will be uploaded`}
                             value={urlInput}
@@ -365,15 +267,15 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
                             onInput={e => setUrlInput(e.currentTarget.value)}
                             onKeyUp={handlekeyUp}
                         />
-                        <SVGIcon className="enter_icon" type="enter" style={loading ? { opacity: 0.5, cursor: 'default' } : {}} onClick={inputUrl} />
+                        <SVGIcon className={style['enter_icon']} type="enter" style={loading ? { opacity: 0.5, cursor: 'default' } : {}} onClick={inputUrl} />
                     </div>}
                 </div>
-                {autoUpload || !!total.length && <button className="normal_btn submit_btn" disabled={loading} onClick={handleSubmit}>upload</button>}
+                {autoUpload || !!total.length && <button className={`normal_btn ${style['submit_btn']}`} disabled={loading} onClick={handleSubmit}>upload</button>}
                 {Array.isArray(children) ? cloneElement(children[1], {
                     ...children[1].props,
                 }) : ''}
             </div>
-        </DIV>
+        </div>
         <PicModal ref={picRef} slice={false} />
     </>)
 })

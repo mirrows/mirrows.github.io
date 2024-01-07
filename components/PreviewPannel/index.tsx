@@ -1,7 +1,8 @@
 import { IPDetail, Preview } from "@/types/global"
 import { stone } from "@/utils/global"
 import { useCallback, useEffect, useState } from "react"
-import styled from "styled-components"
+import style from './index.module.scss'
+
 
 type Time = {
   year: number,
@@ -12,64 +13,30 @@ type Time = {
   secend: number
 }
 
-
-const DIV = styled.div<any>`
-  position: relative;
-  margin: 10px auto;
-  padding: 10px 0;
-  z-index: 26;
-  text-align:center;
-  box-sizing: border-box;
-  font-size: 12px;
-  color: #fff;
-  .items_wrap{
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    padding: 0 20px;
-    white-space: pre-wrap;
-  }
-  &:before{
-    content: '';
-    position: absolute;
-    left: 35px;
-    right: 35px;
-    top: 25px;
-    bottom: 25px;
-    background-color: rgba(0,0,0,.5);
-    box-shadow: 0 0 20px 30px  rgba(0,0,0,.5);
-    z-index: -1;
-  }
-  .tag_item{
-    margin-right: 10px;
-    .tag_value{
-      font-size: 14px;
-      font-weight: bold;
-      white-space: nowrap;
-    }
-  }
-`
-
 export default function PreviewPannel() {
   const [preview, setPreview] = useState<Partial<Preview>>()
   const [stayTime, setStayTime] = useState(0)
   const [ipDetail, setIPDetail] = useState<Partial<IPDetail>>({})
   const [totalStayTime, setTotalStayTime] = useState<number[]>([])
   const queryPreviewData = () => {
-    const detail = sessionStorage.detail;
-    // if(detail) {
-    detail && setIPDetail(JSON.parse(detail || {}))
-    // } else {
-      stone.on('ip', ({ data, detail }) => {
-        if(!data) return;
-        const preview = {
-          ip: detail?.ip,
-          data: data.data,
-        }
-        setPreview(preview)
-        setIPDetail(detail)
-      })
-    // }
+    try {
+      const detail = JSON.parse(sessionStorage.detail);
+      setIPDetail(detail)
+    } catch {
+      setIPDetail({})
+    }
+    if (!ipDetail.ip) {
+      setIPDetail({})
+    }
+    stone.on('ip', ({ data, detail }) => {
+      if(!data) return;
+      const preview = {
+        ip: detail?.ip,
+        data: data.data,
+      }
+      setPreview(preview)
+      setIPDetail(detail)
+    })
   }
   const setDate = (dateObj: Date, options: Partial<Time>) => {
     const { year, month, date, hour, minute, secend } = options;
@@ -118,13 +85,14 @@ export default function PreviewPannel() {
     return () => {
       clearInterval(timer)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [intervalUntilNow])
   return (
-    <DIV>
-      <div className="items_wrap">
-        {preview && <span className="tag_item">IP地址：<span className="tag_value">{preview?.ip}</span></span>}
-        {!!preview?.data?.today && <span className="tag_item">今日访问数：<span className="tag_value">{preview?.data.today}</span></span>}
-        {<span className="tag_item">当前访问时长：<span className="tag_value">{
+    <div className={style['blog_editor_wrap']}>
+      <div className={style['items_wrap']}>
+        {preview && <span className={style['tag_item']}>IP地址：<span className={style['tag_value']}>{preview?.ip}</span></span>}
+        {!!preview?.data?.today && <span className={style['tag_item']}>今日访问数：<span className={style['tag_value']}>{preview?.data.today}</span></span>}
+        {<span className={style['tag_item']}>当前访问时长：<span className={style['tag_value']}>{
           String(Math.floor(stayTime / (60 * 60))).padStart(2, '0')
         }: {
             String(Math.floor(stayTime / 60) % 60).padStart(2, '0')
@@ -132,10 +100,10 @@ export default function PreviewPannel() {
             String(Math.floor(stayTime % 60)).padStart(2, '0')
           }</span></span>}
       </div>
-      <div><span className="tag_item">IP来自：<span className="tag_value"></span>{ipDetail.country} {ipDetail.province} {ipDetail.city} {ipDetail.area}</span></div>
-      <div className="items_wrap">
-        {!!preview?.data?.total && <span className="tag_item">总访问数：<span className="tag_value">{preview?.data.total}</span></span>}
-        <span className="tag_item">网站已运行：<span className="tag_value">{
+      <div><span className={style['tag_item']}>IP来自：<span className={style['tag_value']}></span>{ipDetail.country} {ipDetail.province} {ipDetail.city} {ipDetail.area}</span></div>
+      <div className={style['items_wrap']}>
+        {!!preview?.data?.total && <span className={style['tag_item']}>总访问数：<span className={style['tag_value']}>{preview?.data.total}</span></span>}
+        <span className={style['tag_item']}>网站已运行：<span className={style['tag_value']}>{
           totalStayTime[0] ? `${totalStayTime[0]}年` : ''
         }{
             totalStayTime[1] || totalStayTime[0] ? `${totalStayTime[1]}月` : ''
@@ -149,6 +117,6 @@ export default function PreviewPannel() {
             totalStayTime[5]
           }秒</span></span>
       </div>
-    </DIV>
+    </div>
   )
 }

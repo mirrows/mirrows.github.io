@@ -32,13 +32,18 @@ export const dictQuery = (w: string) => {
 
 export const ipQuery = () => {
   return new Promise<{ data: IPDetail }>(res => {
-    return JsonP('https://ip.useragentinfo.com/jsonp', {
-      param: 'callback',
-      name: 'callback'
-    }, (err, data: IPDetail) => {
-      console.log(err, data);
-      res({
-        data,
+    const detail = stone.get('ipDetail')
+    const timer = setTimeout(() => {
+      clearTimeout(timer)
+      if (detail?.ip) return { data: JSON.parse(sessionStorage.detail) };
+      return JsonP('https://ip.useragentinfo.com/jsonp', {
+        param: 'callback',
+        name: 'callback'
+      }, (err, data: IPDetail) => {
+        console.log(err, data);
+        res({
+          data,
+        })
       })
     })
   })

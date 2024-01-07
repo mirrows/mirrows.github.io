@@ -1,0 +1,10 @@
+.game_2048_wrap {
+  overflow: hidden;
+  .fire_wrap{
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    vertical-align: bottom;
+    z-index: 0;
+  }
+}

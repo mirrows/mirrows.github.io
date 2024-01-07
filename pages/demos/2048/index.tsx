@@ -1,17 +1,6 @@
 import Head from 'next/head'
 import { useEffect, useState } from 'react'
-import styled from 'styled-components'
-
-const DIV = styled.div<any>`
-  overflow: hidden;
-  .fire_wrap{
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    vertical-align: bottom;
-    z-index: 0;
-  }
-`
+import style from './index.module.scss'
 
 export default function Game2048() {
   const [show, isShow] = useState(false)
@@ -27,9 +16,9 @@ export default function Game2048() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <DIV>
-          {show && <iframe className='fire_wrap' src="https://empty.t-n.top/html/2048.html"></iframe>}
-        </DIV>
+        <div className={style['game_2048_wrap']}>
+          {show && <iframe className={style['fire_wrap']} src="https://empty.t-n.top/html/2048.html"></iframe>}
+        </div>
       </main>
     </>
   )
