@@ -26,7 +26,6 @@ export default function PreviewPannel() {
       setIPDetail({})
     }
     stone.on('ip', ({ data, detail }) => {
-      console.log(data, detail)
       if(!data) return;
       const preview = {
         ip: detail?.ip,
