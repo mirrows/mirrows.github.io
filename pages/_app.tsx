@@ -12,18 +12,12 @@ export default function App({ Component, pageProps }: AppProps) {
   const statistics = async () => {
     // if (process.env.NODE_ENV !== 'production') return
     let detail = sessionStorage.detail
-    if (!detail?.ip) {
-      const { data } = await ipQuery()
+    try {
+      detail = JSON.parse(detail)
+    } catch {
+      const { data }: { data: IPDetail } = await ipQuery()
       detail = data
-      detail && sessionStorage.setItem('detail', JSON.stringify(detail))
-    } else {
-      try {
-        detail = JSON.parse(detail)
-      } catch {
-        const { data }: { data: IPDetail } = await ipQuery()
-        detail = data
-        detail && sessionStorage.setItem('detail', JSON.stringify(detail || {}))
-      }
+      detail && sessionStorage.setItem('detail', JSON.stringify(detail || {}))
     }
     if (!detail?.ip) return
     stone.set({ ipDetail: detail })
