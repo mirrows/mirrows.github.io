@@ -85,7 +85,7 @@ const NavHeader = () => {
               {user ? (<>
                 <a className={`${style['nav_item']} ${style['item_right']}`} aria-label="link to github page" href={user.html_url} target="_blank">
                   <span>{user.login}</span>
-                  <LazyImage src={user.avatar_url || 'https://wsrv.nl/?url=raw.githubusercontent.com/mirrows/photo/main/normal/2024_01_02/pic1704182038694276.jpeg'} width="32" height="32" className={style['nav_icon']} alt="" />
+                  <img src={user.avatar_url || 'https://wsrv.nl/?url=raw.githubusercontent.com/mirrows/photo/main/normal/2024_01_02/pic1704182038694276.jpeg'} width="32" height="32" className={style['nav_icon']} alt="" />
                 </a>
                 <div className={`${style['nav_item']} ${style['item_right']}`} onClick={userLogout}>
                   <span>Logout</span>

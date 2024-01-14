@@ -1,5 +1,7 @@
 import { useRef } from "react"
 
+export const isBrowser = typeof window !== 'undefined'
+
 export const deepClone = <T>(data: T): T => {
   return JSON.parse(JSON.stringify(data))
 }
@@ -52,9 +54,20 @@ export const useDebos = (cb: Function, timeout = 300) => {
 }
 
 export const isMobile = () => {
-  return /Android|webOS|iPhone|iPad|iPod|IOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+  return isBrowser ? /Android|webOS|iPhone|iPad|iPod|IOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) : false
 }
 
 export const randomString = (length = 4, chars = 'abcdefghijklmnopqrstuvwxyz'): string => {
   return [...Array(length)].map(_ => chars.charAt(Math.floor(Math.random() * chars.length))).join('')
+}
+
+export const toCDN = (url: string, params: string | {pc: string, mobile: string}) => {
+  const mobile = isMobile();
+  return `https://wsrv.nl/?url=${url.replace('https://', '')}${
+    typeof params !== 'string'
+      ? mobile 
+        ? (params.mobile ? `&${params.mobile}` : '') 
+        : (params.pc ? `&${params.pc}` : '')
+      : params ? `&${params}` : ''
+    }&n=-1&q=80`
 }

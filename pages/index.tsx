@@ -19,6 +19,7 @@ import DateText from '@/components/SsrRender/Timer';
 import { PageInfo } from '@/types/github';
 
 import style from './index/index.module.scss';
+import { toCDN } from '@/utils/common';
 
 export default function Home({ artical, total: initTotal }: Props) {
   const [pics, setPics] = useState<BingPic[]>([]);
@@ -102,9 +103,9 @@ export default function Home({ artical, total: initTotal }: Props) {
           >
             {pics.map((pic, ind) => (<SwiperSlide key={ind} className={style['pic_wrap']}>
               {
-                // ind ? 
-                <LazyImage src={pic?.url || env.loadingGif || ''} className={style['pic_item']} width="1920" height="1080" alt="bing" />
-                // : <img src={pic?.url || ''} className={style["pic_item"]} width="1920" height="1080" alt="bing" />
+                ind ? 
+                <LazyImage src={pic?.url ? toCDN(pic.url, {pc: '&w=1280&h=768',mobile: 'w=500&h=800'}) : env.loadingGif || ''} className={style['pic_item']} width="1920" height="1080" alt="bing" />
+                : <img src={pic?.url ? toCDN(pic.url, {pc: '&w=1280&h=768',mobile: 'w=500&h=800'}) : ''} className={style["pic_item"]} width="1920" height="1080" alt="bing" />
               }
             </SwiperSlide>))}
           </MySwiper>
@@ -144,7 +145,7 @@ export default function Home({ artical, total: initTotal }: Props) {
                       {/* <span>{new Date(artical.updated_at).toLocaleDateString()}</span> */}
                     </span>
                   </div>
-                  <LazyImage className={style['artical_img']} width="400" height="200" src={artical.img} alt={artical.title} />
+                  <LazyImage className={style['artical_img']} width="400" height="200" src={toCDN(artical.img, 'w=400&h=200')} alt={artical.title} />
                 </Link>)
               )}
             </div>
