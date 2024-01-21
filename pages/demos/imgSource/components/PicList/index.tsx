@@ -48,6 +48,7 @@ function UploadPicList({ list = [], mode = ModeMap.PHOTO, path = 'normal/', show
   const io = useRef<IntersectionObserver>()
   const footer = useRef<HTMLDivElement | null>(null)
   const [startDel, setStartDel] = useState('')
+  const [cur, setCur] = useState('')
   const timer = useRef<NodeJS.Timer>()
   const queryPics = useCallback(async (numOpath: number | string) => {
     let path = ''
@@ -126,10 +127,17 @@ function UploadPicList({ list = [], mode = ModeMap.PHOTO, path = 'normal/', show
       })
     }
   }, [mode, pics])
+  const queryOneFolderPics = async (path: string) => {
+    const res = await queryPicList(path, mode)
+    setPics((val) => {
+      globalData[path] = [...(val[path] ? val[path].map(pic => ({ ...pic, ...(res?.data.find((p: Pic) => p.name === pic.name) || {}) })) : res?.data)]
+      return { ...globalData }
+    })
+  }
   const picLoaded = (path: string, ind: number) => {
     setPics((val) => {
       globalData[path] = [...val[path].map((pic, i) => ({ ...pic, loaded: i === ind ? true : (pic.loaded || false) }))]
-      return globalData
+      return { ...globalData }
     })
   }
   useEffect(() => {
@@ -144,6 +152,7 @@ function UploadPicList({ list = [], mode = ModeMap.PHOTO, path = 'normal/', show
   }, [queryFolder])
   useEffect(() => {
     if (!folders?.length) return
+    if (mode === 'private') return
     io.current = new IntersectionObserver(async (entries: IntersectionObserverEntry[]) => {
       if (entries[0].intersectionRatio <= 0) return;
       footer.current && io.current?.unobserve(footer.current);
@@ -159,7 +168,7 @@ function UploadPicList({ list = [], mode = ModeMap.PHOTO, path = 'normal/', show
       io.current?.disconnect();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [folders?.length])
+  }, [folders?.length, mode])
   useEffect(() => {
     if (show) {
       footer.current && io.current?.observe(footer.current)
@@ -179,16 +188,16 @@ function UploadPicList({ list = [], mode = ModeMap.PHOTO, path = 'normal/', show
   useEffect(() => {
     stone.isGithubOwner((isowner) => setOwner(isowner))
   }, [])
-  useEffect(() => {
-    if (!show || mode !== 'private') return
-    clearInterval(timer.current)
-    timer.current = setInterval(() => {
-      queryPreviewUrl()
-    }, 1000 * 60)
-    return () => {
-      clearInterval(timer.current)
-    }
-  }, [mode, queryPreviewUrl, show])
+  // useEffect(() => {
+  //   if (!show || mode !== 'private') return
+  //   clearInterval(timer.current)
+  //   timer.current = setInterval(() => {
+  //     queryPreviewUrl()
+  //   }, 1000 * 60)
+  //   return () => {
+  //     clearInterval(timer.current)
+  //   }
+  // }, [mode, queryPreviewUrl, show])
   useEffect(() => {
     setMobile(isMobile())
 }, [])
@@ -196,15 +205,18 @@ function UploadPicList({ list = [], mode = ModeMap.PHOTO, path = 'normal/', show
     <div {...props}>
       <div className={style['picList']}>
         <div className={style['list_wrap']}>
-          {folders?.map((fold, i) => (pics[fold.path]?.length ? (
-            <div key={fold.path} className={`${style['time_fold_wrap']}${page.current * size.current > i ? '' : ' hide'}`}>
-              <div className={style['timestone']}>
-                {isOwner && <input type="checkbox" className={style['if_del_btn']} onChange={(e) => {
+          {folders?.map((fold, i) => (
+            <div key={fold.path} className={`${style['time_fold_wrap']}${(page.current * size.current > i || mode === 'private') ? '' : ' hide'}`}>
+              {mode !== 'private' ? <div className={style['timestone']} onClick={() => {
+                  fold.name === cur || queryOneFolderPics(fold.path)
+                  setCur(fold.name === cur ? '' : fold.name)
+              }}>
+                {isOwner && <input type="checkbox" checked={fold.name === startDel} className={style['if_del_btn']} onChange={(e) => {
                   setStartDel(e.target.checked ? fold.name : '')
                 }} />}
                 {fold.name}
-              </div>
-              <div className={style['pics_item_wrap']}>
+              </div> : ''}
+              {(mode !== 'private' || fold.name === cur) ? <div className={style['pics_item_wrap']}>
                 {pics[fold.path]?.map((pic, i) => (
                   <div key={pic.name} className={style['pic_item_wrap']} style={{ backgroundColor: randomColor(i) }}>
                     {startDel === fold.name && <SVGIcon className={style['img_del_btn']} type="close" onClick={() => delPic(fold.path, pic)} />}
@@ -232,18 +244,32 @@ function UploadPicList({ list = [], mode = ModeMap.PHOTO, path = 'normal/', show
                     /> */}
                   </div>
                 ))}
-              </div>
+              </div> : ''}
             </div>
-          ) : ''
           ))}
         </div>
-        <div ref={footer}>
+        {mode === 'private' ? <div className={style['float_tabs_wrap']}>
+        {folders?.map((fold, i) => (
+            <div key={fold.path} className={`${style['time_fold_wrap']}`}>
+            <div className={`${style['timestone']} ${fold.name === cur ? style['timestone_active'] : ''}`} onClick={() => {
+                  fold.name === cur || queryOneFolderPics(fold.path)
+                  setCur(fold.name)
+              }}>
+                {isOwner && <input type="checkbox" checked={fold.name === startDel} className={style['if_del_btn']} onChange={(e) => {
+                  setStartDel(e.target.checked ? fold.name : '')
+                }} />}
+                {fold.name}
+              </div>
+            </div>
+          ))}
+        </div> : ''}
+        {mode !== 'private' ? <div ref={footer}>
           {end || !folders ? (
             <div className={style['no_more_tips']}>真的一点都没有了。。。。。。</div>
           ) : (
             <SVGIcon className={`${style['load_more_sign']} rotate`} width="48" type="loading" fill="gray" />
           )}
-        </div>
+        </div> : ''}
       </div>
     </div>
   </>)
