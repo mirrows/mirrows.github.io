@@ -31,6 +31,8 @@ export type RefType = {
   afterUpload: () => Promise<void>
 }
 
+const globalData: PicsMap = {}
+
 
 function UploadPicList({ list = [], mode = ModeMap.PHOTO, path = 'normal/', show = true, onPreview, ...props }: Props, ref: Ref<RefType>) {
   const [isOwner, setOwner] = useState(false)
@@ -118,17 +120,17 @@ function UploadPicList({ list = [], mode = ModeMap.PHOTO, path = 'normal/', show
       // const ifNodeLoaded = pics[path].some(pic => !pic.loaded)
       // if (!ifNodeLoaded) continue
       const res = await queryPicList(path, mode)
-      setPics((val) => ({
-        ...val,
-        [path]: [...val[path].map(pic => ({ ...pic, ...(res?.data.find((p: Pic) => p.name === pic.name) || {}) }))]
-      }))
+      setPics((val) => {
+        globalData[path] = [...val[path].map(pic => ({ ...pic, ...(res?.data.find((p: Pic) => p.name === pic.name) || {}) }))]
+        return globalData
+      })
     }
   }, [mode, pics])
   const picLoaded = (path: string, ind: number) => {
-    setPics((val) => ({
-      ...val,
-      [path]: [...val[path].map((pic, i) => ({ ...pic, loaded: i === ind ? true : (pic.loaded || false) }))]
-    }))
+    setPics((val) => {
+      globalData[path] = [...val[path].map((pic, i) => ({ ...pic, loaded: i === ind ? true : (pic.loaded || false) }))]
+      return globalData
+    })
   }
   useEffect(() => {
     if (curPath === '') return
@@ -182,7 +184,7 @@ function UploadPicList({ list = [], mode = ModeMap.PHOTO, path = 'normal/', show
     clearInterval(timer.current)
     timer.current = setInterval(() => {
       queryPreviewUrl()
-    }, 1000 * 60)
+    }, 1000 * 180)
     return () => {
       clearInterval(timer.current)
     }
