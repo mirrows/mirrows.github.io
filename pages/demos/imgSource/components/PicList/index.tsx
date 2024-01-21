@@ -31,7 +31,6 @@ export type RefType = {
   afterUpload: () => Promise<void>
 }
 
-const globalData: PicsMap = {}
 
 
 function UploadPicList({ list = [], mode = ModeMap.PHOTO, path = 'normal/', show = true, onPreview, ...props }: Props, ref: Ref<RefType>) {
@@ -40,6 +39,7 @@ function UploadPicList({ list = [], mode = ModeMap.PHOTO, path = 'normal/', show
   const [pics, setPics] = useState<PicsMap>({})
   const page = useRef(0)
   const size = useRef(1)
+  const globalData = useRef<PicsMap>({})
   const [mobile, setMobile] = useState(false)
   const random = useRef(Math.random())
   const once = useRef(false)
@@ -122,22 +122,22 @@ function UploadPicList({ list = [], mode = ModeMap.PHOTO, path = 'normal/', show
       // if (!ifNodeLoaded) continue
       const res = await queryPicList(path, mode)
       setPics((val) => {
-        globalData[path] = [...val[path].map(pic => ({ ...pic, ...(res?.data.find((p: Pic) => p.name === pic.name) || {}) }))]
-        return globalData
+        globalData.current[path] = [...val[path].map(pic => ({ ...pic, ...(res?.data.find((p: Pic) => p.name === pic.name) || {}) }))]
+        return { ...globalData.current }
       })
     }
   }, [mode, pics])
   const queryOneFolderPics = async (path: string) => {
     const res = await queryPicList(path, mode)
     setPics((val) => {
-      globalData[path] = [...(val[path] ? val[path].map(pic => ({ ...pic, ...(res?.data.find((p: Pic) => p.name === pic.name) || {}) })) : res?.data)]
-      return { ...globalData }
+      globalData.current[path] = [...(val[path] ? val[path].map(pic => ({ ...pic, ...(res?.data.find((p: Pic) => p.name === pic.name) || {}) })) : res?.data)]
+      return { ...globalData.current }
     })
   }
   const picLoaded = (path: string, ind: number) => {
     setPics((val) => {
-      globalData[path] = [...val[path].map((pic, i) => ({ ...pic, loaded: i === ind ? true : (pic.loaded || false) }))]
-      return { ...globalData }
+      globalData.current[path] = [...val[path].map((pic, i) => ({ ...pic, loaded: i === ind ? true : (pic.loaded || false) }))]
+      return { ...globalData.current }
     })
   }
   useEffect(() => {
@@ -205,7 +205,7 @@ function UploadPicList({ list = [], mode = ModeMap.PHOTO, path = 'normal/', show
     <div {...props}>
       <div className={style['picList']}>
         <div className={style['list_wrap']}>
-          {folders?.map((fold, i) => (
+          {folders?.map((fold, i) => (pics[fold.path]?.length ? (
             <div key={fold.path} className={`${style['time_fold_wrap']}${(page.current * size.current > i || mode === 'private') ? '' : ' hide'}`}>
               {mode !== 'private' ? <div className={style['timestone']} onClick={() => {
                   fold.name === cur || queryOneFolderPics(fold.path)
@@ -245,7 +245,7 @@ function UploadPicList({ list = [], mode = ModeMap.PHOTO, path = 'normal/', show
                   </div>
                 ))}
               </div> : ''}
-            </div>
+            </div>) : ''
           ))}
         </div>
         {mode === 'private' ? <div className={style['float_tabs_wrap']}>
