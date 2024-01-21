@@ -104,8 +104,8 @@ export default function Home({ artical, total: initTotal }: Props) {
             {pics.map((pic, ind) => (<SwiperSlide key={ind} className={style['pic_wrap']}>
               {
                 ind ? 
-                <LazyImage src={pic?.url ? toCDN(pic.url, {pc: '&w=1280&h=768',mobile: 'w=500&h=800'}) : env.loadingGif || ''} className={style['pic_item']} width="1920" height="1080" alt="bing" />
-                : <img src={pic?.url ? toCDN(pic.url, {pc: '&w=1280&h=768',mobile: 'w=500&h=800'}) : ''} className={style["pic_item"]} width="1920" height="1080" alt="bing" />
+                <LazyImage src={pic?.url ? toCDN(pic.url, '&w=1920&h=1080') : env.loadingGif || ''} className={style['pic_item']} width="1920" height="1080" alt="bing" />
+                : <img src={pic?.url ? toCDN(pic.url, '&w=1920&h=1080') : ''} className={style["pic_item"]} width="1920" height="1080" alt="bing" />
               }
             </SwiperSlide>))}
           </MySwiper>

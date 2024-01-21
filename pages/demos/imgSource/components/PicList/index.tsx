@@ -182,7 +182,7 @@ function UploadPicList({ list = [], mode = ModeMap.PHOTO, path = 'normal/', show
     clearInterval(timer.current)
     timer.current = setInterval(() => {
       queryPreviewUrl()
-    }, 1000 * 180)
+    }, 1000 * 60)
     return () => {
       clearInterval(timer.current)
     }
@@ -211,6 +211,7 @@ function UploadPicList({ list = [], mode = ModeMap.PHOTO, path = 'normal/', show
                       src={`https://wsrv.nl/?url=${(pic.download_url || '').replace('https://', '')}${mobile ? '&w=80&h=180' : '&w=300'}&fit=cover&n=-1&q=80`}
                       width="130"
                       height="320"
+                      noReload
                       onLoad={(src) => {
                         picLoaded(fold.path, i)
                       }}
