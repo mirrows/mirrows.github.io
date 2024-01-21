@@ -184,7 +184,7 @@ function UploadPicList({ list = [], mode = ModeMap.PHOTO, path = 'normal/', show
     clearInterval(timer.current)
     timer.current = setInterval(() => {
       queryPreviewUrl()
-    }, 1000 * 180)
+    }, 1000 * 60)
     return () => {
       clearInterval(timer.current)
     }
