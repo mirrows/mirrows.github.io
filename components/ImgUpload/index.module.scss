@@ -1,9 +1,7 @@
-.imgupload_wrap {
-  &.con_input_wrap {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-  }
+.con_input_wrap {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 
   :global(.up_operate_bottom),
   :global(.up_operate_top) {

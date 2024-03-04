@@ -87,6 +87,7 @@ export default function Home({ artical, total: initTotal }: Props) {
         <link rel="icon" href="/favicon.ico" type="image/x-icon" />
         <link rel="apple-touch-icon" href="/favicon.ico" />
         <link rel="manifest" href="/manifest.json" />
+        {/* 这个meta会导致本地使用ip请求协议变成https */}
         <meta httpEquiv="Content-Security-Policy" content="upgrade-insecure-requests" />
         <link rel="dns-prefetch" href="https://cn.bing.com/" />
         <link rel="dns-prefetch" href="https://empty.t-n.top/" />
