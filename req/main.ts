@@ -64,9 +64,8 @@ export const ipQuery = () => {
 
 export type ListArticalParams = {
   number?: number,
-  type?: 'before' | 'after',
-  cursor?: string,
-  first?: number
+  per_page?: number,
+  page?: number,
 }
 
 export const listArtical = (params?: ListArticalParams) => {

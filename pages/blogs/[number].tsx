@@ -2,7 +2,6 @@ import LazyImage from '@/components/LazyImage'
 import SVGIcon from '@/components/SVGIcon'
 import { addComment, queryComments } from '@/req/about'
 import { ListArticalParams, listArtical } from '@/req/main'
-import { PageInfo } from '@/types/github'
 import { Artical, Comment } from '@/types/global'
 import { stone } from '@/utils/global'
 import { parseBody } from '@/utils/md'
@@ -24,10 +23,9 @@ import style from './index.module.scss'
 type Props = {
   artical: Artical,
   comments: Comment[],
-  pageInfo: PageInfo
 }
 
-export default function Blog({ artical: atl, comments: cmts, pageInfo }: Props) {
+export default function Blog({ artical: atl, comments: cmts }: Props) {
   const md = new MarkdownIt()
   const { query, replace } = useRouter()
   const [artical, setArtical] = useState(atl)
@@ -37,7 +35,6 @@ export default function Blog({ artical: atl, comments: cmts, pageInfo }: Props) 
   const email = useRef<HTMLInputElement | null>(null)
   const [isPreview, setIsPreview] = useState(false)
   const [comments, setComments] = useState<Comment[]>(cmts || [])
-  const [curCommentsInfo, setInfo] = useState<Partial<PageInfo>>(pageInfo || {})
   const [isOwner, setOwner] = useState(false)
   const [page, setPage] = useState(1)
   const uploadRef = useRef<UploadRefType>(null)
@@ -109,17 +106,20 @@ export default function Blog({ artical: atl, comments: cmts, pageInfo }: Props) 
       }
     })
   }
-  const handlePagination = ({ type, page }: { type: 'before' | 'after', page?: number }) => {
+  const handlePagination = ({ page = 1 }: { type: 'before' | 'after', page?: number }) => {
     setPage(page || 1)
-    listComments({ number: +(query.number || ''), type, cursor: { before: curCommentsInfo.startCursor, after: curCommentsInfo.endCursor }[type] });
+    listComments({
+      number: +(query.number || ''),
+      per_page: 30,
+      page,
+    });
   }
   const listComments = useCallback((params?: ListArticalParams) => {
     if (!query.number) return
 
-    queryComments(params || { number: +query.number }).then(({ data, total, pageInfo }) => {
+    queryComments(params || { number: +query.number }).then(({ data }) => {
       setComments(data)
-      setArtical(atl => ({ ...atl, comments: total }))
-      setInfo(pageInfo);
+      setArtical(atl => ({ ...atl }))
       if (!params) {
         setPage(1)
       }
@@ -229,7 +229,7 @@ export default function Blog({ artical: atl, comments: cmts, pageInfo }: Props) 
               comments.length ? comments.map(comment => (
                 <div key={comment.id} className={style['comment_content_wrap']}>
                   <div className={style['author_msg']}>
-                    <LazyImage className={style['avator']} width="36" height="36" src={comment.author.avatarUrl} alt="" />
+                    <LazyImage className={style['avator']} width="36" height="36" src={comment.author.avatar_url} alt="" />
                     <div>
                       <div>{comment.author.login}</div>
                       <DateText
@@ -267,13 +267,9 @@ export async function getStaticPaths() {
   const artical = await listArtical()
   atls.push(...(artical?.data || []))
   if (artical?.total > 30) {
-    let info = artical?.pageInfo || {}
     for (let i = 1; i < Math.ceil(artical?.total / 30); i++) {
-      const type = 'after'
-      const cursor = { before: info.startCursor, after: info.endCursor }[type]
-      const artical = await listArtical({ type, cursor })
+      const artical = await listArtical({ per_page: 30, page: i + 1 })
       atls.push(...(artical?.data || []))
-      info = artical?.pageInfo || {}
     }
   }
   const paths = atls.map((atl: Artical) => ({
@@ -299,7 +295,6 @@ export const getStaticProps = async (context: any) => {
     if (comments.status === 'fulfilled' && comments.value?.data) {
       const data = comments.value.data
       props.comments = data
-      props.pageInfo = comments.value.pageInfo
     }
   }
   return { props }

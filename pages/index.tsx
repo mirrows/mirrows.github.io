@@ -16,7 +16,6 @@ import { env, stone } from '@/utils/global';
 import { useRouter } from 'next/router';
 import Pagination from '@/components/Pagination';
 import DateText from '@/components/SsrRender/Timer';
-import { PageInfo } from '@/types/github';
 
 import style from './index/index.module.scss';
 import { toCDN } from '@/utils/common';
@@ -26,7 +25,6 @@ export default function Home({ artical, total: initTotal }: Props) {
   const [ind, setInd] = useState(0);
   const [title, setTitle] = useState('RDL');
   const [total, setTotal] = useState(initTotal || 0);
-  const [curPageInfo, setPageInfo] = useState<Partial<PageInfo>>({});
   const swiperRef = useRef<Swiper | null>(null);
   const [articals, setArtical] = useState<Artical[]>(artical || []);
   const { emit } = useLazyImgs('.imgs_wrap .lazy');
@@ -59,14 +57,13 @@ export default function Home({ artical, total: initTotal }: Props) {
     })
   }
   const queryArticalList = (params?: ListArticalParams) => {
-    listArtical(params).then(({ data, total, pageInfo }) => {
+    listArtical(params).then(({ data, total }) => {
       setArtical(data);
       setTotal(total);
-      setPageInfo(pageInfo);
     })
   }
-  const handlePagination = ({type}: {type: 'before' | 'after'}) => {
-    queryArticalList({type, cursor: { before: curPageInfo.startCursor, after: curPageInfo.endCursor }[type]});
+  const handlePagination = ({ per_page = 30, page }: ListArticalParams) => {
+    queryArticalList({ per_page, page });
   }
   const ifJudge = useCallback((timeStr: string) => {
     return Date.now() - new Date(timeStr).getTime() < 1000*60*5

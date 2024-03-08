@@ -49,7 +49,7 @@ export type Comment = {
   id: string,
   updatedAt: string,
   author: {
-    avatarUrl: string,
+    avatar_url: string,
     login: string,
     url: string,
   }
