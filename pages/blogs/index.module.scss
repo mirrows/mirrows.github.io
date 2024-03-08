@@ -35,7 +35,9 @@
     flex-direction: column;
     flex: 1 1 769px;
     max-width: 769px;
+    padding-bottom: 10px;
     overflow: hidden;
+    box-sizing: border-box;
   }
   .add_comment{
     pointer-events: all;
@@ -188,7 +190,7 @@
     margin: 5px;
     position: sticky;
     top: 65px;
-    max-height: calc(100vh - 80px);
+    max-height: calc(100vh - 70px);
     overflow: auto;
     &::-webkit-scrollbar{
       display: none;

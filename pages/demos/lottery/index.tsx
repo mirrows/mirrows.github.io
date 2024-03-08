@@ -117,7 +117,7 @@ export default function Lottery () {
             <title>抽奖</title>
         </Head>
         <div className={style['lottery_wrap']}>
-            <LazyImage className={style['lottery_bg']} width="460" height="460" src="https://empty.t-n.top/pub_lic/2023_06_19/pic1687141057059729.png" />
+            <img className={style['lottery_bg']} width="460" height="460" src="https://empty.t-n.top/pub_lic/2023_06_19/pic1687141057059729.png" alt="background" />
             <div className={`${style['line_wrap']} ${style['lottery_bg']} ${style['sector_wrap']}`}>
                 {viewTotal.map((_, ind, total) => (
                     total.length > 1 && <div key={ind} className={style['sector_item']} style={{transform: `scale(1.5) rotate(${total.length > 2 ? 360 / total.length * (ind - 0.5) + 90 : 180 * ind}deg)${total.length > 2 ? ` skew(${90 - 360 / total.length}deg)`: 'translateX(50%)'}`}}></div>
@@ -125,12 +125,13 @@ export default function Lottery () {
             </div>
             <div className={`${style['line_wrap']} ${style['lottery_bg']} ${style['no-pointer']}`}>
                 {viewTotal.map((item, ind, total) => (
-                    <LazyImage
+                    <img
                         key={ind}
                         className={style['area_item']}
                         width="100"
                         height="100"
                         src={item.img}
+                        alt={`选项${ind}`}
                         style={{ width: `${18 - total.length}vw`, transform: `rotate(${360 / total.length * ind}deg)` }}
                     />
                 ))}
@@ -148,14 +149,15 @@ export default function Lottery () {
                 }}
                 onTransitionEnd={stopRotate}
             >
-                <LazyImage
+                <img
                     className={style['pointer']}
                     width="96"
                     height="144"
+                    alt="pointer"
                     src="https://empty.t-n.top/pub_lic/2023_06_21/pic1687328567823851.png"
                 />
             </div>
-            <LazyImage className={`${style['lottery_bg']} ${style['start_btn']}`} width="80" height="80" src="https://empty.t-n.top/pub_lic/2023_06_21/pic1687328322726591.webp" onClick={startRotate} />
+            <img className={`${style['lottery_bg']} ${style['start_btn']}`} width="80" height="80" src="https://empty.t-n.top/pub_lic/2023_06_21/pic1687328322726591.webp" alt="start" onClick={startRotate} />
             <div className={style['rate_table']}>
                 <TriggerBtn>
                     <SVGIcon className={style['table_switch']} type="list" width="32" />
