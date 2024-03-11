@@ -81,9 +81,13 @@ export default function About({ artical: atl, comments: cmts, pageInfo }: Props)
       setIsPreview(false)
     })
   }
-  const handlePagination = ({ type, page }: { type: 'before' | 'after', page?: number }) => {
+  const handlePagination = ({ page }: { page?: number }) => {
     setPage(page || 1)
-    listComments({ number: 33, type, cursor: { before: curCommentsInfo.startCursor, after: curCommentsInfo.endCursor }[type] });
+    listComments({
+      number: 33,
+      per_page: 30,
+      page,
+    });
   }
   const listComments = (params?: ListArticalParams) => {
     queryComments(params || { number: 2 }).then(({ data, total, pageInfo }) => {
@@ -223,7 +227,7 @@ export default function About({ artical: atl, comments: cmts, pageInfo }: Props)
             {comments.length ? comments.map(comment => (
               <div key={comment.id} className={style['comment_content_wrap']}>
                 <div className={style['author_msg']}>
-                  <img className={style['avator']} src={comment.author.avatarUrl} alt="" />
+                  <img className={style['avator']} src={comment.author.avatar_url} alt="" />
                   <div>
                     <div>{comment.author.login}</div>
                     <DateText
