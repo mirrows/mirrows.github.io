@@ -1,6 +1,6 @@
 import { ModeMap, uploadBase64, uploadUrl } from "@/req/demos"
-import { Format } from "@/utils/common"
-import { file2Base64, fileCompressor } from "@/utils/imgTool"
+import { Format, toCDN } from "@/utils/common"
+import { file2Base64, fileCompressor, src2webp } from "@/utils/imgTool"
 import { ChangeEvent, DragEvent, KeyboardEvent, MouseEvent, cloneElement, forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react"
 import SVGIcon from "../SVGIcon"
 import PicModal, { ModalRefType } from "../PicModal"
@@ -86,9 +86,14 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
         if(loading) return;
         e.dataTransfer.files?.length && setFiles((pics) => [...pics, ...Array.from(e.dataTransfer.files)])
     }
-    const uploadFile = async (file: File, options: any, path: string, mode: Mode) => {
-        const blob = file.type.match('gif') && !path.match('mini') ? file : await fileCompressor(file, options)
-        const base64 = await file2Base64(blob);
+    const uploadFile = async (file: File, options: any, path: string, mode: Mode, again?: boolean) => {
+        const isCanCompress = !(file.type.match('gif') && !path.match('mini'))
+        const blob = isCanCompress ? await fileCompressor(file, options) : file
+        let base64 = await file2Base64(blob);
+        if (again && isCanCompress) {
+            const webpBlob = await src2webp(base64);
+            base64 = await file2Base64(webpBlob);
+        }
         const result = await uploadBase64({ content: base64.split(',')[1], path, mode })
         return result
     }
@@ -106,12 +111,16 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
         const result = []
         for (let i = 0; i < files.length; i++) {
             const name = 'pic' + Date.now() + String(Math.random()).slice(4, 7) + '.' + files[i].name.split('.').reverse()[0]
+            let again = false
             const path = `${Format(new Date(), 'YYYY_MM_DD')}/${name}`
             let status: UploadType['uploadStatus'] = 'LOADING';
+            if (newMap[total[i].id] === 'ERROR') {
+                again = true
+            }
             newMap[total[i].id] = status
             setUploadStatusMap({ ...newMap })
             // const mini = await uploadFile(files[i], { quality: 0.1, mimeType: 'image/jpeg' }, `mini/${path}`, mode)
-            const normal = await uploadFile(files[i], { quality: 1024 * 1024 * 2 > files[i].size ? 1024 * 1024 * 2 / files[i].size : 0.8 }, `normal/${path}`, mode)
+            const normal = await uploadFile(files[i], { quality: 1024 * 1024 * 2 > files[i].size ? 1024 * 1024 * 2 / files[i].size : 0.8 }, `normal/${path}`, mode, again)
             if (!normal?.data || normal?.code) {
                 status = 'ERROR'
             } else {
@@ -151,7 +160,7 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
     }
     const inputUrl = () => {
         if (!urlInput || loading) return
-        setUrls(urls => Array.from(new Set([...urls, ...urlInput.split(',')])))
+        setUrls(urls => Array.from(new Set([...urls, ...urlInput.split(',').map(url => toCDN(url, ''))])))
         setUrlInput('')
     }
     const handlekeyUp = (e: KeyboardEvent<HTMLInputElement>) => {

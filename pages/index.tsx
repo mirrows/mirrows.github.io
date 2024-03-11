@@ -92,7 +92,7 @@ export default function Home({ artical, total: initTotal }: Props) {
       </Head>
       <main>
         <div className={style['index_wrap']}>
-          <MySwiper
+          {!!pics?.length && <MySwiper
             loop={true}
             // autoplay={{ delay: 2000, disableOnInteraction: false }}
             className={style['imgs_wrap']}
@@ -106,7 +106,7 @@ export default function Home({ artical, total: initTotal }: Props) {
                 : <img src={pic?.url ? toCDN(pic.url, '&w=1920&h=1080') : ''} className={style["pic_item"]} width="1920" height="1080" alt="bing" />
               }
             </SwiperSlide>))}
-          </MySwiper>
+          </MySwiper>}
           <div className={style['main_content']}>
             <div className={style['content_left']}>
               <Pagination total={total} onChange={handlePagination} />

@@ -106,7 +106,6 @@ const PicModal = forwardRef<ModalRefType, PicModalProps>(({ pics, slice = true, 
                     alt="bing"
                     beforeLoad={beforeLoad}
                 >
-                    <SVGIcon className={`${style['tmp_status_btn']} rotate`} type="loading" fill="#fff" />
                 </LazyImage>
             </SwiperSlide>))}
         </MySwiper>

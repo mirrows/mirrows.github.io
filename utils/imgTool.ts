@@ -66,6 +66,27 @@ export const fileCompressor = (file: File, options: any): Promise<File | Blob> =
     })
   })
 }
+export const src2webp = (src: string): Promise<Blob> => {
+  return new Promise((res, rej) => {
+
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d')
+
+    const img = new Image();
+    img.src = src;
+    img.crossOrigin = 'anonymous';
+    img.onload = (e: Event) => {
+      console.log(3444444);
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const target = e.target as HTMLImageElement;
+      URL.revokeObjectURL(target.src);
+      context?.drawImage(target, 0, 0, canvas.width, canvas.height)
+      canvas.toBlob(data => res(data as Blob), 'image/webp')
+    }
+    img.onerror = err => rej(err)
+  })
+}
 
 
 
