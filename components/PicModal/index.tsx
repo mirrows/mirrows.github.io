@@ -105,8 +105,7 @@ const PicModal = forwardRef<ModalRefType, PicModalProps>(({ pics, slice = true, 
                     height="1080"
                     alt="bing"
                     beforeLoad={beforeLoad}
-                >
-                </LazyImage>
+                />
             </SwiperSlide>))}
         </MySwiper>
     </div>
