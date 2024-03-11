@@ -86,11 +86,11 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
         if(loading) return;
         e.dataTransfer.files?.length && setFiles((pics) => [...pics, ...Array.from(e.dataTransfer.files)])
     }
-    const uploadFile = async (file: File, options: any, path: string, mode: Mode, again?: boolean) => {
+    const uploadFile = async (file: File, options: any, path: string, mode: Mode) => {
         const isCanCompress = !(file.type.match('gif') && !path.match('mini'))
         const blob = isCanCompress ? await fileCompressor(file, options) : file
         let base64 = await file2Base64(blob);
-        if (again && isCanCompress) {
+        if (blob.size > 1024 * 1024 * 2.8 && isCanCompress) {
             const webpBlob = await src2webp(base64);
             base64 = await file2Base64(webpBlob);
         }
@@ -111,16 +111,12 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
         const result = []
         for (let i = 0; i < files.length; i++) {
             const name = 'pic' + Date.now() + String(Math.random()).slice(4, 7) + '.' + files[i].name.split('.').reverse()[0]
-            let again = false
             const path = `${Format(new Date(), 'YYYY_MM_DD')}/${name}`
             let status: UploadType['uploadStatus'] = 'LOADING';
-            if (newMap[total[i].id] === 'ERROR') {
-                again = true
-            }
             newMap[total[i].id] = status
             setUploadStatusMap({ ...newMap })
             // const mini = await uploadFile(files[i], { quality: 0.1, mimeType: 'image/jpeg' }, `mini/${path}`, mode)
-            const normal = await uploadFile(files[i], { quality: 1024 * 1024 * 2 > files[i].size ? 1024 * 1024 * 2 / files[i].size : 0.8 }, `normal/${path}`, mode, again)
+            const normal = await uploadFile(files[i], { quality: 1024 * 1024 * 2 > files[i].size ? 1024 * 1024 * 2 / files[i].size : 0.8 }, `normal/${path}`, mode)
             if (!normal?.data || normal?.code) {
                 status = 'ERROR'
             } else {
