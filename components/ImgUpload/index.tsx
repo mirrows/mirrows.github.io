@@ -93,6 +93,7 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
         if (blob.size > 1024 * 1024 * 2.8 && isCanCompress) {
             const webpBlob = await src2webp(base64);
             base64 = await file2Base64(webpBlob);
+            console.log('compress again', blob.size, 'to', webpBlob.size);
         }
         const result = await uploadBase64({ content: base64.split(',')[1], path, mode })
         return result
