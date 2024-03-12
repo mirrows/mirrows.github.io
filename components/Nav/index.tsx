@@ -12,6 +12,7 @@ import style from './index.module.scss'
 
 const NavHeader = () => {
   const [user, setUser] = useState<UserInfo>()
+  const [isOwner, setOwner] = useState(false)
   const router = useRouter();
 
   const login = () => {
@@ -59,6 +60,10 @@ const NavHeader = () => {
     }
   }, [queryToken, router.asPath])
 
+  useEffect(() => {
+    stone.isGithubOwner((isowner) => setOwner(isowner))
+  }, [])
+
   return (
     <div className={style['nav_wrap']}>
       <div className={style['nav']}>
@@ -82,6 +87,10 @@ const NavHeader = () => {
                 <SVGIcon type="about_me" className={style['nav_icon']} />
                 <span>About me</span>
               </Link>
+              {isOwner && <Link className={style['nav_item']} href="/setting" aria-label="read about me">
+                <SVGIcon type="setting" className={style['nav_icon']} />
+                <span>Setting</span>
+              </Link>}
               {user ? (<>
                 <a className={`${style['nav_item']} ${style['item_right']}`} aria-label="link to github page" href={user.html_url} target="_blank">
                   <span>{user.login}</span>

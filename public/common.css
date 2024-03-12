@@ -58,6 +58,15 @@ button.normal_btn{
   color:#fff;
   pointer-events: all;
 }
+button.outlined_btn{
+  padding: 4px 20px;
+  background-color: #fff;
+  border: 1px solid #000;
+  border-radius: 6px;
+  font-size: 1rem;
+  color:#000;
+  pointer-events: all;
+}
 
 button:hover{
   box-shadow: 0 0 5px -1px #666;
