@@ -21,6 +21,7 @@ export const env = {
   clientID: process.env.NEXT_PUBLIC_CLIENT_ID,
   loadingGif: process.env.NEXT_PUBLIC_LOADING_GIF,
   userToken: process.env.NEXT_PUBLIC_FIXED_GITHUB_TOKEN,
+  id: process.env.NEXT_PUBLIC_GITHUB_ID,
 }
 
 
@@ -49,12 +50,13 @@ export const stone = {
   isGithubOwner(cb: (isOwner: boolean) => void) {
     return new Promise(res => {
       if (stone.data.userInfo?.login) {
-        cb(stone.data.userInfo.login === env.user)
-        res(stone.data.userInfo.login === env.user)
+        console.log(stone.data.userInfo.id, env.id);
+        cb(stone.data.userInfo.login === env.user && (!!env.id || String(stone.data.userInfo.id) === env.id))
+        res(stone.data.userInfo.login === env.user && (!!env.id || String(stone.data.userInfo.id) === env.id))
       } else {
         stone.on('github', (data: UserInfo) => {
-          cb(data.login === env.user)
-          res(data.login === env.user)
+          cb(data.login === env.user && (!!env.id || String(data.id) === env.id))
+          res(data.login === env.user && (!!env.id || String(data.id) === env.id))
         })
       }
     })
