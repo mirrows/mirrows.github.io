@@ -22,6 +22,11 @@ export default function Demos() {
       icon: 'https://empty.t-n.top/pub_lic/2023_07_03/pic1688351230372957.jpg',
       link: '/demos/imgSource',
     },
+    {
+      name: '音乐播放器',
+      icon: 'https://wsrv.nl/?url=raw.githubusercontent.com/mirrows/photo/main/normal/2024_03_29/pic1711679539251661.png&n=-1&q=80',
+      link: '/demos/musicPlayer',
+    },
   ])
   useEffect(() => {
     isShow(true)

@@ -71,3 +71,7 @@ export const toCDN = (url: string, params: string | {pc: string, mobile: string}
       : params ? `&${params}` : ''
     }&n=-1&q=80`
 }
+
+export const randomColor = (num = Math.random()) => {
+  return `#${(+String(num).slice(4, 12)).toString(16).padStart(6, '0').slice(-6)}`
+}

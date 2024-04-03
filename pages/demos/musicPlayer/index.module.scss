@@ -1,0 +1,101 @@
+.wrap{
+  max-width: 1200px;
+  padding: 20px;
+  margin: 80px auto;
+}
+.content{
+  padding: 20px;
+  background-color: #f5f5f5;
+  box-shadow: 0 0 36px -20px #000;
+  border-radius: 6px;
+  text-align: center;
+}
+.input_wrap{
+  position: relative;
+  width: 100%;
+  max-width: 210px;
+  margin: auto;
+}
+.search_input{
+  width: 100%;
+  padding: 5px;
+  padding-right: 35px;
+  line-height: 25px;
+  border-radius: 6px;
+  border: none;
+  box-sizing: border-box;
+}
+.search_icon{
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  padding: 5px;
+  margin: auto;
+}
+
+.card_lines,
+.card_line{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  align-items: flex-start;
+}
+
+.card_line{
+  flex: 1;
+}
+
+.card_wrap{
+  flex: 1;
+  max-width: 320px;
+  min-width: 160px;
+  padding: 10px;
+  margin: 20px;
+  border-radius: 6px;
+  text-align: left;
+}
+
+.song_wrap{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 0;
+  border-bottom: 1px solid #ebebeb;
+  font-size: 1rem;
+}
+
+.song_wrap:last-child{
+  border-bottom: none;
+}
+
+.singer{
+  font-size: 0.8rem;
+  color: #666;
+}
+.song_operate{
+  display: flex;
+}
+
+.operate_icon{
+  width: 1.5rem;
+  padding: 5px;
+  // fill: #f5f5f5;
+}
+
+@media (max-width: 400px) {
+  .card_wrap{
+    margin: 10px 0;
+  }
+}
+
+
+
+.player_warp{
+  position: fixed;
+  bottom: 20px;
+  left: 10px;
+  padding: 5px 20px;
+  border-radius: 100px;
+  background-color: #f5f5f5;
+}
