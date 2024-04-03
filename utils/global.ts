@@ -47,6 +47,9 @@ export const stone = {
       await events[i](...props)
     }
   },
+  clearEmit<T extends keyof EventEmits>(name: T) {
+    delete this.events[`event_${name}`];
+  },
   isGithubOwner(cb: (isOwner: boolean) => void) {
     return new Promise(res => {
       if (stone.data.userInfo?.login) {

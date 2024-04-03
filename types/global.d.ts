@@ -1,4 +1,5 @@
 import { UserInfo } from "./github";
+import { PlayerSong } from "./player";
 
 export type Preview = {
   ip: string,
@@ -71,6 +72,8 @@ export type EventEmits = {
   'ip': (props: { data: {data: Preview['data']}, detail: IPDetail }) => void,
   'github': (info: UserInfo) => void,
   'jsonpIp': (props: IPDetail) => void
+  'addSong': (song: PlayerSong) => void
+  'playSong': (song: PlayerSong) => void
 }
 
 export type styled = any
