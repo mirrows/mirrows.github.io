@@ -262,7 +262,7 @@ export const getStaticProps = async (context: any) => {
   if (comments.status === 'fulfilled' && comments.value?.data) {
     const data = comments.value.data
     props.comments = data
-    props.pageInfo = comments.value.pageInfo
+    // props.pageInfo = comments.value.pageInfo
   }
   return { props }
 }
