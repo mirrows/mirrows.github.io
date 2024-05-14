@@ -88,7 +88,20 @@ function UploadPicList({ list = [], mode = ModeMap.PHOTO, path = 'normal/', show
 
   const delPic = (path: string, item: Pic) => {
     deletePic({ path: item.path, sha: item.sha, mode }).then(res => {
-      queryPics(path)
+      footer.current && io.current?.unobserve(footer.current);
+      const newData = pics[path].filter(line => line.sha !== item.sha)
+      globalData.current[path] = newData
+      if (path === curPath && newData.length === 1) {
+        setPath('')
+      }
+      setPics({
+        ...pics,
+        [path]: newData,
+      })
+      // queryPics(path)
+      setTimeout(() => {
+        footer.current && io.current?.observe(footer.current)
+      })
     })
   }
   useImperativeHandle(ref, () => ({
