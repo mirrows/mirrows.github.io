@@ -22,10 +22,14 @@ import style from './index.module.scss'
 type Props = {
   artical: Artical,
   comments: Comment[],
-  pageInfo: Partial<PageInfo>
+  // pageInfo: Partial<PageInfo>
 }
 
-export default function About({ artical: atl, comments: cmts, pageInfo }: Props) {
+export default function About({
+  artical: atl,
+  comments: cmts,
+  // pageInfo
+}: Props) {
   const md = new MarkdownIt()
   const pic = useRef<HTMLElement | null>()
   const dom = useRef<any>()
@@ -37,7 +41,7 @@ export default function About({ artical: atl, comments: cmts, pageInfo }: Props)
   const [isPreview, setIsPreview] = useState(false)
   const [comments, setComments] = useState<Comment[]>([...(cmts || [])])
   const [page, setPage] = useState(1)
-  const [curCommentsInfo, setInfo] = useState<Partial<PageInfo>>(pageInfo || {})
+  // const [curCommentsInfo, setInfo] = useState<Partial<PageInfo>>(pageInfo || {})
   const uploadRef = useRef<UploadRefType>(null)
   const [isOwner, setOwner] = useState(false)
   const mdify = () => {
@@ -90,10 +94,14 @@ export default function About({ artical: atl, comments: cmts, pageInfo }: Props)
     });
   }
   const listComments = (params?: ListArticalParams) => {
-    queryComments(params || { number: 2 }).then(({ data, total, pageInfo }) => {
+    queryComments(params || { number: 2 }).then(({
+      data,
+      total,
+      // pageInfo
+    }) => {
       setComments(data)
       setArtical(atl => ({ ...atl, comments: total }))
-      setInfo(pageInfo);
+      // setInfo(pageInfo);
       if (!params) {
         setPage(1)
       }
@@ -262,7 +270,7 @@ export const getStaticProps = async (context: any) => {
   if (comments.status === 'fulfilled' && comments.value?.data) {
     const data = comments.value.data
     props.comments = data
-    props.pageInfo = comments.value.pageInfo
+    // props.pageInfo = comments.value.pageInfo
   }
   return { props }
 }
