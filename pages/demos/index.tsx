@@ -9,17 +9,17 @@ export default function Demos() {
   const [list] = useState([
     {
       name: '抽奖模型',
-      icon: 'https://empty.t-n.top/pub_lic/2023_06_19/pic1687153304035427.png',
+      icon: 'https://wsrv.nl/?url=raw.githubusercontent.com/mirrows/photo/main/normal/2024_05_14/pic1715679182511381.png&n=-1&q=80',
       link: '/demos/lottery',
     },
     {
       name: '2048',
-      icon: 'https://empty.t-n.top/pub_lic/2023_06_26/pic1687749579236835.png',
+      icon: 'https://wsrv.nl/?url=raw.githubusercontent.com/mirrows/photo/main/normal/2024_05_14/pic1715679181284825.png&n=-1&q=80',
       link: '/demos/2048',
     },
     {
       name: '图床列表',
-      icon: 'https://empty.t-n.top/pub_lic/2023_07_03/pic1688351230372957.jpg',
+      icon: 'https://wsrv.nl/?url=raw.githubusercontent.com/mirrows/photo/main/normal/2024_05_14/pic1715679180092541.jpg&n=-1&q=80',
       link: '/demos/imgSource',
     },
     {
