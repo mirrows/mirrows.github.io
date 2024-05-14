@@ -100,12 +100,12 @@ export default function Home({ artical, total: initTotal }: Props) {
             onSlideChangeTransitionEnd={slideChange}
           >
             {pics.map((pic, ind) => (<SwiperSlide key={ind} className={style['pic_wrap']}>
-              {/* {
+              {
                 ind ? 
                 <LazyImage src={pic?.url ? toCDN(getBingPic(Date.now() - ind * 24 * 60 * 60 * 1000), '&w=1920&h=1080') : env.loadingGif || ''} className={style['pic_item']} width="1920" height="1080" alt="bing" />
                 : <img src={pic?.url ? toCDN(getBingPic(Date.now()), '&w=1920&h=1080') : ''} className={style["pic_item"]} width="1920" height="1080" alt="bing" />
-              } */}
-              <img src={pic?.url ? toCDN(getBingPic(Date.now() - ind * 24 * 60 * 60 * 1000), '&w=1920&h=1080') : ''} className={style["pic_item"]} width="1920" height="1080" alt="bing" />
+              }
+              {/* <img src={pic?.url ? toCDN(getBingPic(Date.now() - ind * 24 * 60 * 60 * 1000), '&w=1920&h=1080') : ''} className={style["pic_item"]} width="1920" height="1080" alt="bing" /> */}
             </SwiperSlide>))}
           </MySwiper>}
           <div className={style['main_content']}>
