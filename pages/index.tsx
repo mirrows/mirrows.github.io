@@ -11,7 +11,7 @@ import Swiper from 'swiper';
 import SVGIcon from '@/components/SVGIcon';
 import LazyImage from '@/components/LazyImage';
 import Link from 'next/link';
-import { getBingPic, useLazyImgs } from '@/utils/imgTool';
+import { useLazyImgs } from '@/utils/imgTool';
 import { env, stone } from '@/utils/global';
 import { useRouter } from 'next/router';
 import Pagination from '@/components/Pagination';
@@ -92,7 +92,7 @@ export default function Home({ artical, total: initTotal }: Props) {
       </Head>
       <main>
         <div className={style['index_wrap']}>
-          {<MySwiper
+          {!!pics?.length && <MySwiper
             loop={true}
             // autoplay={{ delay: 2000, disableOnInteraction: false }}
             className={style['imgs_wrap']}
@@ -102,10 +102,9 @@ export default function Home({ artical, total: initTotal }: Props) {
             {pics.map((pic, ind) => (<SwiperSlide key={ind} className={style['pic_wrap']}>
               {
                 ind ? 
-                <LazyImage src={pic?.url ? toCDN(getBingPic(Date.now() - ind * 24 * 60 * 60 * 1000), '&w=1920&h=1080') : env.loadingGif || ''} className={style['pic_item']} width="1920" height="1080" alt="bing" />
-                : <img src={pic?.url ? toCDN(getBingPic(Date.now()), '&w=1920&h=1080') : ''} className={style["pic_item"]} width="1920" height="1080" alt="bing" />
+                <LazyImage src={pic?.url ? toCDN(pic.url, '&w=1920&h=1080') : env.loadingGif || ''} className={style['pic_item']} width="1920" height="1080" alt="bing" />
+                : <img src={pic?.url ? toCDN(pic.url, '&w=1920&h=1080') : ''} className={style["pic_item"]} width="1920" height="1080" alt="bing" />
               }
-              {/* <img src={pic?.url ? toCDN(getBingPic(Date.now() - ind * 24 * 60 * 60 * 1000), '&w=1920&h=1080') : ''} className={style["pic_item"]} width="1920" height="1080" alt="bing" /> */}
             </SwiperSlide>))}
           </MySwiper>}
           <div className={style['main_content']}>
@@ -144,7 +143,7 @@ export default function Home({ artical, total: initTotal }: Props) {
                       {/* <span>{new Date(artical.updated_at).toLocaleDateString()}</span> */}
                     </span>
                   </div>
-                  <LazyImage className={style['artical_img']} width="400" height="200" src={toCDN(getBingPic(artical.created_at), 'w=400&h=200')} alt={artical.title} />
+                  <LazyImage className={style['artical_img']} width="400" height="200" src={toCDN(artical.img, 'w=400&h=200')} alt={artical.title} />
                 </Link>)
               )}
             </div>
