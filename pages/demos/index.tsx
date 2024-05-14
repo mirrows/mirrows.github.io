@@ -22,11 +22,11 @@ export default function Demos() {
       icon: 'https://wsrv.nl/?url=raw.githubusercontent.com/mirrows/photo/main/normal/2024_05_14/pic1715679180092541.jpg&n=-1&q=80',
       link: '/demos/imgSource',
     },
-    {
-      name: '音乐播放器',
-      icon: 'https://wsrv.nl/?url=raw.githubusercontent.com/mirrows/photo/main/normal/2024_03_29/pic1711679539251661.png&n=-1&q=80',
-      link: '/demos/musicPlayer',
-    },
+    // {
+    //   name: '音乐播放器',
+    //   icon: 'https://wsrv.nl/?url=raw.githubusercontent.com/mirrows/photo/main/normal/2024_03_29/pic1711679539251661.png&n=-1&q=80',
+    //   link: '/demos/musicPlayer',
+    // },
   ])
   useEffect(() => {
     isShow(true)
