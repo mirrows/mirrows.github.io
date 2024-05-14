@@ -1,5 +1,7 @@
 import Compressor from "compressorjs";
 import { useCallback, useEffect, useRef } from "react";
+import { Format } from "./common";
+import { env } from "./global";
 
 export const base64ToFile = (base64: string, fileName: string) => {
   let arr = base64.split(','),
@@ -88,6 +90,10 @@ export const src2webp = (src: string): Promise<Blob> => {
   })
 }
 
+export const getBingPic = (time: string | number | Date) => {
+  const dateStr = Format(new Date(time), 'YYYY_MM_DD')
+  return `https://raw.githubusercontent.com/${env.user}/photo/main/normal/${dateStr}/bing.jpg`
+}
 
 
 export const useLazyImgs = (path?: string, parent?: string, cd?: Function) => {
