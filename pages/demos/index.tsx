@@ -22,6 +22,11 @@ export default function Demos() {
       icon: 'https://wsrv.nl/?url=raw.githubusercontent.com/mirrows/photo/main/normal/2024_05_14/pic1715679180092541.jpg&n=-1&q=80',
       link: '/demos/imgSource',
     },
+    {
+      name: 'Gemini',
+      icon: 'https://wsrv.nl/?url=raw.githubusercontent.com/mirrows/photo/main/normal/2024_05_24/pic1716539172560011.png&n=-1&q=80',
+      link: '/demos/gemini',
+    },
     // {
     //   name: '音乐播放器',
     //   icon: 'https://wsrv.nl/?url=raw.githubusercontent.com/mirrows/photo/main/normal/2024_03_29/pic1711679539251661.png&n=-1&q=80',
@@ -46,7 +51,7 @@ export default function Demos() {
             {list.map((item, i) => (<Link key={i} className={style['item_wrap']} aria-label={item.name} href={item.link}>
               <div className={style['item']}>
                 <div className={style['item_middle']}>
-                  <img className={style['item_img']} width="100" height="100" src={item.icon} alt={`demo-${i}`} />
+                  <LazyImage className={style['item_img']} width="100" height="100" src={item.icon} alt={`demo-${i}`} />
                 </div>
               </div>
               <div className={`${style['demo_name']} ${style['two_line']}`}>{item.name}</div>
