@@ -12,7 +12,7 @@
 
 .left_wrap {
   flex: 0 0 15rem;
-  width: 15rem;
+  // width: 15rem;
   padding: 0.5rem;
   border-radius: 0.5rem;
   background-color: #fff;
@@ -36,10 +36,11 @@
   border: none;
   margin-right: 0.5rem;
   border-radius: 0.2rem;
+  font-size: 1rem;
 }
 
 .enter_icon {
-  width: 24px;
+  width: 1.5rem;
   padding: 0.25rem 1.2rem;
   fill: #fff;
   background-color: #000;
@@ -62,5 +63,22 @@
 }
 
 @media (max-width: 796px) {
-  .left_wrap {}
+  .wrap {
+    height: auto;
+    flex-direction: column;
+  }
+
+  .left_wrap {
+    flex-basis: auto;
+    background-color: transparent;
+  }
+
+  .right_input_wrap {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0.5rem 1rem;
+    background-color: #f5f5f5;
+  }
 }
