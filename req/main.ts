@@ -100,6 +100,25 @@ export const bingQuery = (n = 7) => {
   })
 }
 
+export const bingQueryNew = (n = 7) => {
+  return githubQuery({
+    path: '/github/queryComments',
+    method: 'get',
+    query: {
+      number: 1,
+      per_page: 7,
+      page: 1,
+    },
+  })
+  // export const queryComments = (params?: ListArticalParams) => {
+  //   return githubQuery({
+  //     path: '/github/queryComments',
+  //     method: 'get',
+  //     query: params,
+  //   })
+  // }
+}
+
 export const statisticVisitor = (ip: string, time = 0) => {
   return query({
     path: '/visitor',

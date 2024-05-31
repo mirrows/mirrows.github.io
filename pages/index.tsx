@@ -1,4 +1,4 @@
-import { ListArticalParams, bingQuery, listArtical } from '@/req/main';
+import { ListArticalParams, bingQuery, bingQueryNew, listArtical } from '@/req/main';
 import Head from 'next/head'
 import { useCallback, useEffect, useRef, useState } from 'react';
 // import Swiper core and required modules
@@ -35,7 +35,13 @@ export default function Home({ artical, total: initTotal }: Props) {
   }
   const router = useRouter();
   const queryBing = () => {
-    bingQuery().then(({ data }) => {
+    bingQueryNew().then(({ data: orgData }) => {
+      let data = []
+      try {
+        data = orgData.map((org: { body: string }) => JSON.parse(org.body))
+      } catch (err) {
+        console.log(err)
+      }
       const pics = data.map((pic: BingPic) => {
         const { url, title, copyright, copyrightlink, enddate } = pic;
         let [content, cpright] = ['', '']
@@ -45,7 +51,7 @@ export default function Home({ artical, total: initTotal }: Props) {
           return oldval;
         })
         return {
-          url,
+          url: `https://bing.com${url}`,
           title,
           content,
           copyright: cpright,
@@ -66,7 +72,7 @@ export default function Home({ artical, total: initTotal }: Props) {
     queryArticalList({ per_page, page });
   }
   const ifJudge = useCallback((timeStr: string) => {
-    return Date.now() - new Date(timeStr).getTime() < 1000*60*5
+    return Date.now() - new Date(timeStr).getTime() < 1000 * 60 * 5
   }, [])
   useEffect(() => {
     stone.isGithubOwner((isowner) => setOwner(isowner))
@@ -101,9 +107,9 @@ export default function Home({ artical, total: initTotal }: Props) {
           >
             {pics.map((pic, ind) => (<SwiperSlide key={ind} className={style['pic_wrap']}>
               {
-                ind ? 
-                <LazyImage src={pic?.url ? toCDN(pic.url, '&w=1920&h=1080') : env.loadingGif || ''} className={style['pic_item']} width="1920" height="1080" alt="bing" />
-                : <img src={pic?.url ? toCDN(pic.url, '&w=1920&h=1080') : ''} className={style["pic_item"]} width="1920" height="1080" alt="bing" />
+                ind ?
+                  <LazyImage src={pic?.url ? toCDN(pic.url, '&w=1920&h=1080') : env.loadingGif || ''} className={style['pic_item']} width="1920" height="1080" alt="bing" />
+                  : <img src={pic?.url ? toCDN(pic.url, '&w=1920&h=1080') : ''} className={style["pic_item"]} width="1920" height="1080" alt="bing" />
               }
             </SwiperSlide>))}
           </MySwiper>}
@@ -190,7 +196,7 @@ export const getStaticProps = async (context: any) => {
   const [articals] = await Promise.allSettled(reqs);
   if (articals.status === 'fulfilled' && articals.value?.data) {
     const data = articals.value.data
-    const curAtl = data.filter((e: Artical) => Date.now() - new Date(e.created_at).getTime() > 1000*60*10)
+    const curAtl = data.filter((e: Artical) => Date.now() - new Date(e.created_at).getTime() > 1000 * 60 * 10)
     props.artical = curAtl
     props.total = articals.value.total
   }
