@@ -40,7 +40,7 @@ export default function ImgSource() {
         let realSrc = src
         if (personal) {
             const { data } = await queryPic(parsequeryStr2Obj(src).url.replace('cdn.jsdelivr.net/gh/mirrows/private@main/', ''), 'private')
-            realSrc = data?.content ? `data:image/${data.name.split('.').reverse()[0]};base64,${data?.content || ''}` : data.cdn_url || src
+            realSrc = data?.content ? `data:image/${data.name.split('.').reverse()[0]};base64,${data?.content || ''}` : data.download_url || src
         }
         return realSrc
     }
@@ -87,7 +87,7 @@ export default function ImgSource() {
 
 export const getStaticProps = async (context: any) => {
     return {
-      props: {}
+        props: {}
     }
-  }
+}
 

@@ -73,7 +73,7 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
     }, [urls, files])
     const [uploadStatusMap, setUploadStatusMap] = useState<{ [key: string]: UploadType['uploadStatus'] }>({})
     const clickHandle = () => {
-        if(loading) return;
+        if (loading) return;
         inputRef.current?.click();
     }
     const handlefile = (e: ChangeEvent<HTMLInputElement>) => {
@@ -83,7 +83,7 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
     const dropFile = (e: DragEvent<HTMLDivElement>) => {
         e.preventDefault();
         e.stopPropagation();
-        if(loading) return;
+        if (loading) return;
         e.dataTransfer.files?.length && setFiles((pics) => [...pics, ...Array.from(e.dataTransfer.files)])
     }
     const uploadFile = async (file: File, options: any, path: string, mode: Mode) => {
@@ -142,7 +142,7 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
             // })
             // const mini = await uploadUrl({ url: urls[i], path: `mini/${path}`, mode })
             const normal = await uploadUrl({ url: urls[i], path: `normal/${path}`, mode })
-            result.push({normal: normal.data })
+            result.push({ normal: normal.data })
             if (normal.code) {
                 status = 'ERROR'
             }
@@ -182,7 +182,6 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
     const handlePreview = (ind: number) => {
 
         picRef.current?.open(total.map(p => ({
-            cdn_url: p.src,
             sha: Date.now().toString() + ind,
         })), ind)
     }

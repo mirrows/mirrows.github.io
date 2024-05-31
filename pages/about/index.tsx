@@ -131,7 +131,7 @@ export default function About({
   const afterUpload = (pics: { mini: Pic, normal: Pic }[]) => {
     setTimeout(() => {
       if (input.current) {
-        input.current.value = input.current.value + pics.map(({ mini, normal }) => `![${mini.name}](${mini.cdn_url})\n![${normal.name}](${normal.cdn_url})`).join('\n')
+        input.current.value = input.current.value + pics.map(({ normal }) => `![${normal.name}](https://wsrv.nl/?url=${(normal.download_url || '').replace('https://', '')}&n=-1&q=80)`).join('\n')
         input.current.focus()
       }
     })

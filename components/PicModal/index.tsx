@@ -99,7 +99,7 @@ const PicModal = forwardRef<ModalRefType, PicModalProps>(({ pics, slice = true, 
         >
             {list.map((pic, ind) => (<SwiperSlide key={ind} className={style['pic_wrap']}>
                 <LazyImage
-                    src={slice ? `https://wsrv.nl/?url=${(pic.preview_url || pic.download_url || '').replace('https://', '')}${mobile ? '&w=480' : ''}&n=-1&q=80` : pic.cdn_url || ''}
+                    src={slice ? `https://wsrv.nl/?url=${(pic.preview_url || pic.download_url || '').replace('https://', '')}${mobile ? '&w=480' : ''}&n=-1&q=80` : pic.preview_url || pic.download_url || ''}
                     className={style['pic_item']}
                     width="1920"
                     height="1080"
