@@ -38,7 +38,7 @@ export default function Home({ artical, total: initTotal }: Props) {
     bingQueryNew().then(({ data: orgData }) => {
       let data = []
       try {
-        data = orgData.map((org: { body: string }) => JSON.parse(org.body))
+        data = orgData.reverse().map((org: { body: string }) => JSON.parse(org.body))
       } catch (err) {
         console.log(err)
       }

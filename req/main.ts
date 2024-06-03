@@ -108,6 +108,7 @@ export const bingQueryNew = (n = 7) => {
       number: 1,
       per_page: 7,
       page: 1,
+      since: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
     },
   })
   // export const queryComments = (params?: ListArticalParams) => {
