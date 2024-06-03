@@ -48,7 +48,7 @@ export type Artical = {
 export type Comment = {
   body: string,
   id: string,
-  updatedAt: string,
+  updated_at: string,
   author: {
     avatar_url: string,
     login: string,
@@ -69,7 +69,7 @@ export type GblData = {
 }
 
 export type EventEmits = {
-  'ip': (props: { data: {data: Preview['data']}, detail: IPDetail }) => void,
+  'ip': (props: { data: { data: Preview['data'] }, detail: IPDetail }) => void,
   'github': (info: UserInfo) => void,
   'jsonpIp': (props: IPDetail) => void
   'addSong': (song: PlayerSong) => void

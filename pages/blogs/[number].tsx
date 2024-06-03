@@ -136,7 +136,14 @@ export default function Blog({ artical: atl, comments: cmts }: Props) {
         listComments()
       })
     }
-    stone.data.emit()
+    try {
+      // 自动填充用户名和邮箱
+      const data = JSON.parse(localStorage.userMsg)
+      username.current && (username.current.value = data.username)
+      email.current && (email.current.value = data.email)
+    } catch {
+      console.log('暂无默认值', localStorage.userMsg)
+    }
     // md解析的图片会添加懒加载机制，此时必须手动检查一次是否在可视区内
     stone.isGithubOwner((isowner) => {
       try {
@@ -152,7 +159,7 @@ export default function Blog({ artical: atl, comments: cmts }: Props) {
       }
       setOwner(isowner)
     })
-    
+
   }, [query, listComments, replace])
 
   return (
@@ -234,7 +241,7 @@ export default function Blog({ artical: atl, comments: cmts }: Props) {
                       <div>{comment.author.login}</div>
                       <DateText
                         render={(formattedDate) => <div className={style['text_small']}>{formattedDate}</div>}
-                        value={comment.updatedAt}
+                        value={comment.updated_at}
                       />
                       {/* <div className={style['text_small']}>{new Date(comment.updatedAt).toLocaleDateString()}</div> */}
                     </div>

@@ -240,7 +240,7 @@ export default function About({
                     <div>{comment.author.login}</div>
                     <DateText
                       render={(formattedDate) => <div className={style['text_small']}>{formattedDate}</div>}
-                      value={comment.updatedAt}
+                      value={comment.updated_at}
                     />
                   </div>
                 </div>
