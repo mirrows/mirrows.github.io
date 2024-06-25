@@ -40,7 +40,7 @@ const NavHeader = () => {
     queryUser().then(data => {
       if (!data.id) return;
       stone.set({ userInfo: data, lastTime: Date.now() })
-      localStorage.setItem('tmpData', JSON.stringify(stone.data))
+      // localStorage.setItem('tmpData', JSON.stringify(stone.data))
       setUser(data)
       stone.emit('github', data)
     })

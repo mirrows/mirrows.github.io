@@ -71,7 +71,7 @@ export const logout = () => {
     token: '',
     userInfo: {},
   })
-  localStorage.setItem('tmpData', JSON.stringify(stone.data))
+  // localStorage.setItem('tmpData', JSON.stringify(stone.data))
 }
 
 if (typeof window !== "undefined") {
@@ -86,7 +86,7 @@ if (typeof window !== "undefined") {
       sessionStorage.setItem('detail', JSON.stringify(data.ipDetail))
     }
     stone.set(data)
-    // localStorage.removeItem('tmpData')
+    localStorage.removeItem('tmpData')
   }
 
   window.addEventListener('beforeunload', (e) => {
