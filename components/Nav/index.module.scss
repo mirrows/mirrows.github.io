@@ -43,6 +43,7 @@
       box-shadow: inset 0 48px 20px -30px #fff;
       .nav_list {
         display: none;
+        min-width: 100%;
         .item_right span {
           display: inline;
         }
