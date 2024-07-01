@@ -61,9 +61,9 @@ export default function PreviewPannel() {
     const sameYear = setDate(startTime, { year: now.getFullYear() })
     const year = now.getFullYear() - startTime.getFullYear() + (now.getTime() >= sameYear.getTime() ? 0 : -1) // 年
     const sameMonth = setDate(startTime, { month: now.getMonth() })
-    const month = now.getMonth() - startTime.getMonth() + (now.getTime() >= sameYear.getTime() ? 0 : 12) + (now.getTime() >= sameMonth.getTime() ? 0 : -1) // 月
+    const month = (now.getMonth() - startTime.getMonth() + (now.getTime() >= sameMonth.getTime() ? 0 : -1)) % 12 // 月
     const sameDate = setDate(startTime, { month: now.getMonth(), date: now.getDate() })
-    const date = now.getDate() - startTime.getDate() + (now.getTime() >= sameMonth.getTime() ? 0 : lastMonthTotal) + (now.getTime() >= sameDate.getTime() ? 0 : -1) // 日
+    const date = (now.getDate() - startTime.getDate() + (now.getTime() >= sameDate.getTime() ? 0 : -1) + lastMonthTotal) % lastMonthTotal // 日
     const hour = Math.floor((now.getTime() - startTime.getTime()) % (24 * 60 * 60 * 1000) / (60 * 60 * 1000)) // 时
     const minute = Math.floor(((now.getTime() - startTime.getTime()) % (24 * 60 * 60 * 1000)) / 1000 / 60) % 60 // 分
     const secend = Math.floor((now.getTime() - startTime.getTime()) / 1000) % 60 // 秒
