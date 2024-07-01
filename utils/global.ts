@@ -63,6 +63,7 @@ export const stone = {
           res(stone.data.login === env.user && (!!env.id || String(data.id) === env.id))
         })
         cb(false);
+        res(false);
       }
     })
   }
