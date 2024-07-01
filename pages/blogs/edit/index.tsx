@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import BlogCreator from '../components/creator'
 import { useRouter } from 'next/router'
 import { parsequeryStr2Obj } from '@/utils/common'
+import { stone } from '@/utils/global'
 
 type Props = {
   artical: Artical
@@ -20,6 +21,16 @@ export default function BlogEdit() {
         res?.data && setArtical(res.data)
       })
     }
+  }, [router])
+
+  useEffect(() => {
+    console.log(stone.isGithubOwner);
+    stone.isGithubOwner((isowner) => {
+      console.log(999, isowner);
+      if (!isowner) {
+        router.replace('/');
+      }
+    })
   }, [router])
   return (
     <>

@@ -51,6 +51,7 @@ export const stone = {
     delete this.events[`event_${name}`];
   },
   isGithubOwner(cb: (isOwner: boolean) => void) {
+    console.log(this.data);
     return new Promise(res => {
       if (stone.data.userInfo?.login) {
         console.log(stone.data.userInfo.id, env.id);
@@ -58,8 +59,8 @@ export const stone = {
         res(stone.data.userInfo.login === env.user && (!!env.id || String(stone.data.userInfo.id) === env.id))
       } else {
         stone.on('github', (data: UserInfo) => {
-          cb(data.login === env.user && (!!env.id || String(data.id) === env.id))
-          res(data.login === env.user && (!!env.id || String(data.id) === env.id))
+          cb(stone.data.login === env.user && (!!env.id || String(data.id) === env.id))
+          res(stone.data.login === env.user && (!!env.id || String(data.id) === env.id))
         })
       }
     })
