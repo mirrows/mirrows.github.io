@@ -26,7 +26,7 @@ function LazyImage({
 }: TProps) {
     const loadingGif = useRef(loadingPic || process.env.NEXT_PUBLIC_LOADING_GIF)
     const failImg = useRef(process.env.NEXT_PUBLIC_FAIL_IMG)
-    const [imgSrc, setSrc] = useState(loadingGif.current)
+    const [imgSrc, setSrc] = useState<string>()
     const [loaded, setLoaded] = useState(false)
     const imgRef = useRef<HTMLImageElement | null>(null)
     const oneTime = useRef(0)
@@ -72,6 +72,7 @@ function LazyImage({
             src={imgSrc}
             data-src={src}
             alt=""
+            style={{ backgroundImage: `url('${loadingGif.current}')` }}
             onLoad={handleLoad}
             onError={handleError}
             {...props}

@@ -182,6 +182,7 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
     const handlePreview = (ind: number) => {
 
         picRef.current?.open(total.map(p => ({
+            preview_url: p.src,
             sha: Date.now().toString() + ind,
         })), ind)
     }
