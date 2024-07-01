@@ -24,9 +24,7 @@ export default function BlogEdit() {
   }, [router])
 
   useEffect(() => {
-    console.log(stone.isGithubOwner);
     stone.isGithubOwner((isowner) => {
-      console.log(999, isowner);
       if (!isowner) {
         router.replace('/');
       }

@@ -3,9 +3,12 @@ import { BingPic } from '@/types/global'
 import Head from 'next/head'
 import { useEffect, useState } from 'react'
 import BlogCreator from '../components/creator'
+import { useRouter } from 'next/router'
+import { stone } from '@/utils/global'
 
 export default function BlogCreate() {
   const [img, setImg] = useState<BingPic | null>()
+  const router = useRouter();
   useEffect(() => {
     bingQuery(1).then(res => {
       if(res.data) {
@@ -13,6 +16,13 @@ export default function BlogCreate() {
       }
     })
   }, [])
+  useEffect(() => {
+    stone.isGithubOwner((isowner) => {
+      if (!isowner) {
+        router.replace('/');
+      }
+    })
+  }, [router])
   return (
     <>
       <Head>
