@@ -152,6 +152,8 @@ img, svg, input{
 
 img{
   object-fit: cover;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 .text_center{
