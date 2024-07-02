@@ -22,7 +22,6 @@ export default function Gemini() {
               <input type="text" autoFocus className={style.input} placeholder='请在此处开启聊天' />
               <SVGIcon type="enter" className={style['enter_icon']} />
             </div>
-
           </div>
         </div>
       </main>
