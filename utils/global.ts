@@ -85,7 +85,7 @@ if (typeof window !== "undefined") {
       data.userInfo = {}
       data.stayTime = 0
     }
-    if (data?.ipDetail) {
+    if (data?.ipDetail && data.ipDetail.ip) {
       sessionStorage.setItem('detail', JSON.stringify(data.ipDetail))
     }
     stone.set(data)
