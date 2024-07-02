@@ -84,6 +84,7 @@ if (typeof window !== "undefined") {
       data.token = ''
       data.userInfo = {}
       data.stayTime = 0
+      data.ipDetail = {}
     }
     if (data?.ipDetail && data.ipDetail.ip) {
       sessionStorage.setItem('detail', JSON.stringify(data.ipDetail))

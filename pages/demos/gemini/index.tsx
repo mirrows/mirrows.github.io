@@ -1,8 +1,14 @@
 import Head from 'next/head'
 import style from './index.module.scss'
 import SVGIcon from '@/components/SVGIcon'
+import { useState } from 'react'
 
 export default function Gemini() {
+  const [text, setText] = useState('');
+  const submit = () => {
+    if(!text) return
+    console.log(text);
+  }
   return (
     <>
       <Head>
@@ -19,8 +25,8 @@ export default function Gemini() {
               <div style={{ height: '1000px' }}></div>
             </div>
             <div className={style.right_input_wrap}>
-              <input type="text" autoFocus className={style.input} placeholder='请在此处开启聊天' />
-              <SVGIcon type="enter" className={style['enter_icon']} />
+              <input type="text" defaultValue={text} autoFocus className={style.input} placeholder='请在此处开启聊天' onInput={(e) => setText((e.target as HTMLInputElement)?.value)} />
+              <SVGIcon type="enter" disabled={!text} className={style['enter_icon']} onClick={submit} />
             </div>
           </div>
         </div>
