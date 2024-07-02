@@ -11,7 +11,7 @@ body::-webkit-scrollbar {
 /* 滚动条滑块 */
 body::-webkit-scrollbar-thumb {
   border-radius: 10px;
-  background: #a5a5a5;
+  background-color: #a5a5a5;
 }
 
 h1,
@@ -154,6 +154,7 @@ img{
   object-fit: cover;
   background-repeat: no-repeat;
   background-position: center;
+  background-size: contain;
 }
 
 .text_center{
