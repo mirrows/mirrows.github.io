@@ -28,7 +28,7 @@ const githubApi = ({ path, ...options }: Options) => {
 
 const query = (options: Options) => {
   const { method, path, query, headers, params, ...others } = options
-  return fetch(`${baseUrl}${path}${parseObj2queryStr(query)}`, {
+  return fetch(`${options.baseUrl || baseUrl}${path}${parseObj2queryStr(query)}`, {
     method: method || 'GET',
     headers: { "content-type": "application/json", ...headers},
     body: params && JSON.stringify(params),

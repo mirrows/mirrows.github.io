@@ -12,6 +12,8 @@
 
 .left_wrap {
   flex: 0 0 15rem;
+  display: flex;
+  flex-direction: column;
   // width: 15rem;
   padding: 0.5rem;
   border-radius: 0.5rem;
@@ -54,6 +56,22 @@
   background-color: #fff;
   border-radius: 0.5rem;
   overflow: auto;
+}
+
+.new_chat_items{
+  flex: 1;
+}
+
+.new_chat_wrap{
+  padding: 10px;
+  border-radius: 6px;
+  box-shadow: 0 0 10px 2px rgba(220,220,220,.3);
+  text-align: center;
+  cursor: pointer;
+}
+.new_chat_btn{
+  width: 20px;
+  height: 20px;
 }
 
 @media (min-width: 796px) {
