@@ -160,7 +160,7 @@ export default function Gemini() {
       <main>
         <div className={style.wrap}>
           <div className={style.left_wrap + (err ? ' err_area' : '')}>
-            <div className={style['new_chat_items']}>
+            <div className={style['new_chat_items'] + ' scroll_er'}>
               {list.map(chat => (
                 <div key={chat.id} className={`${style.chat_item_wrap} ${(chat.id === curRef.current ? style.active : '')}`} onClick={() => switchChat(chat)}>
                   {chat.title ? chat.title :new Date(+chat.id).toISOString()}

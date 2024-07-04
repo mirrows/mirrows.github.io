@@ -67,6 +67,7 @@
   padding: 10px;
   border-radius: 6px;
   box-shadow: 0 0 10px 2px rgba(220,220,220,.3);
+  margin-top: 10px;
   text-align: center;
   cursor: pointer;
 }
@@ -104,6 +105,7 @@
   box-shadow: 0 0 10px 2px rgba(220,220,220,.3);
   border-radius: 6px;
   margin-bottom: 1rem;
+  cursor: pointer;
 }
 .chat_item_wrap.active{
   background-color: rgb(7, 80, 7);
