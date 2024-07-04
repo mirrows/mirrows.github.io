@@ -17,3 +17,9 @@ export const parseBody = (str: string, options?: Array<keyof typeof map>) => {
   })
   return html
 }
+
+export const mdHelper = (text: string) => {
+  // 加粗符号添加空格避免无法解析
+  const res = text.replace(/\*\*(.+)\*\*(\S)/g, '**$1** $2')
+  return res
+}

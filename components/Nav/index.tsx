@@ -5,7 +5,7 @@ import { logout, stone } from "@/utils/global"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { useCallback, useEffect, useState } from "react"
-import LazyImage from "../LazyImage"
+// import LazyImage from "../LazyImage"
 import SVGIcon from "../SVGIcon"
 import TriggerBtn from "../TriggerBtn"
 import style from './index.module.scss'

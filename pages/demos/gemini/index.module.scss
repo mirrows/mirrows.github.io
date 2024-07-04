@@ -52,6 +52,7 @@
 .right_contact_wrap {
   flex: 1;
   height: 0;
+  padding: 10px 0;
   margin-bottom: 0.5rem;
   background-color: #fff;
   border-radius: 0.5rem;
@@ -72,6 +73,41 @@
 .new_chat_btn{
   width: 20px;
   height: 20px;
+}
+
+.gemini_msg_item {
+  display: flex;
+  width: 100%;
+}
+
+.avatar_img {
+  display: block;
+  width: 2.5rem;
+  height: 2.5rem;
+  object-fit: cover;
+  border-radius: 50%;
+  margin: 0 0.5rem;
+}
+
+.gemini_msg_item_content {
+  flex: 1 1 100%;
+  width: 0;
+  max-width: fit-content;
+  padding: 10px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  margin: 5px;
+}
+
+.chat_item_wrap{
+  padding: 1rem 0.5rem;
+  box-shadow: 0 0 10px 2px rgba(220,220,220,.3);
+  border-radius: 6px;
+  margin-bottom: 1rem;
+}
+.chat_item_wrap.active{
+  background-color: rgb(7, 80, 7);
+  color: #fff;
 }
 
 @media (min-width: 796px) {

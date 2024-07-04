@@ -174,6 +174,98 @@ img{
   -webkit-box-orient: vertical;
 }
 
+
+.md_detail blockquote {
+  padding: 4px 0 4px 1em;
+  margin: 0;
+  margin-bottom: 8px;
+  border-left: 4px solid gray;
+  white-space: normal;
+  background-color: #f5f5f5;
+  border-radius: 0 6px 6px 0;
+  opacity: 0.8;
+  font-size: 14px;
+}
+
+.md_detail  blockquote p {
+  margin: 0;
+  line-height: 1.2;
+}
+
+.md_detail p {
+  margin: 0 0 10px;
+  white-space: pre-wrap;
+  line-height: 1.5;
+  word-break: break-all;
+}
+
+.md_detail * > p:last-child{
+  margin-bottom: 0;
+}
+
+.md_detail a {
+  pointer-events: all;
+}
+
+.md_detail img {
+  max-width: 100%;
+}
+
+.md_detail table {
+  border-collapse: collapse;
+}
+
+.md_detail table th,
+.md_detail table td {
+  min-width: 80px;
+  padding: 4px;
+  border: 1px solid #000;
+}
+
+.md_detail ul {
+  margin: 10px 0;
+}
+
+.md_detail ul li:before {
+  content: "⚪";
+  float: left;
+  margin-right: 10px;
+  font-weight: 900;
+}
+
+.md_detail code {
+  background-color: #f5f5f5;
+  overflow: auto;
+  color: #000;
+}
+
+.md_detail pre {
+  padding: 10px;
+  background-color: #f5f5f5;
+  overflow: auto;
+  border-radius: 8px;
+  color: #000;
+}
+
+.md_detail pre::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+/* 滚动条滑块 */
+.md_detail pre::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background: #a5a5a5;
+}
+.err_area{
+  cursor: no-drop !important;
+  pointer-events: none !important;
+}
+.err_area * {
+  cursor: no-drop !important;
+  pointer-events: none !important;
+}
+
 @media (max-width: 769px) {
   html{
     font-size: 13px;
