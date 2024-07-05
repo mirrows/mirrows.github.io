@@ -64,6 +64,9 @@
 }
 
 .new_chat_wrap{
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 10px;
   border-radius: 6px;
   box-shadow: 0 0 10px 2px rgba(220,220,220,.3);
@@ -206,17 +209,20 @@
 }
 
 .title_txt{
-  display: flex;
-  align-items: center;
+  // display: flex;
+  // align-items: center;
+  line-height: 1.5;
 }
 
 .title_edit_icon,
 .title_close_icon{
+  flex: 0 0 1.5rem;
   width: 1.5rem;
   height: 1.5rem;
 }
 .title_edit_icon{
   margin-right: 20px;
+  vertical-align: text-bottom;
 }
 .title_close_icon{
   margin-left: auto;
@@ -254,8 +260,14 @@
       background-image: linear-gradient(180deg, #fff 0, #fff 50%, #f5f5f5 100%);
     }
   }
+  .chat_item_wrap{
+    margin-bottom: 0.5rem;
+  }
   .new_chat_items{
     display: flex;
+  }
+  .new_chat_wrap{
+    margin: 0;
   }
   .right_wrap{
     height: 0;
