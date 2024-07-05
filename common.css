@@ -172,6 +172,8 @@ img{
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+  word-break: break-all;
+
 }
 
 
@@ -272,6 +274,13 @@ img{
   }
   .hide_769{
     display: none !important;
+  }
+  body::-webkit-scrollbar,
+  .md_detail pre::-webkit-scrollbar,
+  .scroll_table::-webkit-scrollbar,
+  .scroll_er::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
   }
 }
 
