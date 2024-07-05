@@ -136,11 +136,15 @@ export default function Gemini() {
       console.log(chatList);
       setList(chatList);
   }
-  const openRenameModal = (e: MouseEvent<HTMLButtonElement>, chat: HistoryChat) => {
-    e.stopPropagation();
+  const openRenameModal = (e?: MouseEvent<HTMLButtonElement>, chat?: HistoryChat) => {
+    e?.stopPropagation();
     console.log(chat);
     renameModalRef.current?.open();
-    setTmpChat(chat);
+    setTmpChat(chat || {
+      id: curRef.current,
+      title,
+      history,
+    });
     // historyDb.current?.update<HistoryChat>('chat', {id, title, history: chat?.history || [] })
   }
   const setNewTitle = (title: string) => {
@@ -151,10 +155,9 @@ export default function Gemini() {
       };
     })
   }
-  const deleteChat = (e: MouseEvent<HTMLButtonElement>, chat: HistoryChat) => {
-    e.stopPropagation();
-    console.log(chat);
-    historyDb.current?.del('chat', chat.id || Date.now().toString())
+  const deleteChat = (e?: MouseEvent<HTMLButtonElement>, chat?: HistoryChat) => {
+    e?.stopPropagation();
+    historyDb.current?.del('chat', chat?.id || curRef.current || Date.now().toString())
     queryList()
     curRef.current = ''
     setTitle('')
@@ -219,6 +222,12 @@ export default function Gemini() {
             </div>
           </div>
           <div className={style.right_wrap}>
+            {title ? <div className={style.cur_chat_title}>
+              <span className={style.title_txt}>
+              <SVGIcon type='edit' className={style.title_edit_icon} onClick={() => openRenameModal()}></SVGIcon>
+              {title}</span>
+              <SVGIcon type='close' className={style.title_close_icon} onClick={() => deleteChat()}></SVGIcon>
+            </div> : ''}
             <div className={style.right_contact_wrap + ' scroll_er md_detail'}>
               {history.map((chat, i) => (<div key={i} className={style.gemini_msg_item} style={{ marginLeft: chat.role === 'user' ? 'auto' : '0' }}>
                 <div className={style.avatar} style={{order: chat.role === 'user' ? '1' : '0'}}>
