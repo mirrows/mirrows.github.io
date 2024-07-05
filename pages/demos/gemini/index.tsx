@@ -106,17 +106,21 @@ export default function Gemini() {
   const init = (chat?: HistoryChat) => {
     const id = chat?.id || Date.now().toString()
     const title = chat?.title || new Date(+id).toISOString()
+    const protectedChat = chat
+    if(protectedChat) {
+      protectedChat.history = chat?.history.map(his => ({ ...his, parts: his.parts.length ? his.parts : [{text: '\n...我什么都不知道，并试图萌混过关...\n'}] })) || []
+    }
     curRef.current = id
     titleRef.current = title
-    if (!chat?.id) {
-      historyDb.current?.update<HistoryChat>('chat', {id, title, history: chat?.history || [] })
+    if (!protectedChat?.id) {
+      historyDb.current?.update<HistoryChat>('chat', {id, title, history: protectedChat?.history || [] })
     }
-    setHistory(chat?.history || [])
+    setHistory(protectedChat?.history || [])
     setTitle(title)
-    return initGemini(chat?.id ? {history: chat.history} : {}).then(res => {
+    return initGemini(protectedChat?.id ? {history: protectedChat.history} : {}).then(res => {
       console.log(res);
       if(curRef.current === id) {
-        setTimes(res.times);
+        setTimes(res?.times || 0);
       }
     })
   }
