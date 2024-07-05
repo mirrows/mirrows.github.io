@@ -2,7 +2,7 @@ import LazyImage from "@/components/LazyImage"
 import SVGIcon from "@/components/SVGIcon"
 import { ModeMap, deletePic, queryPicList } from "@/req/demos"
 import { Mode, Pic } from "@/types/demos"
-import { isMobile } from "@/utils/common"
+import { useMobile } from "@/utils/common"
 import { stone } from "@/utils/global"
 import { forwardRef, Ref, useCallback, useEffect, useImperativeHandle, useRef, useState } from "react"
 import style from './index.module.scss'
@@ -40,7 +40,7 @@ function UploadPicList({ list = [], mode = ModeMap.PHOTO, path = 'normal/', show
   const page = useRef(0)
   const size = useRef(1)
   const globalData = useRef<PicsMap>({})
-  const [mobile, setMobile] = useState(false)
+  const mobile = useMobile()
   const random = useRef(Math.random())
   const once = useRef(false)
   const [end, setEnd] = useState(false)
@@ -211,9 +211,6 @@ function UploadPicList({ list = [], mode = ModeMap.PHOTO, path = 'normal/', show
   //     clearInterval(timer.current)
   //   }
   // }, [mode, queryPreviewUrl, show])
-  useEffect(() => {
-    setMobile(isMobile())
-}, [])
   return (<>
     <div {...props}>
       <div className={style['picList']}>

@@ -5,13 +5,13 @@ import Head from 'next/head'
 import style from './index.module.scss'
 import { stone } from '@/utils/global'
 import { useEffect, useRef, useState } from 'react'
-import Model, { ModelRef } from '@/components/Modal'
+import Modal, { ModalRef } from '@/components/Modal'
 import { setShadowsockConfig } from '@/req/personal'
 
 
 
 const useShadowsockEvent = () => {
-  const shadowsockModel = useRef<ModelRef>(null);
+  const shadowsockModal = useRef<ModalRef>(null);
   const [host, setHost] = useState('');
   const [password, setPassword] = useState('');
   const [port, setPort] = useState('');
@@ -30,12 +30,12 @@ const useShadowsockEvent = () => {
     console.log(params);
     setShadowsockConfig(params).then(res => {
       if (res.code) return alert(res.msg);
-      shadowsockModel.current?.close();
+      shadowsockModal.current?.close();
     }).catch(err => alert(err));
   }
   return <>
-    <button className='normal_btn' onClick={() => shadowsockModel.current?.open()}>shadowsock端口更换</button>
-    <Model ref={shadowsockModel}>
+    <button className='normal_btn' onClick={() => shadowsockModal.current?.open()}>shadowsock端口更换</button>
+    <Modal ref={shadowsockModal}>
       <div className={style['shadowsock_wrap']}>
         <div className={style['shadowsock_item']}>
           <span className={style['shadowsock_key']}>host: </span>
@@ -54,11 +54,11 @@ const useShadowsockEvent = () => {
           <input type="text" className={style['shadowsock_input']} value={method} onInput={(e) => setMethod((e.target as HTMLInputElement).value)} />
         </div>
         <div className={style['footer']}>
-          <button className='outlined_btn' onClick={() => shadowsockModel.current?.close()}>cancel</button>
+          <button className='outlined_btn' onClick={() => shadowsockModal.current?.close()}>cancel</button>
           <button className='normal_btn' onClick={changeShadowsockConfig}>confirm</button>
         </div>
       </div>
-    </Model>
+    </Modal>
   </>
 }
 

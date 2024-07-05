@@ -1,13 +1,15 @@
 import Head from 'next/head'
 import style from './index.module.scss'
 import SVGIcon from '@/components/SVGIcon'
-import { useEffect, useRef, useState } from 'react'
+import { MouseEvent, useEffect, useRef, useState } from 'react'
 import { chatAnswer, chatQuestion, initGemini } from '@/req/gemini';
 import { Chat } from '@/types/gemini';
 import { mdHelper, parseBody } from '@/utils/md';
 import xss from 'xss';
 import MarkdownIt from 'markdown-it';
 import { DBls } from '@/utils/dbs';
+import { useMobile } from '@/utils/common';
+import Modal, { ModalRef } from '@/components/Modal';
 
 type HistoryChat = {
   id: string,
@@ -28,6 +30,9 @@ export default function Gemini() {
   const historyRef = useRef<Chat[]>([]);
   const msgEnd = useRef<HTMLDivElement>(null);
   const historyDb = useRef<DBls>();
+  const isMobile = useMobile()
+  const renameModalRef = useRef<ModalRef>(null);
+  const [tmpChat, setTmpChat] = useState<HistoryChat| null>(null);
   const submit = () => {
     const msg = text.trim()
     if(!msg) return
@@ -110,7 +115,9 @@ export default function Gemini() {
     setTitle(title)
     return initGemini(chat?.id ? {history: chat.history} : {}).then(res => {
       console.log(res);
-      setTimes(res.times);
+      if(curRef.current === id) {
+        setTimes(res.times);
+      }
     })
   }
   const addNewChat = async () => {
@@ -118,6 +125,7 @@ export default function Gemini() {
     queryList();
   }
   const switchChat = async (chat: HistoryChat) => {
+    if (chat.id === curRef.current) return 
     await init(chat);
   }
   const queryList = async () => {
@@ -127,6 +135,38 @@ export default function Gemini() {
       })
       console.log(chatList);
       setList(chatList);
+  }
+  const openRenameModal = (e: MouseEvent<HTMLButtonElement>, chat: HistoryChat) => {
+    e.stopPropagation();
+    console.log(chat);
+    renameModalRef.current?.open();
+    setTmpChat(chat);
+    // historyDb.current?.update<HistoryChat>('chat', {id, title, history: chat?.history || [] })
+  }
+  const setNewTitle = (title: string) => {
+    setTmpChat((val) => {
+      return val && {
+        ...val,
+        title,
+      };
+    })
+  }
+  const deleteChat = (e: MouseEvent<HTMLButtonElement>, chat: HistoryChat) => {
+    e.stopPropagation();
+    console.log(chat);
+    historyDb.current?.del('chat', chat.id || Date.now().toString())
+    queryList()
+    curRef.current = ''
+    setTitle('')
+    setHistory([])
+    setTimes(0)
+  }
+  const rename = () => {
+    tmpChat && historyDb.current?.update<HistoryChat>('chat', tmpChat).then(() => {
+      queryList()
+      renameModalRef.current?.close();
+      setTitle(tmpChat.title);
+    })
   }
   useEffect(() => {
     msgEnd.current?.scrollIntoView({
@@ -147,7 +187,6 @@ export default function Gemini() {
       historyDb.current = historyDbls
       queryList()
     });
-    
   }, []);
   return (
     <>
@@ -162,8 +201,16 @@ export default function Gemini() {
           <div className={style.left_wrap + (err ? ' err_area' : '')}>
             <div className={style['new_chat_items'] + ' scroll_er'}>
               {list.map(chat => (
-                <div key={chat.id} className={`${style.chat_item_wrap} ${(chat.id === curRef.current ? style.active : '')}`} onClick={() => switchChat(chat)}>
-                  {chat.title ? chat.title :new Date(+chat.id).toISOString()}
+                <div key={chat.id} className={`${style.chat_item_wrap} ${(chat.id === curRef.current ? style.active : '')}`} style={!isMobile && chat.id === curRef.current ? {paddingRight:  '2.6rem'} : {}} onClick={() => switchChat(chat)}>
+                  <div className='two_line'>{chat.title ? chat.title :new Date(+chat.id).toISOString()}</div>
+                  {!isMobile && chat.id === curRef.current ? <div className={style.operate_wrap}>
+                    <button className={style.operate_icon_btn} onClick={(e) => openRenameModal(e, chat)}>
+                      <SVGIcon type='edit' className={style.operate_icon}></SVGIcon>
+                    </button>
+                    <button className={style.operate_icon_btn} onClick={(e) => deleteChat(e, chat)}>
+                      <SVGIcon type='close' className={style.operate_icon}></SVGIcon>
+                    </button>
+                  </div> : ''}
                 </div>
               ))}
             </div>
@@ -188,6 +235,18 @@ export default function Gemini() {
             </div> : ''}
           </div>
         </div>
+        <Modal ref={renameModalRef}>
+          <div className={style['rename_wrap']}>
+            <div className={style.rename_modal_title}>重命名</div>
+            <div className={style['rename_item']}>
+              <input type="text" className={style['rename_input']} value={tmpChat?.title} onInput={(e) => setNewTitle((e.target as HTMLInputElement).value)} />
+            </div>
+            <div className={style['footer']}>
+              <button className='outlined_btn' onClick={() => renameModalRef.current?.close()}>cancel</button>
+              <button className='normal_btn' onClick={() => rename()}>confirm</button>
+            </div>
+          </div>
+        </Modal>
       </main>
     </>
   )

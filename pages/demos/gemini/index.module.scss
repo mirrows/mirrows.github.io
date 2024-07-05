@@ -83,11 +83,11 @@
 
 .avatar_img {
   display: block;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 40px;
+  height: 40px;
   object-fit: cover;
   border-radius: 50%;
-  margin: 0 0.5rem;
+  margin: 0 10px;
 }
 
 .gemini_msg_item_content {
@@ -101,15 +101,99 @@
 }
 
 .chat_item_wrap{
+  position: relative;
+  display: flex;
+  align-items: center;
   padding: 1rem 0.5rem;
+  min-width: 10rem;
   box-shadow: 0 0 10px 2px rgba(220,220,220,.3);
   border-radius: 6px;
-  margin-bottom: 1rem;
+  margin: 0.5rem 0.5rem 1rem;
+  background-color: #fff;
   cursor: pointer;
 }
+
+.operate_wrap{
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  // width: 1.5rem;
+}
+
 .chat_item_wrap.active{
   background-color: rgb(7, 80, 7);
+  border: 1px solid rgb(7, 80, 7);
+  overflow: hidden;
   color: #fff;
+}
+
+
+.operate_wrap > .operate_icon_btn{
+  flex: 1;
+  padding: 0 0.5rem;
+  background-color: #fff;
+  // border: 1px solid rgb(7, 80, 7);
+  border: none;
+  border-bottom: 1px solid rgb(7, 80, 7);
+  cursor: pointer;
+}
+
+.operate_wrap > .operate_icon_btn:last-child{
+  border-bottom: none;
+}
+.operate_wrap > .operate_icon_btn:hover .operate_icon{
+  fill: rgb(7, 80, 7);
+}
+
+.operate_icon{
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.rename_wrap{
+  padding: 1rem;
+  background-color: #fff;
+  border-radius: 6px;
+}
+
+.footer{
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 1rem;
+  border-top: 1px solid #f5f5f5;
+  button{
+    margin-right: 0.5rem;
+  }
+  button:last-child{
+    margin-right: 0;
+  }
+}
+.rename_item{
+  display: flex;
+  align-items: center;
+  padding-bottom: 0.5rem;
+  font-size: 1.2rem;
+}
+.rename_key{
+  display: inline-block;
+  width: 6rem;
+}
+.rename_input{
+  padding: 0.5rem 1rem;
+  border: none;
+  background-color: #f5f5f5;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+.rename_modal_title{
+  margin-bottom: 20px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-align: center;
 }
 
 @media (min-width: 796px) {
@@ -125,8 +209,23 @@
   }
 
   .left_wrap {
+    position: sticky;
+    top: 4.5rem;
+    flex-direction: row;
     flex-basis: auto;
-    background-color: transparent;
+    background-color: #f5f5f5;
+    &:before{
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 4.5rem;
+      background-image: linear-gradient(180deg, #fff 0, #fff 50%, #f5f5f5 100%);
+    }
+  }
+  .new_chat_items{
+    display: flex;
   }
 
   .right_input_wrap {
@@ -136,5 +235,15 @@
     right: 0;
     padding: 0.5rem 1rem;
     background-color: #f5f5f5;
+    .input{
+      font-size: 1.5rem;
+    }
+  }
+  .enter_icon {
+    padding: 0.5rem 1.2rem;
+  }
+
+  .gemini_msg_item_content{
+    font-size: 1.2rem;
   }
 }

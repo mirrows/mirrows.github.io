@@ -4,7 +4,7 @@ import { Pic } from '@/types/demos';
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import Swiper from 'swiper';
 import { useLazyImgs } from '@/utils/imgTool';
-import { isMobile } from '@/utils/common';
+import { useMobile } from '@/utils/common';
 import SVGIcon from '../SVGIcon';
 import 'swiper/css';
 
@@ -26,7 +26,7 @@ const PicModal = forwardRef<ModalRefType, PicModalProps>(({ pics, slice = true, 
     const [visible, setVisible] = useState<boolean>(false)
     const swiperRef = useRef<Swiper | null>(null);
     const [ind, setInd] = useState(0)
-    const [mobile, setMobile] = useState(false)
+    const mobile = useMobile();
     const { emit } = useLazyImgs('.img_swiper_wrap .lazy');
     const [list, setPics] = useState<Partial<Pic>[]>(pics || [])
     const curScrollTop = useRef<{ val: number, obj: 'body' | 'documentElement' }>({ obj: 'body', val: 0 })
@@ -61,9 +61,6 @@ const PicModal = forwardRef<ModalRefType, PicModalProps>(({ pics, slice = true, 
     useEffect(() => {
         pics && setPics(pics)
     }, [pics])
-    useEffect(() => {
-        setMobile(isMobile())
-    }, [])
     useEffect(() => {
         if (visible) {
             if (document.body.scrollTop) {

@@ -1,4 +1,4 @@
-import { useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 
 export const isBrowser = typeof window !== 'undefined'
 
@@ -55,6 +55,16 @@ export const useDebos = (cb: Function, timeout = 300) => {
 
 export const isMobile = () => {
   return isBrowser ? /Android|webOS|iPhone|iPad|iPod|IOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) : false
+}
+
+export const useMobile = () => {
+  const [isMobile, setMobile] = useState(false);
+  useEffect(() => {
+    addEventListener('resize', () => {
+      setMobile(/Android|webOS|iPhone|iPad|iPod|IOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
+    })
+  }, []);
+  return isMobile
 }
 
 export const randomString = (length = 4, chars = 'abcdefghijklmnopqrstuvwxyz'): string => {

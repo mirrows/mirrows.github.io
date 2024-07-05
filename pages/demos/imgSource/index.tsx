@@ -7,7 +7,7 @@ import { useEffect, useRef, useState } from "react"
 import UploadPicList, { RefType } from "./components/PicList"
 import PicModal, { ModalRefType } from "@/components/PicModal"
 import { queryPic } from "@/req/demos"
-import { isMobile, parsequeryStr2Obj } from "@/utils/common"
+import { useMobile, parsequeryStr2Obj } from "@/utils/common"
 import style from './index.module.scss'
 
 export default function ImgSource() {
@@ -16,7 +16,7 @@ export default function ImgSource() {
     const [showUpload, uploadShow] = useState(false)
     const commonRef = useRef<RefType>(null)
     const privateRef = useRef<RefType>(null)
-    const [mobile, setMobile] = useState(false)
+    const mobile = useMobile()
     const curPersonal = useRef(false)
     const picRef = useRef<ModalRefType | null>(null)
     const afterUpload = async () => {
@@ -46,7 +46,6 @@ export default function ImgSource() {
     }
     useEffect(() => {
         stone.isGithubOwner((isowner) => setOwner(isowner))
-        setMobile(isMobile())
     }, [])
     return (<>
         <Head>

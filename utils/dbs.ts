@@ -54,7 +54,7 @@ export class DBls {
       };
     })
   }
-  del(name: string, id: number) {
+  del(name: string, id: string) {
     return new Promise((res, rej) => {
       if(!this.db) {
         rej('db not found')
@@ -88,7 +88,7 @@ export class DBls {
       };
     })
   }
-  query(name: string, id: number) {
+  query(name: string, id: string) {
     return new Promise((res, rej) => {
       if(!this.db) {
         rej('db not found')

@@ -7,13 +7,13 @@ type Props = {
   onClose?: () => void,
 }
 
-export type ModelRef = {
+export type ModalRef = {
   close: () => void,
   open: () => void,
 }
 
 
-const Model = forwardRef<ModelRef, Props>(({ onClose, children }, ref) => {
+const Modal = forwardRef<ModalRef, Props>(({ onClose, children }, ref) => {
   const [show, isShow] = useState(false);
   const open = () => {
     isShow(true);
@@ -38,6 +38,6 @@ const Model = forwardRef<ModelRef, Props>(({ onClose, children }, ref) => {
   }</>
 })
 
-Model.displayName = 'Model';
+Modal.displayName = 'Modal';
 
-export default Model;
+export default Modal;
