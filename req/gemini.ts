@@ -2,9 +2,11 @@ import { NormalObj } from "@/types/common"
 import { query } from "@/utils/api"
 import { stone } from "@/utils/global"
 
+const baseUrl = process.env.NEXT_PUBLIC_EXTRA_URL;
+
 export const initGemini = (data: NormalObj<any>) => {
   return query({
-    baseUrl: 'http://use.t-n.top',
+    baseUrl,
     path: '/gemini/init_global',
     method: 'POST',
     params: data,
@@ -16,7 +18,7 @@ export const initGemini = (data: NormalObj<any>) => {
 
 export const chatQuestion = (data: NormalObj<any>) => {
   return query({
-    baseUrl: 'http://use.t-n.top',
+    baseUrl,
     path: '/gemini/question',
     method: 'POST',
     params: data,
@@ -28,7 +30,7 @@ export const chatQuestion = (data: NormalObj<any>) => {
 
 export const chatAnswer = (data: NormalObj<any>) => {
   return query({
-    baseUrl: 'http://use.t-n.top',
+    baseUrl,
     path: '/gemini/answer',
     method: 'POST',
     params: data,

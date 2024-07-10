@@ -17,6 +17,7 @@ const gbData: GblData = {
 
 export const env = {
   messUrl: process.env.NEXT_PUBLIC_MESS_URL,
+  geminiUrl: process.env.NEXT_PUBLIC_EXTRA_URL,
   user: process.env.NEXT_PUBLIC_GITHUB_USER,
   clientID: process.env.NEXT_PUBLIC_CLIENT_ID,
   loadingGif: process.env.NEXT_PUBLIC_LOADING_GIF,
