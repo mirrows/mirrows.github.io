@@ -76,7 +76,6 @@ export default function Gemini() {
             return [...historyRef.current]
           })
         }
-        console.log(historyRef.current)
         setTimeout(() => {
           queryAnswer(id, time)
         }, 3000)
@@ -137,12 +136,10 @@ export default function Gemini() {
       await historyDb.current?.each<HistoryChat>('chat', (cur) => {
         chatList.push(cur)
       })
-      console.log(chatList);
       setList(chatList);
   }
   const openRenameModal = (e?: MouseEvent<HTMLButtonElement>, chat?: HistoryChat) => {
     e?.stopPropagation();
-    console.log(chat);
     renameModalRef.current?.open();
     setTmpChat(chat || {
       id: curRef.current,
