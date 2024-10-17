@@ -70,7 +70,10 @@ export default function Rtc() {
     socket.current?.emit('request_video', info)
   }
   const initSocket = () => {
-    socket.current = io('wss://use.t-n.top')
+    socket.current = io(env.extraUrl, {
+      transports: ['websocket'],  // 使用 WebSocket 作为传输协议
+      withCredentials: true       // 允许发送凭据
+    })
 
     socket.current.on('connected', (id) => setInfo(e => ({...e, socketId: id })));
     socket.current.on('room_full', () => alert('房间已满，请更换房间号ID'))
