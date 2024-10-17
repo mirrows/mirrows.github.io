@@ -29,7 +29,7 @@ export default function PreviewPannel() {
       if(!data) return;
       const preview = {
         ip: detail?.ip,
-        data: data.data,
+        data: data?.data,
       }
       setPreview(preview)
       setIPDetail(detail)

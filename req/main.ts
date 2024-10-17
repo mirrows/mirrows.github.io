@@ -100,6 +100,12 @@ export const bingQuery = (n = 7) => {
   })
 }
 
+export const randomUser = () => {
+  return query({
+    baseUrl: 'https://randomuser.me/api/',
+  })
+}
+
 export const bingQueryNew = (n = 7) => {
   return githubQuery({
     path: '/github/queryComments',

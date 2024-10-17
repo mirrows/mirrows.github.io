@@ -24,7 +24,7 @@ export default function App({ Component, pageProps }: AppProps) {
     const data = await visitorsData(detail.ip)
     const preview = {
       ip: detail?.ip,
-      data: data.data,
+      data: data?.data,
     }
     stone.set({ preview })
     stone.emit('ip', { data, detail })

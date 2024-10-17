@@ -32,6 +32,11 @@ export default function Demos() {
     //   icon: 'https://wsrv.nl/?url=raw.githubusercontent.com/mirrows/photo/main/normal/2024_03_29/pic1711679539251661.png&n=-1&q=80',
     //   link: '/demos/musicPlayer',
     // },
+    {
+      name: 'RTC',
+      icon: 'https://wsrv.nl/?url=raw.githubusercontent.com/mirrows/photo/main/normal/2024_10_14/pic1728899129621292.png&n=-1&q=80',
+      link: '/demos/rtc',
+    },
   ])
   useEffect(() => {
     isShow(true)
