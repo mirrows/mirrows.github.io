@@ -134,7 +134,7 @@ export default function Rtc() {
     if (answer) {
       answerRef.current = answer
     }
-    if (answerRef.current && pc.current?.iceGatheringState === 'complete') {
+    if (answerRef.current && pc.current?.iceConnectionState === 'connected') {
       pc.current?.setRemoteDescription(answer)
     }
   }
@@ -174,11 +174,13 @@ export default function Rtc() {
       candidate: event.candidate,
       info: infoRef.current,
     })
-    pc.current.oniceconnectionstatechange = () => console.log(`oniceconnectionstatechange: ${pc.current?.iceConnectionState}`)
+    pc.current.oniceconnectionstatechange = () => {
+      console.log(`oniceconnectionstatechange: ${pc.current?.iceConnectionState}`)
+      weitToSetRemote()
+    }
     pc.current.ontrack = (event) => targetRef.current ? (targetRef.current.srcObject = event.streams[0]) : ''
     pc.current.onicegatheringstatechange = () => {
       console.log(`onicegatheringstatechange: ${pc.current?.iceGatheringState}`)
-      weitToSetRemote()
     }
 
     localStream.current?.getTracks().forEach(track => {
