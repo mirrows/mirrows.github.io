@@ -119,7 +119,7 @@ export default function Rtc() {
       if(!pc.current) return
       await pc.current.setRemoteDescription(offer)
       const answer = await pc.current?.createAnswer()
-      pc.current.setLocalDescription(answer)
+      await pc.current.setLocalDescription(answer)
       socket.current?.emit('answer', { answer, info: infoRef.current })
     })
 
@@ -133,7 +133,7 @@ export default function Rtc() {
     if(localStream.current) return
     localStream.current = await navigator.mediaDevices.getUserMedia({
       video: isMobile ? { facingMode: "user" } : true,
-      audio: true,
+      audio: false,
     }).catch((err: Error) => {
       console.log(`error happen: ${err.name}`);
     }) || null
