@@ -24,6 +24,7 @@ export default function Rtc() {
   const localStream = useRef<MediaStream | null>(null);
   const localRef = useRef<HTMLVideoElement | null>(null);
   const targetRef = useRef<HTMLVideoElement>(null);
+  const answerRef = useRef(null);
   const [chatting, setChatting] = useState(false)
   const initInfo = () => {
     const info = localStorage.info
@@ -124,9 +125,18 @@ export default function Rtc() {
     })
 
     // 发送方获取到answer
-    socket.current.on('receive_answer', async (answer) => pc.current?.setRemoteDescription(answer))
+    socket.current.on('receive_answer', async (answer) => weitToSetRemote(answer))
   
     socket.current.on('add_candidate', async (candidate) => pc.current?.addIceCandidate(candidate))
+  }
+
+  const weitToSetRemote = (answer?: any) => {
+    if (answer) {
+      answerRef.current = answer
+    }
+    if (answerRef.current && pc.current?.iceGatheringState === 'complete') {
+      pc.current?.setRemoteDescription(answer)
+    }
   }
 
   async function createLocalMediaStream() {
@@ -166,7 +176,10 @@ export default function Rtc() {
     })
     pc.current.oniceconnectionstatechange = () => console.log(`oniceconnectionstatechange: ${pc.current?.iceConnectionState}`)
     pc.current.ontrack = (event) => targetRef.current ? (targetRef.current.srcObject = event.streams[0]) : ''
-    pc.current.onicegatheringstatechange = () => console.log(`onicegatheringstatechange: ${pc.current?.iceGatheringState}`)
+    pc.current.onicegatheringstatechange = () => {
+      console.log(`onicegatheringstatechange: ${pc.current?.iceGatheringState}`)
+      weitToSetRemote()
+    }
 
     localStream.current?.getTracks().forEach(track => {
       if (localStream.current){
