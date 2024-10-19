@@ -162,7 +162,7 @@ export default function Rtc() {
     }
     pc.current.onicecandidate = (event) => socket.current?.emit('add_candidate', {
       candidate: event.candidate,
-      info,
+      info: infoRef.current,
     })
     pc.current.oniceconnectionstatechange = () => console.log(`oniceconnectionstatechange: ${pc.current?.iceConnectionState}`)
     pc.current.ontrack = (event) => targetRef.current ? (targetRef.current.srcObject = event.streams[0]) : ''
