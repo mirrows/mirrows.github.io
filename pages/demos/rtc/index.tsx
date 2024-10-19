@@ -70,7 +70,7 @@ export default function Rtc() {
     socket.current?.emit('request_video', info)
   }
   const initSocket = () => {
-    socket.current = io(env.extraUrl, {
+    socket.current = io('wss://use.t-n.top', {
       transports: ['websocket'],  // 使用 WebSocket 作为传输协议
       withCredentials: true       // 允许发送凭据
     })
