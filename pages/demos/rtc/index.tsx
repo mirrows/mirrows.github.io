@@ -135,7 +135,7 @@ export default function Rtc() {
       answerRef.current = answer
     }
     if (answerRef.current && pc.current?.iceConnectionState === 'connected') {
-      pc.current?.setRemoteDescription(answer)
+      pc.current?.setRemoteDescription(answerRef.current)
     }
   }
 
