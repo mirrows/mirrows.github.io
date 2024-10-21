@@ -126,9 +126,15 @@ export default function Rtc() {
     })
 
     // 发送方获取到answer
-    socket.current.on('receive_answer', async (answer) => weitToSetRemote({ answer }))
+    socket.current.on('receive_answer', async (answer) => {
+      console.log('receive_answer', 5555555);
+      weitToSetRemote({ answer })
+    })
   
-    socket.current.on('add_candidate', async (candidate) => weitToSetRemote({ candidate }))
+    socket.current.on('add_candidate', async (candidate) => {
+      console.log('add_candidate', 5555555);
+      weitToSetRemote({ candidate })
+    })
   }
 
   const weitToSetRemote = async ({ answer, candidate }: any = {}) => {
@@ -139,8 +145,10 @@ export default function Rtc() {
       candidateRef.current = candidate
     }
     if (answerRef.current && pc.current?.iceConnectionState === 'connected') {
+      console.log('answerRef: setRemoteDescription', 9999);
       await pc.current?.setRemoteDescription(answerRef.current)
       if (candidateRef.current) {
+        console.log('candidateRef: add_candidate', 9999);
         pc.current?.addIceCandidate(candidateRef.current)
       }
     }
