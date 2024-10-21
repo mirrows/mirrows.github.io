@@ -25,6 +25,7 @@ export default function Rtc() {
   const localRef = useRef<HTMLVideoElement | null>(null);
   const targetRef = useRef<HTMLVideoElement>(null);
   const answerRef = useRef(null);
+  const candidateRef = useRef<RTCIceCandidateInit>();
   const [chatting, setChatting] = useState(false)
   const initInfo = () => {
     const info = localStorage.info
@@ -125,17 +126,23 @@ export default function Rtc() {
     })
 
     // 发送方获取到answer
-    socket.current.on('receive_answer', async (answer) => weitToSetRemote(answer))
+    socket.current.on('receive_answer', async (answer) => weitToSetRemote({ answer }))
   
-    socket.current.on('add_candidate', async (candidate) => pc.current?.addIceCandidate(candidate))
+    socket.current.on('add_candidate', async (candidate) => weitToSetRemote({ candidate }))
   }
 
-  const weitToSetRemote = (answer?: any) => {
+  const weitToSetRemote = async ({ answer, candidate }: any = {}) => {
     if (answer) {
       answerRef.current = answer
     }
+    if (candidate) {
+      candidateRef.current = candidate
+    }
     if (answerRef.current && pc.current?.iceConnectionState === 'connected') {
-      pc.current?.setRemoteDescription(answerRef.current)
+      await pc.current?.setRemoteDescription(answerRef.current)
+      if (candidateRef.current) {
+        pc.current?.addIceCandidate(candidateRef.current)
+      }
     }
   }
 
