@@ -118,9 +118,9 @@ export default function Rtc() {
     // 接收方获取到发送方的offer后，发送answer给发送方
     socket.current.on('receive_offer', async (offer) => {
       if(!pc.current) return
+      await pc.current.setRemoteDescription(offer)
       const answer = await pc.current?.createAnswer()
       await pc.current.setLocalDescription(answer)
-      await pc.current.setRemoteDescription(offer)
       socket.current?.emit('answer', { answer, info: infoRef.current })
     })
 
