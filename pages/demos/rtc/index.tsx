@@ -178,6 +178,9 @@ export default function Rtc() {
       console.log(`oniceconnectionstatechange: ${pc.current?.iceConnectionState}`)
       weitToSetRemote()
     }
+    pc.current.onsignalingstatechange = () => {
+      console.log(`onsignalingstatechange: ${pc.current?.signalingState}`)
+    }
     pc.current.ontrack = (event) => targetRef.current ? (targetRef.current.srcObject = event.streams[0]) : ''
     pc.current.onicegatheringstatechange = () => {
       console.log(`onicegatheringstatechange: ${pc.current?.iceGatheringState}`)
