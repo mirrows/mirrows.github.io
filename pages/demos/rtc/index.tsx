@@ -158,7 +158,7 @@ export default function Rtc() {
       console.log('answerRef: setRemoteDescription', 9999);
       await pc.current?.setRemoteDescription(answerRef.current)
       if(candidateRef.current) {
-        pc.current?.addIceCandidate(candidate)
+        pc.current?.addIceCandidate(candidateRef.current)
       }
     }
   }
