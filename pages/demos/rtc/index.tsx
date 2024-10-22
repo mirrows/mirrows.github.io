@@ -63,16 +63,18 @@ export default function Rtc() {
   }
 
   function leaveRoom() {
-    if(!localStream) return
-    const tracks = localStream.current?.getTracks();
-    tracks?.forEach(track => {
-      track.stop();
-    });
-    pc.current = null;
-    localStream.current = null;
-    if (localRef.current) {
-      localRef.current.srcObject = null;
+    if(localStream) {
+      const tracks = localStream.current?.getTracks();
+      tracks?.forEach(track => {
+        track.stop();
+      });
+      localStream.current = null;
+      if (localRef.current) {
+        localRef.current.srcObject = null;
+      }
     }
+    
+    pc.current = null;
     if (targetRef.current) {
       targetRef.current.srcObject = null;
     }
