@@ -78,10 +78,13 @@ export default function Rtc() {
       withCredentials: true       // 允许发送凭据
     })
 
-    socket.current.on('connected', (id) => setInfo(e => ({...e, socketId: id })));
+    socket.current.on('connected', (id) => {
+      setInfo(e => ({...e, socketId: id }))
+    });
     socket.current.on('room_full', () => alert('房间已满，请更换房间号ID'))
     socket.current.on('room_created', (info) => {
       alert(`您已创建并加入【${info.roomId}】房间`)
+      setInfo(info)
       setIsConnected(true)
     })
     socket.current.on('room_joined', (user) => {
