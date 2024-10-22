@@ -63,6 +63,7 @@ export default function Rtc() {
   }
 
   function leaveRoom() {
+    socket.current?.emit('room_leave', info);
     if(localStream?.current) {
       const tracks = localStream.current?.getTracks();
       tracks?.forEach(track => {
@@ -80,7 +81,6 @@ export default function Rtc() {
     }
     setIsConnected(0)
     setChatting(false)
-    socket.current?.emit('room_leave', info);
   }
 
   function requestVideoCall() {
