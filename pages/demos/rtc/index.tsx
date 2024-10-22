@@ -122,7 +122,6 @@ export default function Rtc() {
       await pc.current.setRemoteDescription(offer)
       const answer = await pc.current?.createAnswer()
       await pc.current.setLocalDescription(answer)
-      weitToSetRemote()
       socket.current?.emit('answer', { answer, info: infoRef.current })
     })
 
@@ -134,7 +133,7 @@ export default function Rtc() {
   
     socket.current.on('add_candidate', async (candidate) => {
       console.log('add_candidate', 5555555);
-      weitToSetRemote({ candidate })
+      pc.current?.addIceCandidate(candidate)
     })
   }
 
@@ -148,10 +147,6 @@ export default function Rtc() {
     if (answerRef.current && pc.current?.iceConnectionState === 'connected') {
       console.log('answerRef: setRemoteDescription', 9999);
       await pc.current?.setRemoteDescription(answerRef.current)
-      if (candidateRef.current) {
-        console.log('candidateRef: add_candidate', 9999);
-        pc.current?.addIceCandidate(candidateRef.current)
-      }
     }
   }
 
