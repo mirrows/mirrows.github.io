@@ -102,6 +102,11 @@ export default function Rtc() {
     })
     socket.current.on('room_leave', (user) => {
       if (user.socketId !== infoRef.current.socketId) {
+        setOther({
+          roomId: '',
+          userName: '',
+          socketId: '',
+        });
         alert(`用户${user.userName}已离开【${user.roomId}】房间`)
       } else {
         setIsConnected(0)
