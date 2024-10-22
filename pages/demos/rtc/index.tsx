@@ -228,6 +228,7 @@ export default function Rtc() {
   useEffect(() => {
     initInfo()
     initSocket()
+    console.log(5677)
     return () => {
       leaveRoom()
       socket.current?.disconnect()
