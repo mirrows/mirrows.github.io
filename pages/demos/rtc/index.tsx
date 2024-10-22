@@ -63,7 +63,7 @@ export default function Rtc() {
   }
 
   function leaveRoom() {
-    if(localStream) {
+    if(localStream?.current) {
       const tracks = localStream.current?.getTracks();
       tracks?.forEach(track => {
         track.stop();
