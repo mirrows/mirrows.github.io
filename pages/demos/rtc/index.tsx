@@ -11,6 +11,7 @@ import { brotliCompress } from 'zlib';
 export default function Rtc() {
   const [isConnected, setIsConnected] = useState(0);
   const [ready, setReady] = useState(false);
+  const [contentLoading, setContentLoading] = useState(false);
   const [info, setInfo] = useState({
     roomId: '',
     userName: '',
@@ -128,6 +129,7 @@ export default function Rtc() {
     })
 
     socket.current.on('accept_video', async (user) => {
+      setContentLoading(true);
       // 创建本地摄像头
       await createLocalMediaStream()
       // 接收对面连接
@@ -212,6 +214,14 @@ export default function Rtc() {
       info: infoRef.current,
     })
     pc.current.oniceconnectionstatechange = () => {
+      if (pc.current?.iceConnectionState === 'connected') {
+        setContentLoading(false);
+      }
+      if (pc.current?.iceConnectionState === 'disconnected' || pc.current?.iceConnectionState === 'failed') {
+        setContentLoading(false);
+        alert('连接失败，请重新连接');
+        leaveRoom();
+      }
       console.log(`oniceconnectionstatechange: ${pc.current?.iceConnectionState}`)
     }
     pc.current.onsignalingstatechange = () => {
@@ -312,6 +322,7 @@ export default function Rtc() {
           <SVGIcon type='back_2' style={{width: "2rem"}} />
         </button>}
         <div className={style.room_msg}>
+          {contentLoading && <div>正在获取视频数据...</div>}
           <div>{info.userName}</div>
           <div>房间号: {info.roomId}</div>
         </div>
