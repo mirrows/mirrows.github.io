@@ -9,6 +9,7 @@ import { isMobile } from '@/utils/common';
 
 export default function Rtc() {
   const [isConnected, setIsConnected] = useState(false);
+  const [ready, setReady] = useState(false);
   const [info, setInfo] = useState({
     roomId: '',
     userName: '',
@@ -80,6 +81,7 @@ export default function Rtc() {
 
     socket.current.on('connected', (id) => {
       console.log(7888, id)
+      setReady(true)
       setInfo(e => ({...e, socketId: id }))
     });
     socket.current.on('room_full', () => alert('房间已满，请更换房间号ID'))
@@ -264,7 +266,7 @@ export default function Rtc() {
         defaultValue={info.userName}
         onInput={e => setInfo(v => ({...v, userName: (e.target as HTMLInputElement).value}))}
       />
-      <button className='normal_btn' onClick={joinRoom}>创建/加入房间</button>
+      <button className='normal_btn' disabled={!ready} onClick={joinRoom}>创建/加入房间</button>
     </div> :
     <div className={style.total_wrap}>
       <video ref={localRef} className={style.local_video} autoPlay></video>
