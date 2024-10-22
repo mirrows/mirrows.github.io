@@ -68,6 +68,13 @@ export default function Rtc() {
       track.stop();
     });
     pc.current = null;
+    localStream.current = null;
+    if (localRef.current) {
+      localRef.current.srcObject = null;
+    }
+    if (targetRef.current) {
+      targetRef.current.srcObject = null;
+    }
     setIsConnected(0)
     setChatting(false)
     socket.current?.emit('room_leave', info);
