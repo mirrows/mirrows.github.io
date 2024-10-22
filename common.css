@@ -47,6 +47,10 @@ button[disabled], svg[disabled]{
   opacity: 0.6;
 }
 
+button[disabled] *, svg[disabled] * {
+  cursor: no-drop;
+}
+
 input.normal_input{
   padding: 4px 10px;
   border-radius: 6px;
