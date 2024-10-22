@@ -79,6 +79,7 @@ export default function Rtc() {
     })
 
     socket.current.on('connected', (id) => {
+      console.log(7888, id)
       setInfo(e => ({...e, socketId: id }))
     });
     socket.current.on('room_full', () => alert('房间已满，请更换房间号ID'))
