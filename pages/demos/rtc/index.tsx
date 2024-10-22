@@ -5,12 +5,18 @@ import { randomUser } from '@/req/main';
 import { io, Socket } from 'socket.io-client';
 import { env } from '@/utils/global';
 import { isMobile } from '@/utils/common';
+import { brotliCompress } from 'zlib';
 
 
 export default function Rtc() {
-  const [isConnected, setIsConnected] = useState(false);
+  const [isConnected, setIsConnected] = useState(0);
   const [ready, setReady] = useState(false);
   const [info, setInfo] = useState({
+    roomId: '',
+    userName: '',
+    socketId: '',
+  });
+  const [another, setOther] = useState({
     roomId: '',
     userName: '',
     socketId: '',
@@ -25,8 +31,8 @@ export default function Rtc() {
   const localStream = useRef<MediaStream | null>(null);
   const localRef = useRef<HTMLVideoElement | null>(null);
   const targetRef = useRef<HTMLVideoElement>(null);
-  const answerRef = useRef(null);
-  const candidateRef = useRef<RTCIceCandidateInit>();
+  // const answerRef = useRef(null);
+  // const candidateRef = useRef<RTCIceCandidateInit>();
   const [chatting, setChatting] = useState(false)
   const initInfo = () => {
     const info = localStorage.info
@@ -39,7 +45,6 @@ export default function Rtc() {
       }
     }
     randomUser().then(res => {
-      console.log(res)
       const name = res?.results?.[0]?.name || ''
       const info = {
         roomId: String(Math.random()).slice(4, 8),
@@ -52,7 +57,6 @@ export default function Rtc() {
   }
   const joinRoom = () => {
     if (!info.roomId || !info.userName) return
-    console.log(7777, info, socket.current);
     localStorage.setItem('info', JSON.stringify(info))
     socket.current?.emit('create_or_join_room', info);
   }
@@ -64,7 +68,7 @@ export default function Rtc() {
       track.stop();
     });
     pc.current = null;
-    setIsConnected(false)
+    setIsConnected(0)
     setChatting(false)
     socket.current?.emit('room_leave', info);
   }
@@ -73,14 +77,12 @@ export default function Rtc() {
     socket.current?.emit('request_video', info)
   }
   const initSocket = () => {
-    console.log(5677)
     socket.current = io('wss://use.t-n.top', {
       transports: ['websocket'],  // 使用 WebSocket 作为传输协议
       withCredentials: true       // 允许发送凭据
     })
 
     socket.current.on('connected', (id) => {
-      console.log(7888, id)
       setReady(true)
       setInfo(e => ({...e, socketId: id }))
     });
@@ -88,10 +90,11 @@ export default function Rtc() {
     socket.current.on('room_created', (info) => {
       alert(`您已创建并加入【${info.roomId}】房间`)
       setInfo(info)
-      setIsConnected(true)
+      setIsConnected(1)
     })
-    socket.current.on('room_joined', (user) => {
-      setIsConnected(true)
+    socket.current.on('room_joined', ({ user, another }) => {
+      setIsConnected(2)
+      setOther(another)
       console.log(user, infoRef.current)
       if (user.socketId !== infoRef.current.socketId) {
         alert(`用户${user.userName}加入【${user.roomId}】房间`)
@@ -101,7 +104,7 @@ export default function Rtc() {
       if (user.socketId !== infoRef.current.socketId) {
         alert(`用户${user.userName}已离开【${user.roomId}】房间`)
       } else {
-        setIsConnected(false)
+        setIsConnected(0)
       }
     })
 
@@ -127,7 +130,6 @@ export default function Rtc() {
     // 接收方获取到发送方的offer后，发送answer给发送方
     socket.current.on('receive_offer', async (offer) => {
       if(!pc.current) return
-      console.log(34343);
       await pc.current.setRemoteDescription(offer)
       const answer = await pc.current?.createAnswer()
       await pc.current.setLocalDescription(answer)
@@ -136,13 +138,11 @@ export default function Rtc() {
 
     // 发送方获取到answer
     socket.current.on('receive_answer', async (answer) => {
-      console.log('receive_answer', 5555555);
       await pc.current?.setRemoteDescription(answer)
       // weitToSetRemote({ answer })
     })
   
     socket.current.on('add_candidate', async (candidate) => {
-      console.log('add_candidate', 5555555);
       // weitToSetRemote({ candidate })
       pc.current?.addIceCandidate(candidate)
     })
@@ -254,8 +254,15 @@ export default function Rtc() {
   }, [info])
   return <>
     {!isConnected ? <div className={style.input_wrap}>
-      <div>
+      
+      <div className={style.img_wrap}>
         <img style={{ width: '200px',margin: '10vh 0'}} src="https://wsrv.nl/?url=raw.githubusercontent.com/mirrows/photo/main/normal/2024_10_14/pic1728899129621292.png&n=-1&q=80" alt="" />
+        {ready ? '' : (
+          <div className={style.loading_tips}>
+            <SVGIcon type='loading_2' className={style.loading_icon} />
+            正在连接服务器...
+          </div>
+        )}
       </div>
       <input
         type="text"
@@ -274,13 +281,30 @@ export default function Rtc() {
       <button className='normal_btn' disabled={!ready} onClick={joinRoom}>创建/加入房间</button>
     </div> :
     <div className={style.total_wrap}>
-      <video ref={localRef} className={style.local_video} autoPlay></video>
+      <div className={style.local_wrap}>
+        <video ref={localRef} className={style.local_video} autoPlay></video>
+        {isConnected === 1 && <div className={style.local_tips}>
+          <div style={{ marginBottom: '8px' }}>
+            <SVGIcon type='loading_2' className={style.loading_icon} />
+          </div>
+          正在等待对方进入...
+        </div>}
+        <div style={{ color: '#fff' }}>{another.userName}</div>
+      </div>
       <video ref={targetRef} className={style.target_video} autoPlay></video>
       <div className={style.operate_wrap}>
+        {chatting || <button
+          className={`${style.chat_btn} ${style.back_btn}`}
+          onClick={leaveRoom}
+        >
+          <SVGIcon type='back_2' style={{width: "2rem"}} />
+        </button>}
         <div className={style.room_msg}>
+          <div>{info.userName}</div>
           <div>房间号: {info.roomId}</div>
         </div>
         <button
+          disabled={isConnected !== 2 && !chatting}
           className={style.chat_btn}
           style={{ backgroundColor: chatting? 'red' : 'green'}}
           onClick={chatting ? leaveRoom : requestVideoCall}
