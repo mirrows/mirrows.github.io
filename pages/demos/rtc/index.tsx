@@ -122,6 +122,7 @@ export default function Rtc() {
       await pc.current.setRemoteDescription(offer)
       const answer = await pc.current?.createAnswer()
       await pc.current.setLocalDescription(answer)
+      weitToSetRemote()
       socket.current?.emit('answer', { answer, info: infoRef.current })
     })
 
