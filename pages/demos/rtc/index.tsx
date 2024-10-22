@@ -154,7 +154,7 @@ export default function Rtc() {
     if (candidate) {
       candidateRef.current = candidate
     }
-    if (answerRef.current && pc.current?.iceConnectionState === 'connected') {
+    if (answerRef.current && pc.current?.iceGatheringState === 'complete') {
       console.log('answerRef: setRemoteDescription', 9999);
       await pc.current?.setRemoteDescription(answerRef.current)
       if(candidateRef.current) {
@@ -200,7 +200,6 @@ export default function Rtc() {
     })
     pc.current.oniceconnectionstatechange = () => {
       console.log(`oniceconnectionstatechange: ${pc.current?.iceConnectionState}`)
-      weitToSetRemote()
     }
     pc.current.onsignalingstatechange = () => {
       console.log(`onsignalingstatechange: ${pc.current?.signalingState}`)
@@ -208,6 +207,7 @@ export default function Rtc() {
     pc.current.ontrack = (event) => targetRef.current ? (targetRef.current.srcObject = event.streams[0]) : ''
     pc.current.onicegatheringstatechange = () => {
       console.log(`onicegatheringstatechange: ${pc.current?.iceGatheringState}`)
+      weitToSetRemote()
     }
 
     localStream.current?.getTracks().forEach(track => {
