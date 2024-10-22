@@ -94,7 +94,7 @@ export default function Rtc() {
     })
     socket.current.on('room_joined', ({ user, another }) => {
       setIsConnected(2)
-      setOther(another)
+      setOther(user.socketId !== infoRef.current.socketId ? user : another)
       console.log(user, infoRef.current)
       if (user.socketId !== infoRef.current.socketId) {
         alert(`用户${user.userName}加入【${user.roomId}】房间`)
