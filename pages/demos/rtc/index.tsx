@@ -72,6 +72,7 @@ export default function Rtc() {
     socket.current?.emit('request_video', info)
   }
   const initSocket = () => {
+    console.log(5677)
     socket.current = io('wss://use.t-n.top', {
       transports: ['websocket'],  // 使用 WebSocket 作为传输协议
       withCredentials: true       // 允许发送凭据
@@ -119,6 +120,7 @@ export default function Rtc() {
     // 接收方获取到发送方的offer后，发送answer给发送方
     socket.current.on('receive_offer', async (offer) => {
       if(!pc.current) return
+      console.log(34343);
       await pc.current.setRemoteDescription(offer)
       const answer = await pc.current?.createAnswer()
       await pc.current.setLocalDescription(answer)
@@ -228,7 +230,6 @@ export default function Rtc() {
   useEffect(() => {
     initInfo()
     initSocket()
-    console.log(5677)
     return () => {
       leaveRoom()
       socket.current?.disconnect()
