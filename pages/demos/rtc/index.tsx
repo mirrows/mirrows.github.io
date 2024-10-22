@@ -137,31 +137,32 @@ export default function Rtc() {
     // 发送方获取到answer
     socket.current.on('receive_answer', async (answer) => {
       console.log('receive_answer', 5555555);
-      weitToSetRemote({ answer })
+      await pc.current?.setRemoteDescription(answer)
+      // weitToSetRemote({ answer })
     })
   
     socket.current.on('add_candidate', async (candidate) => {
       console.log('add_candidate', 5555555);
-      weitToSetRemote({ candidate })
-      // pc.current?.addIceCandidate(candidate)
+      // weitToSetRemote({ candidate })
+      pc.current?.addIceCandidate(candidate)
     })
   }
 
-  const weitToSetRemote = async ({ answer, candidate }: any = {}) => {
-    if (answer) {
-      answerRef.current = answer
-    }
-    if (candidate) {
-      candidateRef.current = candidate
-    }
-    if (answerRef.current && pc.current?.iceGatheringState === 'complete') {
-      console.log('answerRef: setRemoteDescription', 9999);
-      await pc.current?.setRemoteDescription(answerRef.current)
-      if(candidateRef.current) {
-        pc.current?.addIceCandidate(candidateRef.current)
-      }
-    }
-  }
+  // const weitToSetRemote = async ({ answer, candidate }: any = {}) => {
+  //   if (answer) {
+  //     answerRef.current = answer
+  //   }
+  //   if (candidate) {
+  //     candidateRef.current = candidate
+  //   }
+  //   if (answerRef.current && pc.current?.iceGatheringState === 'complete') {
+  //     console.log('answerRef: setRemoteDescription', 9999);
+  //     await pc.current?.setRemoteDescription(answerRef.current)
+  //     if(candidateRef.current) {
+  //       pc.current?.addIceCandidate(candidateRef.current)
+  //     }
+  //   }
+  // }
 
   async function createLocalMediaStream() {
     if(localStream.current) return
@@ -207,7 +208,7 @@ export default function Rtc() {
     pc.current.ontrack = (event) => targetRef.current ? (targetRef.current.srcObject = event.streams[0]) : ''
     pc.current.onicegatheringstatechange = () => {
       console.log(`onicegatheringstatechange: ${pc.current?.iceGatheringState}`)
-      weitToSetRemote()
+      // weitToSetRemote()
     }
 
     localStream.current?.getTracks().forEach(track => {
