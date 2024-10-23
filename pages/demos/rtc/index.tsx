@@ -74,6 +74,11 @@ export default function Rtc() {
   const leaveRoom = () => {
     socket.current?.emit('room_leave', info);
     setHasRoomId(false)
+    setOther({
+      roomId: '',
+      userName: '',
+      socketId: '',
+    });
     roomIdRef.current = ''
     if(localStream?.current) {
       const tracks = localStream.current?.getTracks();
