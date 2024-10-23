@@ -3,9 +3,7 @@ import style from './index.module.scss'
 import SVGIcon from '@/components/SVGIcon';
 import { randomUser } from '@/req/main';
 import { io, Socket } from 'socket.io-client';
-import { env } from '@/utils/global';
 import { isMobile } from '@/utils/common';
-import { brotliCompress } from 'zlib';
 
 
 export default function Rtc() {
@@ -17,6 +15,8 @@ export default function Rtc() {
     userName: '',
     socketId: '',
   });
+  const [hasRoomId, setHasRoomId] = useState(false);
+  const roomIdRef = useRef('')
   const [another, setOther] = useState({
     roomId: '',
     userName: '',
@@ -35,36 +35,46 @@ export default function Rtc() {
   // const answerRef = useRef(null);
   // const candidateRef = useRef<RTCIceCandidateInit>();
   const [chatting, setChatting] = useState(false)
-  const initInfo = () => {
+  const initInfo = async () => {
     const info = localStorage.info
     if (info) {
       try {
-        setInfo(JSON.parse(info))
+        const newInfo = JSON.parse(info)
+        newInfo.socketId = ''
+        if (roomIdRef.current) {
+          newInfo.roomId = roomIdRef.current
+        }
+        setInfo(newInfo)
+        infoRef.current = newInfo;
         return
       } catch (err) {
         console.log(`fail to parse info`, info);
       }
     }
-    randomUser().then(res => {
-      const name = res?.results?.[0]?.name || ''
-      const info = {
-        roomId: String(Math.random()).slice(4, 8),
-        userName: name ? `${name.first} ${name.last}` : String(Math.random()).slice(4, 8),
-        socketId: '',
-      }
-      setInfo(info)
-      localStorage.setItem('info', JSON.stringify(info))
-    })
+    const res = await randomUser()
+    const name = res?.results?.[0]?.name || ''
+    const newInfo = {
+      roomId: String(Math.random()).slice(4, 8),
+      userName: name ? `${name.first} ${name.last}` : String(Math.random()).slice(4, 8),
+      socketId: '',
+    }
+    if (roomIdRef.current) {
+      newInfo.roomId = roomIdRef.current
+    }
+    infoRef.current = newInfo;
+    setInfo(newInfo)
+    localStorage.setItem('info', JSON.stringify(info))
   }
   const joinRoom = () => {
-    if (!info.roomId || !info.userName) return
-    localStorage.setItem('info', JSON.stringify(info))
-    socket.current?.emit('create_or_join_room', info);
+    if (!infoRef.current.roomId || !infoRef.current.userName) return
+    localStorage.setItem('info', JSON.stringify(infoRef.current))
+    socket.current?.emit('create_or_join_room', { info: infoRef.current, roomId: roomIdRef.current });
   }
 
   const leaveRoom = () => {
-    console.log(info)
     socket.current?.emit('room_leave', info);
+    setHasRoomId(false)
+    roomIdRef.current = ''
     if(localStream?.current) {
       const tracks = localStream.current?.getTracks();
       tracks?.forEach(track => {
@@ -95,7 +105,11 @@ export default function Rtc() {
 
     socket.current.on('connected', (id) => {
       setReady(true)
-      setInfo(e => ({...e, socketId: id }))
+      infoRef.current = {...infoRef.current, socketId: id }
+      setInfo(infoRef.current)
+      if (roomIdRef.current) {
+        joinRoom()
+      }
     });
     socket.current.on('room_full', () => alert('房间已满，请更换房间号ID'))
     socket.current.on('room_created', (info) => {
@@ -103,10 +117,14 @@ export default function Rtc() {
       setInfo(info)
       setIsConnected(1)
     })
-    socket.current.on('room_joined', ({ user, another }) => {
+    socket.current.on('room_joined', ({ user, another, result }) => {
+      if (result === 404) {
+        alert(`该房间不存在或已销毁，请检查房间号`)
+        setIsConnected(0)
+        return
+      }
       setIsConnected(2)
       setOther(user.socketId !== infoRef.current.socketId ? user : another)
-      console.log(user, infoRef.current)
       if (user.socketId !== infoRef.current.socketId) {
         alert(`用户${user.userName}加入【${user.roomId}】房间`)
       }
@@ -262,15 +280,21 @@ export default function Rtc() {
   //     return navigator.getUserMedia(options)
   //   }
   // }
-  
 
   useEffect(() => {
-    initInfo()
-    initSocket()
+    const url = new URLSearchParams(location.search)
+    roomIdRef.current = url.get('roomId') || '';
+    if (roomIdRef.current) {
+      setHasRoomId(true)
+    }
+    initInfo().then(() => {
+      initSocket()
+    })
     return () => {
       leaveRoom()
       socket.current?.disconnect()
       socket.current?.off()
+      socket.current = null
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -283,10 +307,10 @@ export default function Rtc() {
       
       <div className={style.img_wrap}>
         <img style={{ width: '200px',margin: '10vh 0'}} src="https://wsrv.nl/?url=raw.githubusercontent.com/mirrows/photo/main/normal/2024_10_14/pic1728899129621292.png&n=-1&q=80" alt="" />
-        {ready ? '' : (
+        {ready && !hasRoomId ? '' : (
           <div className={style.loading_tips}>
             <SVGIcon type='loading_2' className={style.loading_icon} />
-            正在连接服务器...
+            {!ready ? '正在连接服务器...' : (hasRoomId && '正在加入房间...')}
           </div>
         )}
       </div>
@@ -304,7 +328,7 @@ export default function Rtc() {
         defaultValue={info.userName}
         onInput={e => setInfo(v => ({...v, userName: (e.target as HTMLInputElement).value}))}
       />
-      <button className='normal_btn' disabled={!ready} onClick={joinRoom}>创建/加入房间</button>
+      <button className='normal_btn' disabled={hasRoomId || !ready} onClick={joinRoom}>{hasRoomId ? '即将进入房间...' : '创建/加入房间'}</button>
     </div> :
     <div className={style.total_wrap}>
       <div className={style.local_wrap}>
