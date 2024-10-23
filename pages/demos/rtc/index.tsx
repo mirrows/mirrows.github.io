@@ -3,7 +3,7 @@ import style from './index.module.scss'
 import SVGIcon from '@/components/SVGIcon';
 import { randomUser } from '@/req/main';
 import { io, Socket } from 'socket.io-client';
-import { isMobile } from '@/utils/common';
+import { copy, isMobile } from '@/utils/common';
 
 
 export default function Rtc() {
@@ -72,7 +72,10 @@ export default function Rtc() {
   }
 
   const leaveRoom = () => {
-    socket.current?.emit('room_leave', info);
+    setInfo(val => {
+      socket.current?.emit('room_leave', val);
+      return val
+    })
     setHasRoomId(false)
     setOther({
       roomId: '',
@@ -135,6 +138,9 @@ export default function Rtc() {
       if (user.socketId !== infoRef.current.socketId) {
         alert(`用户${user.userName}加入【${user.roomId}】房间`)
       }
+      if (result) {
+        setHasRoomId(true)
+      }
     })
     socket.current.on('room_leave', (user) => {
       if (user.socketId !== infoRef.current.socketId) {
@@ -144,6 +150,8 @@ export default function Rtc() {
           socketId: '',
         });
         alert(`用户${user.userName}已离开【${user.roomId}】房间`)
+        setIsConnected(0)
+        leaveRoom()
       } else {
         setIsConnected(0)
       }
@@ -288,6 +296,13 @@ export default function Rtc() {
   //   }
   // }
 
+  const share = () => {
+    const url = new URL(location.href)
+    url.search = new URLSearchParams({roomId: info.roomId}).toString()
+    copy(url.href)
+    alert('邀请链接已复制');
+  }
+
   useEffect(() => {
     const url = new URLSearchParams(location.search)
     roomIdRef.current = url.get('roomId') || '';
@@ -297,11 +312,15 @@ export default function Rtc() {
     initInfo().then(() => {
       initSocket()
     })
+
+    window.addEventListener('beforeunload', leaveRoom);
     return () => {
+      console.log(infoRef.current)
       leaveRoom()
       socket.current?.disconnect()
       socket.current?.off()
       socket.current = null
+      window.removeEventListener('beforeunload', leaveRoom);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -324,17 +343,18 @@ export default function Rtc() {
       <input
         type="text"
         placeholder='请输入房间号'
+        disabled={hasRoomId}
         className={style.input}
         defaultValue={info.roomId}
         onInput={e => setInfo(v => ({...v, roomId: (e.target as HTMLInputElement).value}))}
       />
-      <input
+      {hasRoomId || <input
         type="text"
         placeholder='请输入用户名'
         className={style.input}
         defaultValue={info.userName}
         onInput={e => setInfo(v => ({...v, userName: (e.target as HTMLInputElement).value}))}
-      />
+      />}
       <button className='normal_btn' disabled={hasRoomId || !ready} onClick={joinRoom}>{hasRoomId ? '即将进入房间...' : '创建/加入房间'}</button>
     </div> :
     <div className={style.total_wrap}>
@@ -346,7 +366,7 @@ export default function Rtc() {
           </div>
           正在等待对方进入...
         </div>}
-        <div style={{ color: '#fff' }}>{another.userName}</div>
+        {hasRoomId || <div style={{ color: '#fff' }}>{another.userName}</div>}
       </div>
       <video ref={targetRef} className={style.target_video} autoPlay></video>
       <div className={style.operate_wrap}>
@@ -358,7 +378,7 @@ export default function Rtc() {
         </button>}
         <div className={style.room_msg}>
           {contentLoading && <div>正在获取视频数据...</div>}
-          <div>{info.userName}</div>
+          {hasRoomId || <div>{info.userName}</div>}
           <div>房间号: {info.roomId}</div>
         </div>
         <button
@@ -369,6 +389,12 @@ export default function Rtc() {
         >
           <SVGIcon type='chat_1' style={{width: "2rem", fill:"#FFF"}} />
         </button>
+        {isConnected !== 2 && <button
+          className={`${style.chat_btn} ${style.share_btn}`}
+          onClick={share}
+        >
+          <SVGIcon type='share' style={{width: "2rem", fill:"#FFF"}} />
+        </button>}
       </div>
     </div>}
   </>

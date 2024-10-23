@@ -83,3 +83,12 @@ export const toCDN = (url: string, params: string | {pc: string, mobile: string}
 export const randomColor = (num = Math.random()) => {
   return `#${(+String(num).slice(4, 12)).toString(16).padStart(6, '0').slice(-6)}`
 }
+
+export const copy = (str: string) => {
+  const input = document.createElement('input');
+  input.value = str;
+  document.body.appendChild(input);
+  input.select();
+  document.execCommand('copy');
+  document.body.removeChild(input);
+}
