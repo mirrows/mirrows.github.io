@@ -62,7 +62,8 @@ export default function Rtc() {
     socket.current?.emit('create_or_join_room', info);
   }
 
-  function leaveRoom() {
+  const leaveRoom = () => {
+    console.log(info)
     socket.current?.emit('room_leave', info);
     if(localStream?.current) {
       const tracks = localStream.current?.getTracks();
@@ -277,6 +278,7 @@ export default function Rtc() {
     infoRef.current = info
   }, [info])
   return <>
+    {!isConnected && <div className={style.line_banner}>移动端请使用谷歌浏览器体验完整功能!!!</div>}
     {!isConnected ? <div className={style.input_wrap}>
       
       <div className={style.img_wrap}>

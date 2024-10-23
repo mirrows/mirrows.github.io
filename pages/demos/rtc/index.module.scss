@@ -132,6 +132,18 @@
   cursor: pointer;
 }
 
+.line_banner{
+  display: none;
+  position: fixed;
+  top: 5rem;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  padding: 0.5rem 0;
+  background-color: #f3d695;
+  color: #f77d40;
+}
+
 @media (min-width: 1200px) {
   
   .local_wrap {
@@ -146,6 +158,8 @@
   }
 }
 
+
+
 @media (min-width: 769px) {
   .back_btn {
     position: fixed;
@@ -154,6 +168,12 @@
     left: 20px;
     background-color: transparent;
     fill: #fff;
+  }
+}
+
+@media (max-width: 769px) {
+  .line_banner{
+    display: block;
   }
 }
 
