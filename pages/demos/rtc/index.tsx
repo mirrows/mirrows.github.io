@@ -121,6 +121,8 @@ export default function Rtc() {
       if (result === 404) {
         alert(`该房间不存在或已销毁，请检查房间号`)
         setIsConnected(0)
+        roomIdRef.current = ''
+        setHasRoomId(false)
         return
       }
       setIsConnected(2)
