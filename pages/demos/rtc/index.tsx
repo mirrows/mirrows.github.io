@@ -185,7 +185,7 @@ export default function Rtc() {
     if(localStream.current) return
     localStream.current = await navigator.mediaDevices.getUserMedia({
       video: isMobile ? { facingMode: "user" } : true,
-      audio: false,
+      audio: true,
     }).catch((err: Error) => {
       console.log(`error happen: ${err.name}`);
     }) || null
