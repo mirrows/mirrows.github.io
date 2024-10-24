@@ -141,7 +141,8 @@ export default function Rtc() {
       if (result) {
         setHasRoomId(true)
       }
-      if(roomIdRef.current) {
+      console.log(user, infoRef.current, roomIdRef.current)
+      if(user.socketId === infoRef.current.socketId && roomIdRef.current) {
         requestVideoCall();
       }
     })
