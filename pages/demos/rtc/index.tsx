@@ -103,7 +103,10 @@ export default function Rtc() {
   }
 
   function requestVideoCall() {
-    socket.current?.emit('request_video', info)
+    setInfo(val => {
+      socket.current?.emit('request_video', val)
+      return val
+    })
   }
   const initSocket = () => {
     socket.current = io('wss://use.t-n.top', {
@@ -142,7 +145,7 @@ export default function Rtc() {
         setHasRoomId(true)
       }
       console.log(user, infoRef.current, roomIdRef.current)
-      if(user.socketId === infoRef.current.socketId && roomIdRef.current) {
+      if((user.socketId === infoRef.current.socketId) && roomIdRef.current) {
         requestVideoCall();
       }
     })
@@ -389,7 +392,7 @@ export default function Rtc() {
           <div>房间号: {info.roomId}</div>
         </div>
         <button
-          disabled={(isConnected !== 2 && !chatting) || contentLoading}
+          disabled={isConnected !== 2 && !chatting}
           className={style.chat_btn}
           style={{ backgroundColor: chatting? 'red' : 'green'}}
           onClick={chatting ? leaveRoom : requestVideoCall}
