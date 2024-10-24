@@ -103,7 +103,9 @@ export default function Rtc() {
   }
 
   function requestVideoCall() {
+    setContentLoading(true);
     setInfo(val => {
+      console.log(infoRef.current, val)
       socket.current?.emit('request_video', val)
       return val
     })
