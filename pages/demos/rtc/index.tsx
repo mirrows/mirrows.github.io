@@ -387,7 +387,7 @@ export default function Rtc() {
         </button>}
         <div className={style.room_msg}>
           {contentLoading && <div>
-            <SVGIcon type='loading_2' className={style.loading_icon} />
+            <SVGIcon type='loading_2' className={style.loading_icon} style={{fill: '#fff'}} />
             正在获取视频数据...
           </div>}
           {hasRoomId || <div>{info.userName}</div>}
@@ -396,8 +396,8 @@ export default function Rtc() {
         <button
           disabled={isConnected !== 2 && !chatting}
           className={style.chat_btn}
-          style={{ backgroundColor: chatting? 'red' : 'green'}}
-          onClick={chatting ? leaveRoom : requestVideoCall}
+          style={{ backgroundColor: chatting || contentLoading ? 'red' : 'green'}}
+          onClick={chatting || contentLoading ? leaveRoom : requestVideoCall}
         >
           <SVGIcon type='chat_1' style={{width: "2rem", fill:"#FFF"}} />
         </button>
