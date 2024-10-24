@@ -141,6 +141,9 @@ export default function Rtc() {
       if (result) {
         setHasRoomId(true)
       }
+      if(roomIdRef.current) {
+        requestVideoCall();
+      }
     })
     socket.current.on('room_leave', (user) => {
       if (user.socketId !== infoRef.current.socketId) {
@@ -377,12 +380,15 @@ export default function Rtc() {
           <SVGIcon type='back_2' style={{width: "2rem"}} />
         </button>}
         <div className={style.room_msg}>
-          {contentLoading && <div>正在获取视频数据...</div>}
+          {contentLoading && <div>
+            <SVGIcon type='loading_2' className={style.loading_icon} />
+            正在获取视频数据...
+          </div>}
           {hasRoomId || <div>{info.userName}</div>}
           <div>房间号: {info.roomId}</div>
         </div>
         <button
-          disabled={isConnected !== 2 && !chatting}
+          disabled={(isConnected !== 2 && !chatting) || contentLoading}
           className={style.chat_btn}
           style={{ backgroundColor: chatting? 'red' : 'green'}}
           onClick={chatting ? leaveRoom : requestVideoCall}
