@@ -4,6 +4,7 @@ import SVGIcon from '@/components/SVGIcon';
 import { randomUser } from '@/req/main';
 import { io, Socket } from 'socket.io-client';
 import { copy, isMobile } from '@/utils/common';
+import VConsole from 'vconsole';
 
 
 export default function Rtc() {
@@ -72,10 +73,12 @@ export default function Rtc() {
   }
 
   const leaveRoom = () => {
+    console.log('leave room')
     setInfo(val => {
       socket.current?.emit('room_leave', val);
       return val
     })
+    setContentLoading(false)
     setHasRoomId(false)
     setOther({
       roomId: '',
@@ -111,6 +114,7 @@ export default function Rtc() {
     })
   }
   const initSocket = () => {
+    console.log('init spcket')
     socket.current = io('wss://use.t-n.top', {
       transports: ['websocket'],  // 使用 WebSocket 作为传输协议
       withCredentials: true       // 允许发送凭据
@@ -313,7 +317,9 @@ export default function Rtc() {
   }
 
   useEffect(() => {
+    console.log('created lifetime')
     const url = new URLSearchParams(location.search)
+    new VConsole()
     roomIdRef.current = url.get('roomId') || '';
     if (roomIdRef.current) {
       setHasRoomId(true)
@@ -324,7 +330,7 @@ export default function Rtc() {
 
     window.addEventListener('beforeunload', leaveRoom);
     return () => {
-      console.log(infoRef.current)
+      console.log(999, infoRef.current)
       leaveRoom()
       socket.current?.disconnect()
       socket.current?.off()

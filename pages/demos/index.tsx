@@ -37,6 +37,11 @@ export default function Demos() {
       icon: 'https://wsrv.nl/?url=raw.githubusercontent.com/mirrows/photo/main/normal/2024_10_14/pic1728899129621292.png&n=-1&q=80',
       link: '/demos/rtc',
     },
+    {
+      name: 'mini chat',
+      icon: 'https://wsrv.nl/?url=raw.githubusercontent.com/mirrows/photo/main/normal/2024_10_24/pic1729739765680159.png&n=-1&q=80',
+      link: '/demos/miniChat',
+    },
   ])
   useEffect(() => {
     isShow(true)
