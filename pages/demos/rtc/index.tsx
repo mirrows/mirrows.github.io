@@ -252,11 +252,14 @@ export default function Rtc() {
     const iceServers = {
       iceServers: [
         { urls: 'stun:stun.l.google.com:19302' }, // Google 提供的公共 STUN 服务器
-        {
-          urls: 'stun:stun.t-n.top:3478', // 自己的 TURN 服务器地址
-          username: 'test12138',               // TURN 服务器的用户名
-          credential: 'test12138',              // TURN 服务器的密码
-        }
+        { urls: 'stun:stun.miwifi.com' }, // Google 提供的公共 STUN 服务器
+        { urls: 'stun:stun.voipbuster.com' }, // Google 提供的公共 STUN 服务器
+        { urls: 'stun:stun.qq.com' }, // Google 提供的公共 STUN 服务器
+        // {
+        //   urls: 'stun:stun.t-n.top:3478', // 自己的 TURN 服务器地址
+        //   username: 'test12138',               // TURN 服务器的用户名
+        //   credential: 'test12138',              // TURN 服务器的密码
+        // }
       ]
     };
     
