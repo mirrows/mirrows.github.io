@@ -3,7 +3,7 @@ import style from './index.module.scss'
 import SVGIcon from '@/components/SVGIcon';
 import { randomUser } from '@/req/main';
 import { io, Socket } from 'socket.io-client';
-import { copy, isMobile } from '@/utils/common';
+import { copy, isBrowser, isMobile } from '@/utils/common';
 import VConsole from 'vconsole';
 
 
@@ -319,7 +319,9 @@ export default function Rtc() {
   useEffect(() => {
     console.log('created lifetime')
     const url = new URLSearchParams(location.search)
-    new VConsole()
+    if (isBrowser) {
+      new VConsole()
+    }
     roomIdRef.current = url.get('roomId') || '';
     if (roomIdRef.current) {
       setHasRoomId(true)
