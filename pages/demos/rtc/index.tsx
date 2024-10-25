@@ -4,8 +4,12 @@ import SVGIcon from '@/components/SVGIcon';
 import { randomUser } from '@/req/main';
 import { io, Socket } from 'socket.io-client';
 import { copy, isBrowser, isMobile } from '@/utils/common';
-import VConsole from 'vconsole';
 
+let Vconsole: new () => any;
+
+if (isBrowser) {
+  Vconsole = require('vconsole')
+}
 
 export default function Rtc() {
   const [isConnected, setIsConnected] = useState(0);
@@ -320,7 +324,7 @@ export default function Rtc() {
     console.log('created lifetime')
     const url = new URLSearchParams(location.search)
     if (isBrowser) {
-      new VConsole()
+      new Vconsole()
     }
     roomIdRef.current = url.get('roomId') || '';
     if (roomIdRef.current) {
