@@ -125,6 +125,7 @@ export default function Rtc() {
     })
 
     socket.current.on('connected', (id) => {
+      console.log('new ID:', id)
       setReady(true)
       infoRef.current = {...infoRef.current, socketId: id }
       setInfo(infoRef.current)
