@@ -1,7 +1,7 @@
 import { ModeMap, uploadBase64, uploadUrl } from "@/req/demos"
 import { Format, toCDN } from "@/utils/common"
 import { file2Base64, fileCompressor, src2webp } from "@/utils/imgTool"
-import { ChangeEvent, DragEvent, KeyboardEvent, MouseEvent, cloneElement, forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react"
+import { CSSProperties, ChangeEvent, DragEvent, KeyboardEvent, MouseEvent, cloneElement, forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react"
 import SVGIcon from "../SVGIcon"
 import PicModal, { ModalRefType } from "../PicModal"
 import { Mode, Pic } from "@/types/demos"
@@ -19,6 +19,7 @@ type Props = {
     align?: 'bottom' | 'top',
     allowUrl?: boolean,
     allowClick?: boolean,
+    operateLineStyle: CSSProperties | undefined,
     [key: string]: any,
 }
 
@@ -44,6 +45,7 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
     allowUrl = true,
     allowClick = true,
     align = 'bottom',
+    operateLineStyle = {},
     ...props
 }, ref) => {
     const wrapRef = useRef<HTMLDivElement | null>(null)
@@ -223,7 +225,7 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
     return (<>
         <div
             ref={wrapRef}
-            className={`${style['imgupload_wrap']} ${style['con_input_wrap']}${loading ? ' invalid' : ''}${className ? ` ${className}` : ''}`}
+            className={`${style['con_input_wrap']}${loading ? ' invalid' : ''}${className ? ` ${className}` : ''}`}
             {...props}
             onClick={() => allowClick && clickable && clickHandle()}
             onDrop={dropFile}
@@ -260,7 +262,7 @@ const ImgUpload = forwardRef<UploadRefType, Props>(({
                     </div>
                 ))}
             </div>
-            <div className={`up_operate_${align}`}>
+            <div className={`up_operate_${align}`} style={operateLineStyle || ''}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                     {allowClick && clickable || <SVGIcon width={26} type="image" style={{ marginRight: '10px' }} onClick={clickHandle} />}
                     {allowUrl && <div className={style['url_input_wrap']} onClick={e => e.stopPropagation()}>

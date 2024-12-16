@@ -1,0 +1,29 @@
+.chat_wrap{
+  width: 100vw;
+  height: 100vh;
+  padding-top: 60px;
+  background: center/cover no-repeat;
+  box-sizing: border-box;
+}
+
+.main_container{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 800px;
+  height: calc(100vh - 80px);
+  margin: 0 auto;
+  padding: 1rem;
+  box-sizing: border-box;
+  background-color: rgba(255,255,255,.8);
+  border-radius: 8px;
+}
+
+.contents{
+  flex: 1 1 100vh;
+  overflow-y: auto;
+  background-color: rgba(255,255,255,.8);
+  border-radius: 6px;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}

@@ -133,7 +133,11 @@
 }
 
 .line_banner{
-  display: none;
+  // display: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
   position: fixed;
   top: 5rem;
   left: 0;

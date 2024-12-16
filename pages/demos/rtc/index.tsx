@@ -7,6 +7,12 @@ import { copy, isBrowser, isMobile } from '@/utils/common';
 
 let Vconsole: new () => any;
 
+const clearUser = {
+  roomId: '',
+  userName: '',
+  socketId: '',
+};
+
 if (isBrowser) {
   Vconsole = require('vconsole')
 }
@@ -20,18 +26,15 @@ export default function Rtc() {
     userName: '',
     socketId: '',
   });
-  const [hasRoomId, setHasRoomId] = useState(false);
-  const roomIdRef = useRef('')
-  const [another, setOther] = useState({
-    roomId: '',
-    userName: '',
-    socketId: '',
-  });
   const infoRef = useRef({
     roomId: '',
     userName: '',
     socketId: '',
   });
+  const [hasRoomId, setHasRoomId] = useState(false);
+  const roomIdRef = useRef('')
+  const [another, setOther] = useState({ ...clearUser });
+  const anotherRef = useRef({ ...clearUser });
   const socket = useRef<Socket | null>(null);
   const pc = useRef<RTCPeerConnection | null>(null);
   const localStream = useRef<MediaStream | null>(null);
@@ -84,11 +87,8 @@ export default function Rtc() {
     })
     setContentLoading(false)
     setHasRoomId(false)
-    setOther({
-      roomId: '',
-      userName: '',
-      socketId: '',
-    });
+    setOther({ ...clearUser });
+    anotherRef.current = { ...clearUser };
     roomIdRef.current = ''
     if(localStream?.current) {
       const tracks = localStream.current?.getTracks();
@@ -118,7 +118,7 @@ export default function Rtc() {
     })
   }
   const initSocket = () => {
-    console.log('init spcket')
+    console.log('init socket')
     socket.current = io('wss://use.t-n.top', {
       transports: ['websocket'],  // 使用 WebSocket 作为传输协议
       withCredentials: true       // 允许发送凭据
@@ -148,7 +148,8 @@ export default function Rtc() {
         return
       }
       setIsConnected(2)
-      setOther(user.socketId !== infoRef.current.socketId ? user : another)
+      anotherRef.current = user.socketId !== infoRef.current.socketId ? user : another;
+      setOther(anotherRef.current);
       if (user.socketId !== infoRef.current.socketId) {
         alert(`用户${user.userName}加入【${user.roomId}】房间`)
       }
@@ -162,11 +163,8 @@ export default function Rtc() {
     })
     socket.current.on('room_leave', (user) => {
       if (user.socketId !== infoRef.current.socketId) {
-        setOther({
-          roomId: '',
-          userName: '',
-          socketId: '',
-        });
+        setOther({ ...clearUser });
+        anotherRef.current = { ...clearUser };
         alert(`用户${user.userName}已离开【${user.roomId}】房间`)
         setIsConnected(0)
         leaveRoom()
@@ -192,25 +190,25 @@ export default function Rtc() {
         // 发送方开始发送offer
         const offer = await pc.current?.createOffer()
         await pc.current?.setLocalDescription(offer)
-        socket.current?.emit('offer', { offer, info: infoRef.current })
+        socket.current?.emit('offer', { offer, info: infoRef.current, to: anotherRef.current })
       }
     })
     // 接收方获取到发送方的offer后，发送answer给发送方
-    socket.current.on('receive_offer', async (offer) => {
+    socket.current.on('receive_offer', async ({ offer, info, to }) => {
       if(!pc.current) return
       await pc.current.setRemoteDescription(offer)
       const answer = await pc.current?.createAnswer()
       await pc.current.setLocalDescription(answer)
-      socket.current?.emit('answer', { answer, info: infoRef.current })
+      socket.current?.emit('answer', { answer, info: to, to: info })
     })
 
     // 发送方获取到answer
-    socket.current.on('receive_answer', async (answer) => {
+    socket.current.on('receive_answer', async ({ answer }) => {
       await pc.current?.setRemoteDescription(answer)
       // weitToSetRemote({ answer })
     })
   
-    socket.current.on('add_candidate', async (candidate) => {
+    socket.current.on('add_candidate', async ({ candidate }) => {
       // weitToSetRemote({ candidate })
       pc.current?.addIceCandidate(candidate)
     })
@@ -269,6 +267,7 @@ export default function Rtc() {
     pc.current.onicecandidate = (event) => socket.current?.emit('add_candidate', {
       candidate: event.candidate,
       info: infoRef.current,
+      to: anotherRef.current,
     })
     pc.current.oniceconnectionstatechange = () => {
       if (pc.current?.iceConnectionState === 'connected') {
@@ -353,7 +352,10 @@ export default function Rtc() {
     infoRef.current = info
   }, [info])
   return <>
-    {!isConnected && <div className={style.line_banner}>移动端请使用谷歌浏览器体验完整功能!!!</div>}
+    {!isConnected && <div className={style.line_banner}>
+      <div>作者很穷，只能在局域网里玩玩，</div>
+      <div>推荐使用谷歌浏览器访问这个页面哈...</div>
+    </div>}
     {!isConnected ? <div className={style.input_wrap}>
       
       <div className={style.img_wrap}>

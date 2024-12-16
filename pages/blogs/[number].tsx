@@ -214,7 +214,7 @@ export default function Blog({ artical: atl, comments: cmts }: Props) {
                     className={style['text_area']}
                     rows={8}
                     style={{ display: isPreview ? 'none' : 'block' }}
-                    placeholder='这里添加评论......'
+                    placeholder='这里添加评论, 支持markdown语法......'
                     suppressContentEditableWarning
                     contentEditable
                     onPaste={handlePaste}
