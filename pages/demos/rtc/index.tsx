@@ -4,6 +4,7 @@ import SVGIcon from '@/components/SVGIcon';
 import { randomUser } from '@/req/main';
 import { io, Socket } from 'socket.io-client';
 import { copy, isBrowser, isMobile } from '@/utils/common';
+import { env } from '@/utils/global';
 
 let Vconsole: new () => any;
 
@@ -13,7 +14,7 @@ const clearUser = {
   socketId: '',
 };
 
-if (isBrowser) {
+if (isBrowser && env.env === 'development') {
   Vconsole = require('vconsole')
 }
 
@@ -327,7 +328,7 @@ export default function Rtc() {
   useEffect(() => {
     console.log('created lifetime')
     const url = new URLSearchParams(location.search)
-    if (isBrowser) {
+    if (isBrowser && env.env === 'development') {
       new Vconsole()
     }
     roomIdRef.current = url.get('roomId') || '';
