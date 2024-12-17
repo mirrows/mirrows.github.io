@@ -2,8 +2,6 @@ import { useEffect, useRef, useState } from "react"
 
 export const isBrowser = typeof window !== 'undefined'
 
-export const isDevelopment = process && process.env.NODE_ENV === "development";
-
 export const deepClone = <T>(data: T): T => {
   return JSON.parse(JSON.stringify(data))
 }

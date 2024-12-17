@@ -23,6 +23,7 @@ export const env = {
   loadingGif: process.env.NEXT_PUBLIC_LOADING_GIF,
   userToken: process.env.NEXT_PUBLIC_FIXED_GITHUB_TOKEN,
   id: process.env.NEXT_PUBLIC_GITHUB_ID,
+  env: process.env.NEXT_PUBLIC_ENV,
 }
 
 

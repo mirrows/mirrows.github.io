@@ -3,7 +3,8 @@ import style from './index.module.scss'
 import SVGIcon from '@/components/SVGIcon';
 import { randomUser } from '@/req/main';
 import { io, Socket } from 'socket.io-client';
-import { copy, isBrowser, isDevelopment, isMobile } from '@/utils/common';
+import { copy, isBrowser, isMobile } from '@/utils/common';
+import { env } from '@/utils/global';
 
 let Vconsole: new () => any;
 
@@ -13,7 +14,7 @@ const clearUser = {
   socketId: '',
 };
 
-if (isBrowser && isDevelopment) {
+if (isBrowser && env.env === 'development') {
   Vconsole = require('vconsole')
 }
 
