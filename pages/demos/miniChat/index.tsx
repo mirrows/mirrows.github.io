@@ -166,18 +166,19 @@ export default function MiniChat() {
     }
   }
 
-  addEventListener('beforeunload', leaveRoom);
   useEffect(() => {
     initInfo().then(() => {
       initSocket()
     })
+    window.addEventListener('beforeunload', leaveRoom);
     return () => {
       leaveRoom()
       socket.current?.disconnect()
       socket.current?.off()
       socket.current = null
-      removeEventListener('beforeunload', leaveRoom);
+      window.removeEventListener('beforeunload', leaveRoom);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   return <>
     <div className={style.chat_wrap} style={{ backgroundImage: `url('${url}')` }}>

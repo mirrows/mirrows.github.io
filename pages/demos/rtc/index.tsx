@@ -338,14 +338,14 @@ export default function Rtc() {
       initSocket()
     })
 
-    addEventListener('beforeunload', leaveRoom);
+    window.addEventListener('beforeunload', leaveRoom);
     return () => {
       console.log(999, infoRef.current)
       leaveRoom()
       socket.current?.disconnect()
       socket.current?.off()
       socket.current = null
-      removeEventListener('beforeunload', leaveRoom);
+      window.removeEventListener('beforeunload', leaveRoom);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
