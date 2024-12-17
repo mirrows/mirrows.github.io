@@ -190,6 +190,7 @@ export default function Rtc() {
         // 发送方开始发送offer
         const offer = await pc.current?.createOffer()
         await pc.current?.setLocalDescription(offer)
+        console.log(anotherRef.current);
         socket.current?.emit('offer', { offer, info: infoRef.current, to: anotherRef.current })
       }
     })
@@ -337,14 +338,14 @@ export default function Rtc() {
       initSocket()
     })
 
-    window.addEventListener('beforeunload', leaveRoom);
+    addEventListener('beforeunload', leaveRoom);
     return () => {
       console.log(999, infoRef.current)
       leaveRoom()
       socket.current?.disconnect()
       socket.current?.off()
       socket.current = null
-      window.removeEventListener('beforeunload', leaveRoom);
+      removeEventListener('beforeunload', leaveRoom);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])

@@ -166,7 +166,7 @@ export default function MiniChat() {
     }
   }
 
-  window.addEventListener('beforeunload', leaveRoom);
+  addEventListener('beforeunload', leaveRoom);
   useEffect(() => {
     initInfo().then(() => {
       initSocket()
@@ -176,7 +176,7 @@ export default function MiniChat() {
       socket.current?.disconnect()
       socket.current?.off()
       socket.current = null
-      window.removeEventListener('beforeunload', leaveRoom);
+      removeEventListener('beforeunload', leaveRoom);
     }
   }, [])
   return <>
