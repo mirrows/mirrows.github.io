@@ -3,7 +3,7 @@ import style from './index.module.scss'
 import SVGIcon from '@/components/SVGIcon';
 import { randomUser } from '@/req/main';
 import { io, Socket } from 'socket.io-client';
-import { copy, isBrowser, isMobile } from '@/utils/common';
+import { copy, isBrowser, isDev, isMobile } from '@/utils/common';
 
 let Vconsole: new () => any;
 
@@ -13,7 +13,7 @@ const clearUser = {
   socketId: '',
 };
 
-if (isBrowser) {
+if (isBrowser && isDev) {
   Vconsole = require('vconsole')
 }
 
