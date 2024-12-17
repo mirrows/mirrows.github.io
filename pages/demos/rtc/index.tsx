@@ -4,7 +4,6 @@ import SVGIcon from '@/components/SVGIcon';
 import { randomUser } from '@/req/main';
 import { io, Socket } from 'socket.io-client';
 import { copy, isBrowser, isMobile } from '@/utils/common';
-import { env } from '@/utils/global';
 
 let Vconsole: new () => any;
 
@@ -14,7 +13,7 @@ const clearUser = {
   socketId: '',
 };
 
-if (isBrowser && env.env === 'development') {
+if (isBrowser) {
   Vconsole = require('vconsole')
 }
 
