@@ -205,6 +205,7 @@ img{
   word-break: break-all;
 }
 
+.md_detail p:last-child,
 .md_detail * > p:last-child{
   margin-bottom: 0;
 }

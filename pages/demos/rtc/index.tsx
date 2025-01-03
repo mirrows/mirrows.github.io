@@ -3,20 +3,13 @@ import style from './index.module.scss'
 import SVGIcon from '@/components/SVGIcon';
 import { randomUser } from '@/req/main';
 import { io, Socket } from 'socket.io-client';
-import { copy, isBrowser, isMobile } from '@/utils/common';
-import { env } from '@/utils/global';
-
-let Vconsole: new () => any;
+import { copy, isMobile } from '@/utils/common';
 
 const clearUser = {
   roomId: '',
   userName: '',
   socketId: '',
 };
-
-if (isBrowser && env.env === 'development') {
-  Vconsole = require('vconsole')
-}
 
 export default function Rtc() {
   const [isConnected, setIsConnected] = useState(0);
@@ -33,6 +26,7 @@ export default function Rtc() {
     socketId: '',
   });
   const [hasRoomId, setHasRoomId] = useState(false);
+  const leaveRef = useRef(0);
   const roomIdRef = useRef('')
   const [another, setOther] = useState({ ...clearUser });
   const anotherRef = useRef({ ...clearUser });
@@ -328,19 +322,21 @@ export default function Rtc() {
   useEffect(() => {
     console.log('created lifetime')
     const url = new URLSearchParams(location.search)
-    if (isBrowser && env.env === 'development') {
-      new Vconsole()
-    }
     roomIdRef.current = url.get('roomId') || '';
     if (roomIdRef.current) {
       setHasRoomId(true)
     }
     initInfo().then(() => {
-      initSocket()
+      if(leaveRef.current > 0) {
+        leaveRef.current -= 1;
+      } else {
+        initSocket()
+      }
     })
 
     window.addEventListener('beforeunload', leaveRoom);
     return () => {
+      leaveRef.current += 1;
       console.log(999, infoRef.current)
       leaveRoom()
       socket.current?.disconnect()

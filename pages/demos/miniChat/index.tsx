@@ -1,36 +1,56 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import style from './index.module.scss'
-import SVGIcon from '@/components/SVGIcon';
 import { randomUser } from '@/req/main';
 import { io, Socket } from 'socket.io-client';
-import { copy, isMobile } from '@/utils/common';
-import ImgUpload, { UploadRefType } from '@/components/ImgUpload';
-import { Pic } from '@/types/demos';
 import MyTextarea from '@/components/MyTextarea';
+import { env, unique } from '@/utils/global';
+import MdText from '@/components/MdText';
 
+type User = {
+  roomId: string,
+  userName: string,
+  socketId: string,
+  dc: RTCDataChannel | null,
+  pc: RTCPeerConnection | null,
+}
+
+type Record = {
+  id: string,
+  type: 'text' | 'file' | 'tips',
+  content: string,
+  from: User,
+  time: string,
+}
 
 export default function MiniChat() {
   const [url] = useState('https://raw.githubusercontent.com/mirrows/photo/main/normal/2024_10_28/pic1730078673558002.jpg')
   
-  const [anothers, setAnothers] = useState([]);
-  const anotherRef = useRef([]);
+  const leaveRef = useRef(0);
+  const [another, setAnother] = useState<User[]>([]);
+  const anotherRef = useRef<User[]>([]);
   const [ready, setReady] = useState(false);
   const socket = useRef<Socket | null>(null);
-  const pc = useRef<RTCPeerConnection | null>(null);
-  const [info, setInfo] = useState({
+  const currentIp = useRef('')
+  // const pc = useRef<RTCPeerConnection | null>(null);
+  const [info, setInfo] = useState<User>({
     roomId: '',
     userName: '',
     socketId: '',
+    dc: null,
+    pc: null,
   })
   const infoRef = useRef({
     roomId: '',
     userName: '',
     socketId: '',
+    dc: null,
+    pc: null,
   })
+  const [isJoined, setJoined] = useState(false);
+  const [records, setRecords] = useState<Record[]>([]);
 
   const initInfo = async () => {
     const info = localStorage.info
-    console.log(54344, info);
     if (info) {
       try {
         const newInfo = JSON.parse(info)
@@ -48,14 +68,26 @@ export default function MiniChat() {
       roomId: String(Math.random()).slice(4, 8),
       userName: name ? `${name.first} ${name.last}` : String(Math.random()).slice(4, 8),
       socketId: '',
+      dc: null,
+      pc: null,
     }
     infoRef.current = newInfo;
-    console.log(54344, newInfo);
     setInfo(newInfo)
     localStorage.setItem('info', JSON.stringify(newInfo))
   }
   const sendMsg = (value: string) => {
-    console.log(value);
+    console.log(value, anotherRef.current);
+    const record:Record = {
+      id: unique.get(`${currentIp.current}${infoRef.current.socketId}`),
+      type: 'text',
+      content: value,
+      from: infoRef.current,
+      time: new Date().toLocaleString(),
+    }
+    setRecords((records) => records.concat(record));
+    anotherRef.current.forEach((user) => {
+      user.dc?.send(JSON.stringify(record));
+    })
   } 
 
   const joinRoom = () => {
@@ -66,22 +98,30 @@ export default function MiniChat() {
 
   const leaveRoom = () => {
     console.log('leave room')
+    anotherRef.current.forEach((user) => {
+      user.dc?.send(JSON.stringify({
+        id: unique.get(`${currentIp.current}${infoRef.current.socketId}`),
+        type: 'tips',
+        content: `用户${infoRef.current.userName}离开房间`,
+        from: infoRef.current,
+        time: new Date().toLocaleString(),
+      }));
+    })
     socket.current?.emit('leave', infoRef.current);
   }
   
   async function requestVideoCall() {
-    createPeerConnection()
     // 发送方开始发送offer
-    const offer = await pc.current?.createOffer()
-    await pc.current?.setLocalDescription(offer)
-    anotherRef.current.forEach((user) => {
+    anotherRef.current.forEach(async (user) => {
+      console.log('requestVideoCall')
+      const offer = await user.pc?.createOffer()
+      await user.pc?.setLocalDescription(offer)
       socket.current?.emit('offer', { offer, info: infoRef.current, to: user })
     })
   }
 
   const initSocket = () => {
-    console.log('init spcket')
-    socket.current = io('wss://use.t-n.top', {
+    socket.current = io(env.extraUrl, {
       transports: ['websocket'],  // 使用 WebSocket 作为传输协议
       withCredentials: true       // 允许发送凭据
     })
@@ -93,42 +133,81 @@ export default function MiniChat() {
       setInfo(infoRef.current)
       joinRoom();
     });
-    socket.current.on('join', ({ user, anothers, result }) => {
+    socket.current.on('join', ({ user, another, result }: {
+      user: User,
+      another: User[],
+      result: number,
+    }) => {
       if (result === 404) {
         console.warn(`该房间不存在或已销毁，请检查房间号`)
         return
       }
-      setAnothers(anothers);
-      anotherRef.current = anothers;
+      const othersMap = anotherRef.current.reduce((map, user) => {
+        map[user.socketId] = user;
+        return map;
+      }, {} as {[key: string]: User });
+      const others = another
+        .filter((user) => user.socketId !== infoRef.current.socketId)
+        .map(user => othersMap[user.socketId] || user);
+      setAnother(others);
+      anotherRef.current = others;
       if (user.socketId !== infoRef.current.socketId) {
-        console.log(`用户${user.userName}加入房间`)
+        setRecords((records) => records.concat({
+          id: unique.get(`${currentIp.current}${infoRef.current.socketId}`),
+          type: 'tips',
+          content: `用户${user.userName}加入房间`,
+          from: user,
+          time: new Date().toLocaleString(),
+        }));
+        createPeerConnection(user)
+        // console.log(`用户${user.userName}加入房间`)
+      } else {
+        setRecords((records) => records.concat({
+          id: unique.get(`${currentIp.current}${infoRef.current.socketId}`),
+          type: 'tips',
+          content: `你已加入房间`,
+          from: user,
+          time: new Date().toLocaleString(),
+        }));
+        setJoined(true);
+        anotherRef.current.forEach((user) => {
+          createPeerConnection(user, true)
+        })
+        // console.log(`你已加入房间`)
       }
-      if((user.socketId === infoRef.current.socketId) && anothers.length > 0) {
-        console.log(`你已加入房间`)
+      if((user.socketId === infoRef.current.socketId) && others.length > 0) {
         requestVideoCall();
       }
     })
     // 接收方获取到发送方的offer后，发送answer给发送方
     socket.current.on('receive_offer', async ({ info, to, offer }) => {
-      if(!pc.current) return
-      await pc.current.setRemoteDescription(offer)
-      const answer = await pc.current?.createAnswer()
-      await pc.current.setLocalDescription(answer)
+      console.log('receive offer');
+      const user = anotherRef.current.find((user) => user.socketId === info.socketId)
+      if(!user?.pc) return
+      await user.pc.setRemoteDescription(offer)
+      const answer = await user.pc?.createAnswer()
+      await user.pc.setLocalDescription(answer)
       socket.current?.emit('answer', { answer, info: to, to: info })
     })
 
     // 发送方获取到answer
-    socket.current.on('receive_answer', async ({ answer }) => {
-      await pc.current?.setRemoteDescription(answer)
+    socket.current.on('receive_answer', async ({ info, answer }) => {
+      console.log('receive answer');
+      const user = anotherRef.current.find((user) => user.socketId === info.socketId)
+      if(!user?.pc) return
+      await user.pc?.setRemoteDescription(answer)
       // weitToSetRemote({ answer })
     })
   
-    socket.current.on('add_candidate', async ({ candidate }) => {
+    socket.current.on('add_candidate', async ({ info, candidate }) => {
       // weitToSetRemote({ candidate })
-      pc.current?.addIceCandidate(candidate)
+      console.log('add_candidate');
+      const user = anotherRef.current.find((user) => user.socketId === info.socketId)
+      if(!user?.pc) return
+      user.pc?.addIceCandidate(candidate)
     })
   }
-  function createPeerConnection() {
+  function createPeerConnection(targetUser: User, isOffer = false) {
     const iceServers = {
       iceServers: [
         { urls: 'stun:stun.l.google.com:19302' }, // Google 提供的公共 STUN 服务器
@@ -142,11 +221,47 @@ export default function MiniChat() {
         }
       ]
     };
-    
-    if(!pc.current) {
-      pc.current = new RTCPeerConnection(iceServers)
+    const user = anotherRef.current.find((user) => user.socketId === targetUser.socketId)
+    if (!user) return
+    if(!user?.pc) {
+      user.pc = new RTCPeerConnection(iceServers)
+      // user.dc.onopen = function () {
+      //   console.log("Data channel is open!");
+      // };
+      // user.dc.onmessage = function (event) {
+      //   console.log("received msg: " + event.data);
+      //   setRecords((records) => records.concat(event.data));
+      // };
     }
-    pc.current.onicecandidate = (event) => {
+    if (isOffer) {
+      user.dc = user.pc.createDataChannel("my channel");
+      console.log('new datachannel')
+      receiveMsg(user.dc);
+      // user.dc.onmessage = function (event) {
+      //   console.log("received msg: " + event.data);
+      //   setRecords((records) => records.concat(event.data));
+      // }
+    } else {
+      console.log('ready to datachannel')
+      user.pc.ondatachannel = (event) => {
+        console.log("on datachannel");
+        user.dc = event.channel;
+        user.dc.onopen = function () {
+          console.log("Data channel is open!");
+        };
+        receiveMsg(user.dc);
+        // user.dc.onmessage = function (event) {
+        //   console.log("received msg: " + event.data);
+        //   setRecords((records) => records.concat(event.data));
+        // }
+      }
+    }
+    user.pc.onicecandidate = (event) => {
+      const ipRegex = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/;
+      const tmpIp = event.candidate?.candidate?.match(ipRegex)
+      if (tmpIp) {
+        currentIp.current = tmpIp[0]
+      }
       anotherRef.current.forEach((user) => {
         socket.current?.emit('add_candidate', {
           candidate: event.candidate,
@@ -155,24 +270,41 @@ export default function MiniChat() {
         })
       })
     }
-    pc.current.oniceconnectionstatechange = () => {
-      if (pc.current?.iceConnectionState === 'connected') {
+    user.pc.oniceconnectionstatechange = () => {
+      if (user.pc?.iceConnectionState === 'connected') {
         // setContentLoading(false);
       }
-      if (pc.current?.iceConnectionState === 'disconnected' || pc.current?.iceConnectionState === 'failed') {
+      if (user.pc?.iceConnectionState === 'disconnected' || user.pc?.iceConnectionState === 'failed') {
         console.warn('连接失败，请重新连接');
       }
-      console.log(`oniceconnectionstatechange: ${pc.current?.iceConnectionState}`)
+      console.log(`oniceconnectionstatechange: ${user.pc?.iceConnectionState}`)
+    }
+  }
+
+  const receiveMsg = (dc: RTCDataChannel) => {
+    dc.onmessage = function (event) {
+      console.log("received msg: " + event.data);
+      try {
+        setRecords((records) => records.concat(JSON.parse(event.data)));
+      } catch (err) {
+        console.log('fail to parse msg', event.data)
+      }
     }
   }
 
   useEffect(() => {
     initInfo().then(() => {
-      initSocket()
+      leaveRef.current
+      if(leaveRef.current > 0) {
+        leaveRef.current -= 1;
+      } else {
+        initSocket()
+      }
     })
     window.addEventListener('beforeunload', leaveRoom);
     return () => {
       leaveRoom()
+      leaveRef.current += 1;
       socket.current?.disconnect()
       socket.current?.off()
       socket.current = null
@@ -183,12 +315,42 @@ export default function MiniChat() {
   return <>
     <div className={style.chat_wrap} style={{ backgroundImage: `url('${url}')` }}>
       <div className={style.main_container}>
-        <div>{info.userName}</div>
+        <div>
+          <div className={`${style.join_status_ball} ${style[isJoined ? 'ball_joined' : 'ball_wait']}`}></div>
+          {info.userName}
+        </div>
         <div className={`${style.contents} scroll_er`}>
-          <div></div>
+          {isJoined || <div className={style.wait_tips}>
+            <span className={style.wait_tip_txt}>正在链接 ... ...</span>
+          </div>}
+          <div>
+            {records.map(record => (
+              <div key={record.id}>{{
+                tips: (
+                  <div className={style.record_tips}>
+                    <div className={style.record_content}>{record.content}</div>
+                  </div>
+                ),
+                text: (
+                  <div className={`${style.record_text} ${record.from.socketId === info.socketId ? style.owner : ''}`}>
+                    <div className={style.user_name}>{record.from.userName}</div>
+                    <MdText text={record.content} className={style.user_content} />
+                  </div>
+                ),
+                file: (
+                  <div className={style.record_file}>
+                    <div className={style.record_content}>{record.content}</div>
+                  </div>
+                ),
+              }[record.type]}</div>))}
+          </div>
         </div>
         <div>
-          <MyTextarea style={{ height: 'unset' }} onSubmit={sendMsg} />
+          <MyTextarea
+            disabled={!isJoined}
+            style={{ height: 'unset' }}
+            onSubmit={(value) => sendMsg(value.content || '')}
+          />
         </div>
       </div>
     </div>

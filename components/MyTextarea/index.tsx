@@ -12,7 +12,11 @@ type Props = {
   }) => void
   isCanSubmit?: boolean
   placeholder?: string
-  [key: string]: any
+  // [key: string]: any
+}
+& Partial<Omit<HTMLTextAreaElement, 'style'>>
+& {
+  style?: Partial<CSSStyleDeclaration> | undefined
 }
 
 type Methods = {
@@ -76,6 +80,9 @@ const MyTextarea = ({
     onSubmit({
       content: input.current?.value,
     })
+    if (input.current) {
+      input.current.value = ''
+    }
   }
 
   useImperativeHandle(ref, () => ({
@@ -88,6 +95,7 @@ const MyTextarea = ({
     <ImgUpload
       ref={uploadRef}
       clickable={false}
+      className={style['my_textarea_wrap']}
       {...props}
       autoUpload
       operateLineStyle={isPreview ? { marginTop: '0' } : {}}

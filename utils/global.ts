@@ -2,6 +2,7 @@ import { EventEmits, GblData } from "@/types/global";
 import { deepClone } from "./common";
 import { NormalObj } from "@/types/common";
 import { UserInfo } from "@/types/github";
+import md5 from "md5";
 
 const gbData: GblData = {
   number: 0,
@@ -14,6 +15,20 @@ const gbData: GblData = {
   ipDetail: {},
   emit: () => { }
 }
+
+class Unique {
+  private current = 0
+  get(solt?: string) {
+    const id = md5(`${solt || (gbData.ipDetail.ip + String(Math.random()).slice(3, 7))}${this.current}`)
+    this.current += 1
+    return id
+  }
+  show() {
+    return this.current
+  }
+}
+
+export const unique = new Unique()
 
 export const env = {
   messUrl: process.env.NEXT_PUBLIC_MESS_URL,

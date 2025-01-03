@@ -7,6 +7,14 @@ import '../public/common.css';
 import { useRouter } from 'next/router'
 import { useLazyImgs } from '@/utils/imgTool'
 import { IPDetail } from '@/types/global'
+import { env } from '@/utils/global';
+import { isBrowser } from '@/utils/common';
+
+let Vconsole: new () => any;
+
+if (isBrowser && env.env === 'development') {
+  Vconsole = require('vconsole')
+}
 
 export default function App({ Component, pageProps }: AppProps) {
   const statistics = async () => {
@@ -67,6 +75,12 @@ export default function App({ Component, pageProps }: AppProps) {
       window.removeEventListener('beforeunload', visitorStatistic)
     }
   }, [emit, router.events])
+
+  useEffect(() => {
+    if (isBrowser && env.env === 'development') {
+      new Vconsole()
+    }
+  }, [])
   return (
     <>
       <NavHeader />
