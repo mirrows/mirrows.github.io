@@ -182,7 +182,7 @@ img{
 
 
 .md_detail blockquote {
-  padding: 4px 0 4px 1em;
+  padding: 4px 0.5em 4px 1em;
   margin: 0;
   margin-bottom: 8px;
   border-left: 4px solid gray;
