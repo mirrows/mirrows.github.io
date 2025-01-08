@@ -5,6 +5,7 @@ import { io, Socket } from 'socket.io-client';
 import MyTextarea from '@/components/MyTextarea';
 import { env, unique } from '@/utils/global';
 import MdText from '@/components/MdText';
+import SVGIcon from '@/components/SVGIcon';
 
 type User = {
   roomId: string,
@@ -12,6 +13,7 @@ type User = {
   socketId: string,
   dc: RTCDataChannel | null,
   pc: RTCPeerConnection | null,
+  alive: boolean
 }
 
 type Record = {
@@ -38,6 +40,7 @@ export default function MiniChat() {
     socketId: '',
     dc: null,
     pc: null,
+    alive: false,
   })
   const infoRef = useRef({
     roomId: '',
@@ -45,8 +48,10 @@ export default function MiniChat() {
     socketId: '',
     dc: null,
     pc: null,
+    alive: false,
   })
   const [isJoined, setJoined] = useState(false);
+  const [userExpand, setExpand] = useState(false);
   const [records, setRecords] = useState<Record[]>([]);
 
   const initInfo = async () => {
@@ -70,6 +75,7 @@ export default function MiniChat() {
       socketId: '',
       dc: null,
       pc: null,
+      alive: false,
     }
     infoRef.current = newInfo;
     setInfo(newInfo)
@@ -92,12 +98,14 @@ export default function MiniChat() {
 
   const joinRoom = () => {
     if (!infoRef.current.userName) return
+    infoRef.current.alive = true;
     localStorage.setItem('info', JSON.stringify(infoRef.current))
     socket.current?.emit('join', { info: infoRef.current });
   }
 
   const leaveRoom = () => {
     console.log('leave room')
+    infoRef.current.alive = false;
     anotherRef.current.forEach((user) => {
       user.dc?.send(JSON.stringify({
         id: unique.get(`${currentIp.current}${infoRef.current.socketId}`),
@@ -285,7 +293,15 @@ export default function MiniChat() {
     dc.onmessage = function (event) {
       console.log("received msg: " + event.data);
       try {
-        setRecords((records) => records.concat(JSON.parse(event.data)));
+        const record = JSON.parse(event.data);
+        if (record.from) {
+          anotherRef.current = anotherRef.current.map(user => user.socketId === record.from.socketId ? {
+            ...user,
+            ...record.from,
+          } : user)
+          setAnother([...anotherRef.current])
+        }
+        setRecords((records) => records.concat(record));
       } catch (err) {
         console.log('fail to parse msg', event.data)
       }
@@ -314,43 +330,54 @@ export default function MiniChat() {
   }, [])
   return <>
     <div className={style.chat_wrap} style={{ backgroundImage: `url('${url}')` }}>
-      <div className={style.main_container}>
-        <div>
-          <div className={`${style.join_status_ball} ${style[isJoined ? 'ball_joined' : 'ball_wait']}`}></div>
-          {info.userName}
-        </div>
-        <div className={`${style.contents} scroll_er`}>
-          {isJoined || <div className={style.wait_tips}>
-            <span className={style.wait_tip_txt}>正在链接 ... ...</span>
-          </div>}
+      <div className={style.layout_wrap}>
+        <div className={style.main_container}>
+          <div className={style.header_line}>
+            <div className={`${style.join_status_ball} ${style[isJoined ? 'ball_joined' : 'ball_wait']}`}></div>
+            <div>{info.userName}</div>
+            <SVGIcon type="list" className={style.expand_icon} onClick={() => setExpand(val => !val)} />
+          </div>
+          <div className={`${style.contents} scroll_er`}>
+            {isJoined || <div className={style.wait_tips}>
+              <span className={style.wait_tip_txt}>正在链接 ... ...</span>
+            </div>}
+            <div>
+              {records.map(record => (
+                <div key={record.id}>{{
+                  tips: (
+                    <div className={style.record_tips}>
+                      <div className={style.record_content}>{record.content}</div>
+                    </div>
+                  ),
+                  text: (
+                    <div className={`${style.record_text} ${record.from.socketId === info.socketId ? style.owner : ''}`}>
+                      <div className={style.user_name}>{record.from.userName}</div>
+                      <MdText text={record.content} className={style.user_content} />
+                    </div>
+                  ),
+                  file: (
+                    <div className={style.record_file}>
+                      <div className={style.record_content}>{record.content}</div>
+                    </div>
+                  ),
+                }[record.type]}</div>))}
+            </div>
+          </div>
           <div>
-            {records.map(record => (
-              <div key={record.id}>{{
-                tips: (
-                  <div className={style.record_tips}>
-                    <div className={style.record_content}>{record.content}</div>
-                  </div>
-                ),
-                text: (
-                  <div className={`${style.record_text} ${record.from.socketId === info.socketId ? style.owner : ''}`}>
-                    <div className={style.user_name}>{record.from.userName}</div>
-                    <MdText text={record.content} className={style.user_content} />
-                  </div>
-                ),
-                file: (
-                  <div className={style.record_file}>
-                    <div className={style.record_content}>{record.content}</div>
-                  </div>
-                ),
-              }[record.type]}</div>))}
+            <MyTextarea
+              disabled={!isJoined}
+              style={{ height: 'unset' }}
+              onSubmit={(value) => sendMsg(value.content || '')}
+            />
           </div>
         </div>
-        <div>
-          <MyTextarea
-            disabled={!isJoined}
-            style={{ height: 'unset' }}
-            onSubmit={(value) => sendMsg(value.content || '')}
-          />
+        <div className={`${style.user_list} scroll_er`} style={{ display: userExpand ? 'block' : 'none'}}>
+          {
+            another.map(user => <div key={user.socketId}>
+              <div className={`${style.join_status_ball} ${style[user.alive ? 'ball_joined' : 'ball_wait']}`}></div>
+              {user.userName}
+            </div>)
+          }
         </div>
       </div>
     </div>
