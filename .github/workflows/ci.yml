@@ -22,6 +22,9 @@ jobs:
         NEXT_PUBLIC_EXTRA_URL: ${{ vars.NEXT_PUBLIC_EXTRA_URL }}
         NEXT_PUBLIC_LOADING_GIF: ${{ vars.NEXT_PUBLIC_LOADING_GIF }}
         NEXT_PUBLIC_GITHUB_ID: ${{ vars.NEXT_PUBLIC_GITHUB_ID }}
+        NEXT_PUBLIC_FIXED_GITHUB_TOKEN: ${{ vars.NEXT_PUBLIC_FIXED_GITHUB_TOKEN }}
+        NEXT_PUBLIC_ENV: ${{ vars.NEXT_PUBLIC_ENV }}
+        SITE_URL: ${{ vars.SITE_URL }}
     - name: deply
       uses: JamesIves/github-pages-deploy-action@v4
       with:
