@@ -38,16 +38,16 @@ export default function PreviewPannel() {
   const setDate = (dateObj: Date, options: Partial<Time>) => {
     const { year, month, date, hour, minute, secend } = options;
     return new Date(
-      year || dateObj.getFullYear(),
-      month || dateObj.getMonth(),
-      date || dateObj.getDate(),
-      hour || dateObj.getHours(),
-      minute || dateObj.getMinutes(),
-      secend || dateObj.getSeconds(),
+      typeof year === 'number' ? year : dateObj.getFullYear(),
+      typeof month === 'number' ? month : dateObj.getMonth(),
+      typeof date === 'number' ? date : dateObj.getDate(),
+      typeof hour === 'number' ? hour : dateObj.getHours(),
+      typeof minute === 'number' ? minute : dateObj.getMinutes(),
+      typeof secend === 'number' ? secend : dateObj.getSeconds(),
     )
   }
   const intervalUntilNow = useCallback(() => {
-    const startTime = new Date(2023, 1, 2, 17, 58)
+    const startTime = new Date('2023/2/2 17:58')
     const now = new Date()
     const lastMonthTotal = Math.round((new Date(
       startTime.getFullYear(),
@@ -61,7 +61,7 @@ export default function PreviewPannel() {
     const sameYear = setDate(startTime, { year: now.getFullYear() })
     const year = now.getFullYear() - startTime.getFullYear() + (now.getTime() >= sameYear.getTime() ? 0 : -1) // 年
     const sameMonth = setDate(sameYear, { month: now.getMonth() })
-    const month = (now.getMonth() - startTime.getMonth() + (now.getTime() >= sameMonth.getTime() ? 0 : -1)) % 12 // 月
+    const month = (12 + now.getMonth() - startTime.getMonth() + (now.getTime() >= sameMonth.getTime() ? 0 : -1)) % 12 // 月
     const sameDate = setDate(sameMonth, { month: now.getMonth(), date: now.getDate() })
     const date = (now.getDate() - startTime.getDate() + (now.getTime() >= sameDate.getTime() ? 0 : -1) + lastMonthTotal) % lastMonthTotal // 日
     const hour = Math.floor((now.getTime() - startTime.getTime()) % (24 * 60 * 60 * 1000) / (60 * 60 * 1000)) // 时
