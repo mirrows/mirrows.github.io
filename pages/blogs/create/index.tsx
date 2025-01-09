@@ -2,7 +2,7 @@ import { addArtical, bingQuery } from '@/req/main'
 import { BingPic } from '@/types/global'
 import Head from 'next/head'
 import { useEffect, useState } from 'react'
-import BlogCreator from '../components/creator'
+import BlogCreator from '../../../components/Blogs/Creator'
 import { useRouter } from 'next/router'
 import { stone } from '@/utils/global'
 
