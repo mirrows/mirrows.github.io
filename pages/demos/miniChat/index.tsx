@@ -3,9 +3,10 @@ import style from './index.module.scss'
 import { randomUser } from '@/req/main';
 import { io, Socket } from 'socket.io-client';
 import MyTextarea from '@/components/MyTextarea';
-import { env, unique } from '@/utils/global';
+import { env, stone, unique } from '@/utils/global';
 import MdText from '@/components/MdText';
 import SVGIcon from '@/components/SVGIcon';
+import md5 from 'md5';
 
 type User = {
   roomId: string,
@@ -28,6 +29,7 @@ export default function MiniChat() {
   const [url] = useState('https://raw.githubusercontent.com/mirrows/photo/main/normal/2024_10_28/pic1730078673558002.jpg')
   
   const leaveRef = useRef(0);
+  const ipRef = useRef('');
   const [another, setAnother] = useState<User[]>([]);
   const anotherRef = useRef<User[]>([]);
   const [ready, setReady] = useState(false);
@@ -70,7 +72,7 @@ export default function MiniChat() {
     const res = await randomUser()
     const name = res?.results?.[0]?.name || ''
     const newInfo = {
-      roomId: String(Math.random()).slice(4, 8),
+      roomId: '',
       userName: name ? `${name.first} ${name.last}` : String(Math.random()).slice(4, 8),
       socketId: '',
       dc: null,
@@ -99,7 +101,9 @@ export default function MiniChat() {
   const joinRoom = () => {
     if (!infoRef.current.userName) return
     infoRef.current.alive = true;
+    infoRef.current.roomId = '';
     localStorage.setItem('info', JSON.stringify(infoRef.current))
+    infoRef.current.roomId = md5(ipRef.current) || '';
     socket.current?.emit('join', { info: infoRef.current });
   }
 
@@ -309,13 +313,17 @@ export default function MiniChat() {
   }
 
   useEffect(() => {
-    initInfo().then(() => {
-      leaveRef.current
-      if(leaveRef.current > 0) {
-        leaveRef.current -= 1;
-      } else {
-        initSocket()
-      }
+    stone.on('ip', ({ detail }) => {
+      console.log(detail)
+      ipRef.current = detail?.ip;
+      initInfo().then(() => {
+        leaveRef.current
+        if(leaveRef.current > 0) {
+          leaveRef.current -= 1;
+        } else {
+          initSocket()
+        }
+      })
     })
     window.addEventListener('beforeunload', leaveRoom);
     return () => {
