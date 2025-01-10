@@ -27,7 +27,7 @@ type Record = {
 
 export default function MiniChat() {
   const [url] = useState('https://raw.githubusercontent.com/mirrows/photo/main/normal/2024_10_28/pic1730078673558002.jpg')
-  
+
   const leaveRef = useRef(0);
   const ipRef = useRef('');
   const [another, setAnother] = useState<User[]>([]);
@@ -85,7 +85,7 @@ export default function MiniChat() {
   }
   const sendMsg = (value: string) => {
     console.log(value, anotherRef.current);
-    const record:Record = {
+    const record: Record = {
       id: unique.get(`${currentIp.current}${infoRef.current.socketId}`),
       type: 'text',
       content: value,
@@ -96,7 +96,7 @@ export default function MiniChat() {
     anotherRef.current.forEach((user) => {
       user.dc?.send(JSON.stringify(record));
     })
-  } 
+  }
 
   const joinRoom = () => {
     if (!infoRef.current.userName) return
@@ -121,7 +121,7 @@ export default function MiniChat() {
     })
     socket.current?.emit('leave', infoRef.current);
   }
-  
+
   async function requestVideoCall() {
     // 发送方开始发送offer
     anotherRef.current.forEach(async (user) => {
@@ -157,7 +157,7 @@ export default function MiniChat() {
       const othersMap = anotherRef.current.reduce((map, user) => {
         map[user.socketId] = user;
         return map;
-      }, {} as {[key: string]: User });
+      }, {} as { [key: string]: User });
       const others = another
         .filter((user) => user.socketId !== infoRef.current.socketId)
         .map(user => othersMap[user.socketId] || user);
@@ -187,7 +187,7 @@ export default function MiniChat() {
         })
         // console.log(`你已加入房间`)
       }
-      if((user.socketId === infoRef.current.socketId) && others.length > 0) {
+      if ((user.socketId === infoRef.current.socketId) && others.length > 0) {
         requestVideoCall();
       }
     })
@@ -195,7 +195,7 @@ export default function MiniChat() {
     socket.current.on('receive_offer', async ({ info, to, offer }) => {
       console.log('receive offer');
       const user = anotherRef.current.find((user) => user.socketId === info.socketId)
-      if(!user?.pc) return
+      if (!user?.pc) return
       await user.pc.setRemoteDescription(offer)
       const answer = await user.pc?.createAnswer()
       await user.pc.setLocalDescription(answer)
@@ -206,16 +206,16 @@ export default function MiniChat() {
     socket.current.on('receive_answer', async ({ info, answer }) => {
       console.log('receive answer');
       const user = anotherRef.current.find((user) => user.socketId === info.socketId)
-      if(!user?.pc) return
+      if (!user?.pc) return
       await user.pc?.setRemoteDescription(answer)
       // weitToSetRemote({ answer })
     })
-  
+
     socket.current.on('add_candidate', async ({ info, candidate }) => {
       // weitToSetRemote({ candidate })
       console.log('add_candidate');
       const user = anotherRef.current.find((user) => user.socketId === info.socketId)
-      if(!user?.pc) return
+      if (!user?.pc) return
       user.pc?.addIceCandidate(candidate)
     })
   }
@@ -235,7 +235,7 @@ export default function MiniChat() {
     };
     const user = anotherRef.current.find((user) => user.socketId === targetUser.socketId)
     if (!user) return
-    if(!user?.pc) {
+    if (!user?.pc) {
       user.pc = new RTCPeerConnection(iceServers)
       // user.dc.onopen = function () {
       //   console.log("Data channel is open!");
@@ -318,7 +318,7 @@ export default function MiniChat() {
       ipRef.current = detail?.ip;
       initInfo().then(() => {
         leaveRef.current
-        if(leaveRef.current > 0) {
+        if (leaveRef.current > 0) {
           leaveRef.current -= 1;
         } else {
           initSocket()
@@ -334,7 +334,7 @@ export default function MiniChat() {
       socket.current = null
       window.removeEventListener('beforeunload', leaveRoom);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   return <>
     <div className={style.chat_wrap} style={{ backgroundImage: `url('${url}')` }}>
@@ -343,7 +343,7 @@ export default function MiniChat() {
           <div className={style.header_line}>
             <div className={`${style.join_status_ball} ${style[isJoined ? 'ball_joined' : 'ball_wait']}`}></div>
             <div>{info.userName}</div>
-            <SVGIcon type="list" className={style.expand_icon} onClick={() => setExpand(val => !val)} />
+            <SVGIcon type="chat_1" className={style.expand_icon} onClick={() => setExpand(val => !val)} />
           </div>
           <div className={`${style.contents} scroll_er`}>
             {isJoined || <div className={style.wait_tips}>
@@ -379,7 +379,7 @@ export default function MiniChat() {
             />
           </div>
         </div>
-        <div className={`${style.user_list} scroll_er`} style={{ display: userExpand ? 'block' : 'none'}}>
+        <div className={`${style.user_list} scroll_er`} style={{ display: userExpand ? 'block' : 'none' }}>
           {
             another.map(user => <div key={user.socketId}>
               <div className={`${style.join_status_ball} ${style[user.alive ? 'ball_joined' : 'ball_wait']}`}></div>

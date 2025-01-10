@@ -1,4 +1,4 @@
-import { EventEmits, GblData } from "@/types/global";
+import { EventEmits, EventEmitsProps, GblData } from "@/types/global";
 import { deepClone } from "./common";
 import { NormalObj } from "@/types/common";
 import { UserInfo } from "@/types/github";
@@ -41,11 +41,12 @@ export const env = {
   env: process.env.NEXT_PUBLIC_ENV,
 }
 
-
+type Rtype = Record<string, (...args: any[]) => void>
 
 export const stone = {
   data: { ...gbData },
   events: {} as NormalObj<Function[]>,
+  signs: {} as EventEmitsProps<EventEmits>,
   get(key: keyof typeof gbData) {
     return deepClone(this.data[key]);
   },
@@ -53,19 +54,38 @@ export const stone = {
     this.data = { ...this.data, ...newData };
     // localStorage.setItem('tmpData', JSON.stringify(stone.data))
   },
-  on<T extends keyof EventEmits>(name: T, cb: EventEmits[T]) {
-    this.events[`event_${name}`] || (this.events[`event_${name}`] = [])
-    this.events[`event_${name}`].push(cb)
+  // 一次emit,永久返参
+  on<T extends keyof EventEmits>(name: T, cb: Rtype[T]) {
+    const key = `event_${name}` as keyof EventEmitsProps<EventEmits>;
+    if (this.signs.hasOwnProperty(key) && this.signs[key]) {
+      const props = this.signs[key];
+      cb(...props)
+    } else {
+      this.events[key] || (this.events[key] = [])
+      this.events[key].push(cb)
+    }
+  },
+  once<T extends keyof EventEmits>(name: T, cb: Rtype[T]) {
+    const key = `event_${name}` as keyof EventEmitsProps<EventEmits>;
+    if (this.signs.hasOwnProperty(key) && this.signs[key]) {
+      const props = this.signs[key];
+        cb(...props)
+    } else {
+      this.events[key] = [cb]
+    }
   },
   async emit<T extends keyof EventEmits>(name: T, ...props: Parameters<EventEmits[T]>) {
     const events = this.events[`event_${name}`]?.filter((e: Function) => !!e) || []
     if (!events?.length) return
     for (let i = 0; i < events.length; i++) {
       await events[i](...props)
+      this.signs[`event_${name}`] = props
     }
+    this.events[`event_${name}`] = []
   },
   clearEmit<T extends keyof EventEmits>(name: T) {
     delete this.events[`event_${name}`];
+    delete this.signs[`event_${name}`];
   },
   isGithubOwner(cb: (isOwner: boolean) => void) {
     console.log(this.data);

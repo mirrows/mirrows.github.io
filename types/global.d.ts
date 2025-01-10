@@ -68,6 +68,20 @@ export type GblData = {
   [key: string]: any
 }
 
+export type Prefix<T, P extends string> = T extends string ? `${P}${T}` : never;
+export type RemovePrefix<T extends string, P extends string> = 
+  T extends `${P}${infer Rest}` ? Rest : never;
+
+export type PrefixedEventEventEmits<T> = `event_${T}`;
+
+type ParametersToArray<T> = {
+  [K in keyof T]: T[k] extends (...args: infer P) => any ? P : never
+}
+
+export type EventEmitsProps<T> = {
+  [K in keyof T as `event_${string & K}`]: ParametersToArray<T>[K]
+};
+
 export type EventEmits = {
   'ip': (props: { data: { data: Preview['data'] }, detail: IPDetail }) => void,
   'github': (info: UserInfo) => void,
