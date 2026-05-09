@@ -107,7 +107,6 @@ export const randomUser = () => {
 }
 
 export const bingQueryNew = (n = 7) => {
-  console.log(Date.now());
   return githubQuery({
     path: '/github/queryComments',
     method: 'get',
